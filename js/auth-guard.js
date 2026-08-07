@@ -83,6 +83,9 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
     document.querySelectorAll('.user-name, [data-profile-name]').forEach((element) => {
       element.textContent = fullName;
     });
+    document.querySelectorAll('[data-profile-greeting]').forEach((element) => {
+      element.textContent = fullName.split(/\s+/)[0] || fullName;
+    });
     document.querySelectorAll('.user-role').forEach((element) => {
       element.textContent = displayCompanyName;
     });
