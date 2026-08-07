@@ -28,9 +28,10 @@ const HCP_ENGLISH = Object.freeze({
   "Minha conta - HCP": "My account - HCP",
   "Preferências - HCP": "Preferences - HCP",
   "HCP - Login": "HCP - Sign in",
-  "HCP, prospecção inteligente": "HCP, smart prospecting",
-  "PROSPECÇÃO INTELIGENTE": "SMART PROSPECTING",
-  "Olá, João!": "Hello, João!",
+  "HCP, inteligência comercial": "HCP, sales intelligence",
+  "INTELIGÊNCIA COMERCIAL": "SALES INTELLIGENCE",
+  "Bem-vindo ao HCP,": "Welcome to HCP,",
+  "seu gerenciador de oportunidades.": "your opportunity manager.",
   "Encontre as empresas certas, descubra oportunidades reais e transforme pesquisa em vendas.": "Find the right companies, uncover real opportunities, and turn research into sales.",
   "empresas analisadas": "companies analyzed",
   "leads exportados": "exported leads",
@@ -40,9 +41,12 @@ const HCP_ENGLISH = Object.freeze({
   "Bem-vindo de volta": "Welcome back",
   "Entre na sua conta para continuar.": "Sign in to your account to continue.",
   "Endereço de e-mail": "Email address",
+  "Nome completo": "Full name",
+  "Como devemos chamar você?": "What should we call you?",
   "nome@empresa.com": "name@company.com",
   "Digite sua senha": "Enter your password",
   "Entrar agora": "Sign in now",
+  "Manter conectado": "Keep me signed in",
   "ou continue com": "or continue with",
   "Entrar com Google": "Continue with Google",
   "Crie uma conta": "Create an account",
@@ -708,8 +712,20 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Sair da conta (conta.html) ---------- */
   const logoutBtn = document.getElementById('logoutBtn');
   if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn.addEventListener('click', async () => {
+      logoutBtn.disabled = true;
+      const { error } = window.hcpSupabase
+        ? await window.hcpSupabase.auth.signOut({ scope: 'global' })
+        : { error: null };
+
+      if (error) {
+        logoutBtn.disabled = false;
+        showToast('Não foi possível encerrar a sessão. Tente novamente.');
+        return;
+      }
+
       showToast('Sessão encerrada em todos os dispositivos.');
+      window.location.replace('login.html');
     });
   }
 
