@@ -9,6 +9,7 @@ create table if not exists public.profiles (
   full_name text,
   avatar_url text,
   company_name text,
+  phone text,
   created_at timestamptz not null default timezone('utc', now()),
   updated_at timestamptz not null default timezone('utc', now())
 );
@@ -67,11 +68,10 @@ security definer
 set search_path = ''
 as $$
 begin
-  insert into public.profiles (id, full_name, avatar_url)
+  insert into public.profiles (id, full_name)
   values (
     new.id,
-    coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name'),
-    coalesce(new.raw_user_meta_data ->> 'avatar_url', new.raw_user_meta_data ->> 'picture')
+    coalesce(new.raw_user_meta_data ->> 'full_name', new.raw_user_meta_data ->> 'name')
   )
   on conflict (id) do nothing;
   return new;
@@ -86,10 +86,67 @@ create trigger on_auth_user_created
   for each row execute procedure private.handle_new_user();
 
 -- Garante perfil para usuários que possam ter sido criados antes desta estrutura.
-insert into public.profiles (id, full_name, avatar_url)
+insert into public.profiles (id, full_name)
 select
   users.id,
-  coalesce(users.raw_user_meta_data ->> 'full_name', users.raw_user_meta_data ->> 'name'),
-  coalesce(users.raw_user_meta_data ->> 'avatar_url', users.raw_user_meta_data ->> 'picture')
+  coalesce(users.raw_user_meta_data ->> 'full_name', users.raw_user_meta_data ->> 'name')
 from auth.users as users
 on conflict (id) do nothing;
+
+-- Fotos de perfil públicas; escrita restrita à pasta do próprio usuário.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'avatars',
+  'avatars',
+  true,
+  2097152,
+  array['image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "Usuários visualizam o próprio avatar" on storage.objects;
+create policy "Usuários visualizam o próprio avatar"
+  on storage.objects
+  for select
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = (select auth.uid()::text)
+  );
+
+drop policy if exists "Usuários enviam o próprio avatar" on storage.objects;
+create policy "Usuários enviam o próprio avatar"
+  on storage.objects
+  for insert
+  to authenticated
+  with check (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = (select auth.uid()::text)
+  );
+
+drop policy if exists "Usuários substituem o próprio avatar" on storage.objects;
+create policy "Usuários substituem o próprio avatar"
+  on storage.objects
+  for update
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = (select auth.uid()::text)
+  )
+  with check (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = (select auth.uid()::text)
+  );
+
+drop policy if exists "Usuários removem o próprio avatar" on storage.objects;
+create policy "Usuários removem o próprio avatar"
+  on storage.objects
+  for delete
+  to authenticated
+  using (
+    bucket_id = 'avatars'
+    and (storage.foldername(name))[1] = (select auth.uid()::text)
+  );

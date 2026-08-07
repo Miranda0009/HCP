@@ -109,7 +109,7 @@
                   <path d="M3 17l6-6 4 4 8-8"></path>
                   <path d="M15 7h6v6"></path>
                 </svg></div>
-              <div class="row-info"><strong>Novo segmento disponível</strong><span>Software CRM foi adicionado aos
+              <div class="row-info"><strong>Novo segmento disponível</strong><span>BPO Financeiro foi adicionado aos
                   segmentos inteligentes.</span></div>
             </div>
             <div class="notif-item">
@@ -140,7 +140,7 @@
           Nova busca
         </button>
         <a class="user-chip" href="conta.html">
-          <img src="https://i.pravatar.cc/72?img=13" alt="Foto de perfil de Alex Morgan">
+          <span class="user-avatar user-initials-avatar" data-user-avatar aria-hidden="true">AM</span>
           <div>
             <div class="user-name">Alex Morgan</div>
             <div class="user-role">Acme Inc.</div>
@@ -175,31 +175,39 @@
       <div class="page-head">
         <div>
           <h1>Minha conta</h1>
-          <p>Sua conta, assinatura e uso.</p>
+          <p>Atualize seus dados, foto e segurança da conta.</p>
         </div>
       </div>
 
       <div class="profile-grid">
-        <section class="panel">
-          <div class="profile-avatar-lg">AM</div>
-          <div class="profile-name">Alex Morgan</div>
-          <div class="profile-sub">Proprietário de espaço de trabalho · Acme Inc.</div>
+        <section class="panel profile-summary-panel">
+          <div class="profile-avatar-editor">
+            <div class="profile-avatar-lg" data-profile-avatar aria-label="Foto do perfil">AM</div>
+            <div class="avatar-actions">
+              <label class="chip-btn avatar-upload-btn" for="profilePhotoInput">Alterar foto</label>
+              <input id="profilePhotoInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+              <button class="chip-btn" id="removePhotoBtn" type="button" hidden>Remover foto</button>
+            </div>
+            <p class="avatar-help">JPG, PNG ou WebP de até 2 MB.</p>
+          </div>
+          <div class="profile-name" data-profile-name>Usuário HCP</div>
+          <div class="profile-sub" data-profile-sub>Proprietário do espaço de trabalho · Conta HCP</div>
 
           <div class="profile-detail-row"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.8">
               <circle cx="11" cy="11" r="7"></circle>
               <path d="M21 21l-4.3-4.3"></path>
-            </svg>alex@acme.com</div>
+            </svg><span data-profile-email>email@empresa.com</span></div>
           <div class="profile-detail-row"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.8">
               <circle cx="12" cy="12" r="9"></circle>
               <path d="M12 7v5l3 3"></path>
-            </svg>+1 (415) 555-0142</div>
+            </svg><span data-profile-phone>Telefone não informado</span></div>
           <div class="profile-detail-row"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.8">
               <path d="M3 17l6-6 4 4 8-8"></path>
               <path d="M15 7h6v6"></path>
-            </svg>Acme Inc. · Espaço de trabalho para 12 funcionários</div>
+            </svg><span data-profile-company>Conta HCP · espaço de trabalho</span></div>
 
           <div class="plan-highlight">
             <div class="plan-price">Pró · $89/mo</div>
@@ -208,6 +216,37 @@
         </section>
 
         <div class="stack-panels">
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2>Dados do perfil</h2>
+                <p>Estas informações aparecem na sua conta e no menu do HCP.</p>
+              </div>
+            </div>
+            <form id="profileForm">
+              <div class="profile-form-grid">
+                <label class="profile-field" for="profileFullName">
+                  <span>Nome completo</span>
+                  <input class="text-input" id="profileFullName" type="text" autocomplete="name" required>
+                </label>
+                <label class="profile-field" for="profileCompany">
+                  <span>Empresa</span>
+                  <input class="text-input" id="profileCompany" type="text" autocomplete="organization">
+                </label>
+                <label class="profile-field" for="profilePhone">
+                  <span>Telefone</span>
+                  <input class="text-input" id="profilePhone" type="tel" autocomplete="tel" placeholder="(11) 99999-9999">
+                </label>
+                <label class="profile-field" for="profileEmail">
+                  <span>E-mail de acesso</span>
+                  <input class="text-input" id="profileEmail" type="email" readonly>
+                </label>
+              </div>
+              <p class="form-feedback" id="profileFeedback" role="status" aria-live="polite" hidden></p>
+              <button class="primary-btn" id="saveProfileBtn" type="submit">Salvar alterações</button>
+            </form>
+          </section>
+
           <section class="panel">
             <div class="panel-head">
               <div>
@@ -231,12 +270,19 @@
                 </svg></div>
               <h3>Alterar senha</h3>
             </div>
-            <div class="form-row">
-              <input class="text-input" type="password" placeholder="Atual">
-              <input class="text-input" type="password" placeholder="Novo">
-              <input class="text-input" type="password" placeholder="Confirme">
-            </div>
-            <button class="primary-btn" id="updatePasswordBtn">Atualizar senha</button>
+            <p class="security-help">Confirme sua senha atual e escolha uma nova senha com pelo menos 8 caracteres.</p>
+            <form id="passwordForm">
+              <div class="form-row">
+                <input class="text-input" id="currentPassword" type="password" placeholder="Senha atual"
+                  autocomplete="current-password" required>
+                <input class="text-input" id="newPassword" type="password" placeholder="Nova senha"
+                  autocomplete="new-password" minlength="8" required>
+                <input class="text-input" id="confirmPassword" type="password" placeholder="Confirmar nova senha"
+                  autocomplete="new-password" minlength="8" required>
+              </div>
+              <p class="form-feedback" id="passwordFeedback" role="status" aria-live="polite" hidden></p>
+              <button class="primary-btn" id="updatePasswordBtn" type="submit">Atualizar senha</button>
+            </form>
           </section>
 
           <section class="panel">
@@ -269,6 +315,7 @@
   <script src="../js/supabase-config.js"></script>
   <script src="../js/auth-guard.js"></script>
   <script src="../js/script.js"></script>
+  <script src="../js/profile.js"></script>
 </body>
 
 </html>

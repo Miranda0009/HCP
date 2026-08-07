@@ -71,7 +71,7 @@ const HCP_ENGLISH = Object.freeze({
   "Notificações": "Notifications",
   "Nova busca": "New search",
   "Novo segmento disponível": "New segment available",
-  "Software CRM foi adicionado aos": "CRM Software was added to",
+  "BPO Financeiro foi adicionado aos": "Financial BPO was added to",
   "segmentos inteligentes.": "smart segments.",
   "Exportação concluída": "Export completed",
   "128.450 leads exportados com": "128,450 leads exported",
@@ -108,7 +108,9 @@ const HCP_ENGLISH = Object.freeze({
   "Principais favoritos": "Top favorites",
   "Navegue todos": "Browse all",
   "Agências de Marketing": "Marketing Agencies",
-  "Energia Solar": "Solar Energy",
+  "🎯 Agências de Marketing": "🎯 Marketing Agencies",
+  "📞 Consultorias Comerciais": "📞 Sales Consulting",
+  "💰 BPO Financeiro": "💰 Financial BPO",
   "Seg": "Mon",
   "Ter": "Tue",
   "Qua": "Wed",
@@ -148,7 +150,14 @@ const HCP_ENGLISH = Object.freeze({
   "Law Firms - Boston, MA": "Law Firms - Boston, MA",
   "Clínicas": "Clinics",
   "Restaurantes": "Restaurants",
-  "Empresas de segurança": "Security companies",
+  "🎯 Agências de Marketing – Principal cliente": "🎯 Marketing Agencies – Primary customer",
+  "📞 Consultorias Comerciais / SDR / BDR": "📞 Sales Consulting / SDR / BDR",
+  "💰 Empresas de BPO Financeiro": "💰 Financial BPO Companies",
+  "Consultorias Comerciais / SDR / BDR": "Sales Consulting / SDR / BDR",
+  "Empresas de BPO Financeiro": "Financial BPO Companies",
+  "Agências com demanda constante por prospecção B2B, geração de oportunidades e novos contratos.": "Agencies with ongoing demand for B2B prospecting, opportunity generation, and new contracts.",
+  "Times especializados em vendas consultivas, outbound e desenvolvimento de novos negócios.": "Teams specialized in consultative sales, outbound, and business development.",
+  "Operações que terceirizam rotinas financeiras e atendem empresas em fase de crescimento.": "Operations that outsource financial routines and serve growing companies.",
   "Empresa": "Company",
   "Exportação": "Export",
   "Fazenda": "Farm",
@@ -203,6 +212,23 @@ const HCP_ENGLISH = Object.freeze({
   "Inicie uma pesquisa completa em um clique": "Start a complete search in one click",
   "Visão geral da sua conta e espaço de trabalho.": "An overview of your account and workspace.",
   "Sua conta, assinatura e uso.": "Your account, plan, and usage.",
+  "Atualize seus dados, foto e segurança da conta.": "Update your details, photo, and account security.",
+  "Dados do perfil": "Profile details",
+  "Estas informações aparecem na sua conta e no menu do HCP.": "This information appears in your account and the HCP menu.",
+  "Nome completo": "Full name",
+  "Empresa": "Company",
+  "Telefone": "Phone",
+  "E-mail de acesso": "Sign-in email",
+  "Salvar alterações": "Save changes",
+  "Alterar foto": "Change photo",
+  "Remover foto": "Remove photo",
+  "JPG, PNG ou WebP de até 2 MB.": "JPG, PNG, or WebP up to 2 MB.",
+  "Telefone não informado": "Phone not provided",
+  "Conta HCP · espaço de trabalho": "HCP Account · workspace",
+  "Confirme sua senha atual e escolha uma nova senha com pelo menos 8 caracteres.": "Confirm your current password and choose a new password with at least 8 characters.",
+  "Senha atual": "Current password",
+  "Nova senha": "New password",
+  "Confirmar nova senha": "Confirm new password",
   "Uso este mês": "Usage this month",
   "Veja onde você está assinado.": "See your current plan.",
   "Renova em 14 de março de 2026": "Renews on March 14, 2026",
@@ -599,12 +625,10 @@ document.addEventListener('DOMContentLoaded', () => {
       { name: "Loja Construforte", cat: "Materiais de construção", city: "Campinas", state: "SP", site: true, rating: 4.3 },
       { name: "Ágil Marketing Digital", cat: "Agências de Marketing", city: "São Paulo", state: "SP", site: false, rating: 3.4 },
       { name: "Marketing Nova Era", cat: "Agências de Marketing", city: "Curitiba", state: "PR", site: false, rating: 3.1 },
-      { name: "Solar Vale Energia", cat: "Energia Solar", city: "Campinas", state: "SP", site: true, rating: 4.2 },
-      { name: "Fazenda Solar Horizonte", cat: "Energia Solar", city: "Belo Horizonte", state: "MG", site: false, rating: 3.8 },
-      { name: "Vigilância Total Segurança", cat: "Empresas de segurança", city: "Rio de Janeiro", state: "RJ", site: true, rating: 4.4 },
-      { name: "Protege Condomínios", cat: "Empresas de segurança", city: "São Paulo", state: "SP", site: false, rating: 3.7 },
-      { name: "NexusCRM Software", cat: "Software CRM", city: "São Paulo", state: "SP", site: true, rating: 4.8 },
-      { name: "PipelinePro CRM", cat: "Software CRM", city: "Curitiba", state: "PR", site: true, rating: 4.6 },
+      { name: "Venda Norte Consultoria", cat: "Consultorias Comerciais / SDR / BDR", city: "Campinas", state: "SP", site: true, rating: 4.2 },
+      { name: "Outbound Prime", cat: "Consultorias Comerciais / SDR / BDR", city: "Belo Horizonte", state: "MG", site: false, rating: 3.8 },
+      { name: "Fluxo Certo BPO", cat: "Empresas de BPO Financeiro", city: "Rio de Janeiro", state: "RJ", site: true, rating: 4.4 },
+      { name: "BPO Financeiro Ágil", cat: "Empresas de BPO Financeiro", city: "São Paulo", state: "SP", site: false, rating: 3.7 },
     ];
 
     const cidadeInput = document.getElementById('cidadeInput');
@@ -669,21 +693,6 @@ document.addEventListener('DOMContentLoaded', () => {
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       showToast('Exportação iniciada — você recebe o arquivo por e-mail em instantes.');
-    });
-  }
-
-  /* ---------- Atualizar senha (perfil.html) ---------- */
-  const updatePasswordBtn = document.getElementById('updatePasswordBtn');
-  if (updatePasswordBtn) {
-    updatePasswordBtn.addEventListener('click', () => {
-      const inputs = document.querySelectorAll('.form-row input[type="password"]');
-      const filled = Array.from(inputs).every((i) => i.value.trim().length > 0);
-      if (!filled) {
-        showToast('Preencha os três campos para atualizar sua senha.');
-        return;
-      }
-      showToast('Senha atualizada com sucesso.');
-      inputs.forEach((i) => (i.value = ''));
     });
   }
 

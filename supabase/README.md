@@ -6,8 +6,11 @@ Este diretório mantém a estrutura do banco versionada junto do repositório.
 - Schema inicial: `schema.sql`
 - Cliente web: `../js/supabase-config.js`
 - Autenticação: `../js/auth.js` e `../js/auth-guard.js`
+- Perfil, avatar e senha: `../js/profile.js`
 
 O navegador usa somente a chave **publishable**, que foi criada para uso público no frontend. Nunca adicione uma chave `secret` ou `service_role` ao repositório.
+
+O schema também cria o bucket público `avatars`, limitado a JPG, PNG ou WebP de até 2 MB. As políticas de escrita restringem cada usuário à pasta identificada pelo próprio UUID.
 
 ## Desenvolvimento local
 
