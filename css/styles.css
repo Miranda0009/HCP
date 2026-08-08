@@ -15,6 +15,10 @@
   color-scheme: dark;
 }
 
+html {
+  background: var(--bg-main);
+}
+
 html[data-theme="light"] {
   --bg-main: #F4F5FA;
   --card-bg: #FFFFFF;
@@ -945,6 +949,45 @@ button {
 
 .segment-card.tone-pink {
   background: linear-gradient(150deg, rgba(241, 32, 90, 0.20), rgba(18, 18, 32, 0.5));
+}
+
+html[data-theme="light"] .segment-card {
+  color: #211A2D;
+  border-color: #D9D4E5;
+  box-shadow: 0 10px 28px rgba(45, 32, 72, 0.07);
+}
+
+html[data-theme="light"] .segment-card.tone-purple {
+  background: linear-gradient(145deg, #F5EFFF 0%, #E9DDF9 100%);
+  border-color: #D8C4F3;
+}
+
+html[data-theme="light"] .segment-card.tone-amber {
+  background: linear-gradient(145deg, #FFF8E9 0%, #F2E5CB 100%);
+  border-color: #ECD9AF;
+}
+
+html[data-theme="light"] .segment-card.tone-green {
+  background: linear-gradient(145deg, #EEF9F5 0%, #DDEFE9 100%);
+  border-color: #C8E4DA;
+}
+
+html[data-theme="light"] .segment-card.tone-pink {
+  background: linear-gradient(145deg, #FFF0F5 0%, #F4DDE7 100%);
+  border-color: #EBC7D7;
+}
+
+html[data-theme="light"] .segment-card .count-badge,
+html[data-theme="light"] .segment-card p {
+  color: #61586F;
+}
+
+html[data-theme="light"] .segment-card .ico {
+  background: rgba(111, 53, 198, 0.12);
+}
+
+html[data-theme="light"] .segment-card h3 {
+  color: #211A2D;
 }
 
 .segment-card .count-badge {
