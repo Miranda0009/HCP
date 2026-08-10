@@ -15,7 +15,9 @@ O script sempre sincroniza `css`, `html`, `imgs` e `js` antes da compilação. A
 
 - Cadastro e login por e-mail usam o mesmo projeto Supabase do site.
 - A opção “Manter conectado” usa armazenamento persistente quando marcada e armazenamento da sessão quando desmarcada.
-- Para testar Google OAuth no aplicativo, inclua `https://localhost/**` na lista de URLs de redirecionamento permitidas em **Supabase → Authentication → URL Configuration**. Dependendo das regras atuais do projeto Google, o fluxo também pode exigir configuração específica para Android antes de uma publicação em loja.
+- O Android recebe confirmações de cadastro, recuperação de senha e OAuth pelo deep link `com.hcp.oportunidades://auth/callback`.
+- Adicione exatamente `com.hcp.oportunidades://auth/callback` em **Supabase → Authentication → URL Configuration → Redirect URLs**. Sem essa permissão, o Supabase volta para o `Site URL` padrão; o APK também reconhece o antigo `http://localhost:3000` como compatibilidade, mas o deep link próprio oferece o fluxo confiável.
+- Dependendo das regras atuais do projeto Google, o OAuth pode exigir configuração específica para Android antes de uma publicação em loja.
 
 ## Uso do APK
 

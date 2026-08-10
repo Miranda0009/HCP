@@ -17,6 +17,7 @@
 
 html {
   background: var(--bg-main);
+  overflow-x: hidden;
 }
 
 html[data-theme="light"] {
@@ -38,10 +39,12 @@ html[data-theme="light"] {
 }
 
 body {
+  min-width: 0;
   background: var(--bg-main);
   color: var(--white);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   font-size: 14px;
+  overflow-x: hidden;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -118,13 +121,15 @@ button {
 
 .app {
   display: grid;
-  grid-template-columns: 248px 1fr;
+  grid-template-columns: 248px minmax(0, 1fr);
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   transition: grid-template-columns 0.2s ease;
 }
 
 .app.sidebar-collapsed {
-  grid-template-columns: 76px 1fr;
+  grid-template-columns: 76px minmax(0, 1fr);
 }
 
 /* ---------- SIDEBAR ---------- */
@@ -327,18 +332,23 @@ button {
 /* ---------- MAIN / TOPBAR ---------- */
 
 .main {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 24px 32px 40px;
 }
 
 .topbar {
   display: flex;
   align-items: center;
+  min-width: 0;
   gap: 16px;
   margin-bottom: 28px;
 }
 
 .search {
   flex: 1;
+  min-width: 0;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -356,6 +366,7 @@ button {
 
 .search input {
   flex: 1;
+  min-width: 0;
   background: transparent;
   border: none;
   outline: none;
@@ -666,6 +677,7 @@ html.profile-pending [data-profile-avatar]::after {
 /* ---------- PANEL / CARD ---------- */
 
 .panel {
+  min-width: 0;
   background: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 16px;
@@ -910,6 +922,7 @@ html.profile-pending [data-profile-avatar]::after {
 .row-info span {
   font-size: 11.5px;
   color: var(--gray);
+  overflow-wrap: anywhere;
 }
 
 .chip-btn {
@@ -1513,6 +1526,11 @@ table.data-table tr:last-child td {
   flex-shrink: 0;
 }
 
+.profile-detail-row span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 .plan-highlight {
   margin-top: 16px;
   background: rgba(151, 71, 255, 0.1);
@@ -1671,6 +1689,10 @@ table.data-table tr:last-child td {
   color: var(--gray);
 }
 
+.settings-row > div {
+  min-width: 0;
+}
+
 .section-title-row {
   display: flex;
   align-items: center;
@@ -1723,11 +1745,166 @@ table.data-table tr:last-child td {
 
 @media (max-width: 720px) {
   .app {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .sidebar {
     display: none;
+  }
+
+  .main {
+    padding: 16px 14px 32px;
+  }
+
+  .topbar {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .topbar .search {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .topbar .notif-wrap {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .topbar .primary-btn {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .topbar .user-chip {
+    grid-column: 3;
+    grid-row: 2;
+  }
+
+  .topbar .user-chip > div,
+  .topbar .kbd {
+    display: none;
+  }
+
+  .notif-dropdown {
+    position: fixed;
+    top: 68px;
+    right: 14px;
+    left: 14px;
+    width: auto;
+    max-height: calc(100dvh - 84px);
+    overflow-y: auto;
+  }
+
+  .page-head {
+    margin-bottom: 18px;
+  }
+
+  .page-head h1 {
+    font-size: 20px;
+    line-height: 1.25;
+  }
+
+  .page-head p {
+    line-height: 1.5;
+  }
+
+  .panel {
+    padding: 18px 16px;
+    border-radius: 14px;
+  }
+
+  .panel-head {
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .legend-row {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+  }
+
+  .bar-chart,
+  .bar-labels {
+    gap: 8px;
+  }
+
+  .bar {
+    width: 10px;
+  }
+
+  .table-toolbar,
+  .filter-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-bar-inline input,
+  .command-input-row input {
+    min-width: 0;
+  }
+
+  .command-backdrop {
+    padding: 10vh 14px 14px;
+  }
+
+  .command-modal {
+    min-width: 0;
+  }
+
+  .command-input-row {
+    padding: 12px;
+  }
+
+  .command-input-row .kbd {
+    display: none;
+  }
+
+  .settings-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .settings-row .chip-btn {
+    margin-left: auto;
+  }
+
+}
+
+@media (max-width: 420px) {
+  .main {
+    padding-inline: 12px;
+  }
+
+  .topbar,
+  .kpi-grid,
+  .content-grid,
+  .two-col,
+  .segment-grid,
+  .pricing-grid,
+  .profile-grid,
+  .stack-panels {
+    gap: 12px;
+  }
+
+  .primary-btn {
+    padding-inline: 12px;
+  }
+
+  .list-row {
+    gap: 10px;
+  }
+
+  .list-row .chip-btn {
+    padding-inline: 9px;
   }
 }
 
@@ -1768,4 +1945,16 @@ table.data-table tr:last-child td {
   width: 28px;
   height: 28px;
   flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .toast-stack {
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+  }
+
+  .toast {
+    width: 100%;
+  }
 }

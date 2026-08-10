@@ -20,8 +20,10 @@
   const description = document.getElementById('authDescription');
   const prompt = document.getElementById('authPrompt');
   const feedback = document.getElementById('authFeedback');
+  const MOBILE_AUTH_CALLBACK = 'com.hcp.oportunidades://auth/callback';
   const isRecoveryCallback = new URLSearchParams(window.location.search).get('recovery') === '1';
   let mode = isRecoveryCallback ? 'recovery' : 'signin';
+  let lastMobileAuthUrl = '';
 
   const isEnglish = () => {
     try {
@@ -34,6 +36,14 @@
   const copy = (pt, en) => isEnglish() ? en : pt;
   const loginUrl = (recovery = false) => new URL(`login.html${recovery ? '?recovery=1' : ''}`, window.location.href).href;
   const dashboardUrl = () => new URL('painel.html', window.location.href).href;
+  const isNativeApp = () => {
+    const capacitor = window.Capacitor;
+    return Boolean(capacitor?.isNativePlatform?.() || capacitor?.getPlatform?.() === 'android');
+  };
+  const authRedirectUrl = (recovery = false) => {
+    if (!isNativeApp()) return loginUrl(recovery);
+    return `${MOBILE_AUTH_CALLBACK}${recovery ? '?recovery=1' : ''}`;
+  };
 
   function showFeedback(message, type = 'info') {
     feedback.textContent = message;
@@ -136,6 +146,96 @@
     });
   }
 
+  function mobileCallbackParams(url) {
+    const params = new URLSearchParams(url.search);
+    const hashParams = new URLSearchParams(url.hash.replace(/^#/, ''));
+    hashParams.forEach((value, key) => params.set(key, value));
+    return params;
+  }
+
+  function isTrustedMobileCallback(url) {
+    if (url.protocol === 'com.hcp.oportunidades:') {
+      return url.hostname === 'auth' && url.pathname === '/callback';
+    }
+
+    return ['http:', 'https:'].includes(url.protocol)
+      && url.hostname === 'localhost'
+      && url.port === '3000';
+  }
+
+  async function handleMobileAuthUrl(rawUrl) {
+    if (!rawUrl || rawUrl === lastMobileAuthUrl || !client) return;
+
+    let callbackUrl;
+    try {
+      callbackUrl = new URL(rawUrl);
+    } catch {
+      return;
+    }
+
+    if (!isTrustedMobileCallback(callbackUrl)) return;
+    lastMobileAuthUrl = rawUrl;
+
+    const params = mobileCallbackParams(callbackUrl);
+    const errorMessage = params.get('error_description') || params.get('error');
+    if (errorMessage) {
+      let readableError = errorMessage.replace(/\+/g, ' ');
+      try {
+        readableError = decodeURIComponent(readableError);
+      } catch {
+        // A mensagem original ainda é legível quando não usa codificação de URL válida.
+      }
+      showFeedback(readableError, 'error');
+      return;
+    }
+
+    const isRecovery = params.get('type') === 'recovery' || params.get('recovery') === '1';
+    let session = null;
+
+    try {
+      const accessToken = params.get('access_token');
+      const refreshToken = params.get('refresh_token');
+
+      if (accessToken && refreshToken) {
+        const result = await client.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken
+        });
+        if (result.error) throw result.error;
+        session = result.data.session;
+      } else if (params.get('code')) {
+        const result = await client.auth.exchangeCodeForSession(params.get('code'));
+        if (result.error) throw result.error;
+        session = result.data.session;
+      }
+
+      if (!session) return;
+
+      if (isRecovery) {
+        setMode('recovery');
+        showFeedback(copy('Link confirmado. Crie agora sua nova senha.', 'Link confirmed. Create your new password now.'), 'success');
+        return;
+      }
+
+      await cacheAuthenticatedProfile(session.user);
+      window.location.replace(dashboardUrl());
+    } catch (error) {
+      showFeedback(friendlyError(error), 'error');
+    }
+  }
+
+  async function setupMobileAuthRedirects() {
+    const appPlugin = window.Capacitor?.Plugins?.App;
+    if (!appPlugin?.addListener || !appPlugin?.getLaunchUrl) return;
+
+    await appPlugin.addListener('appUrlOpen', ({ url }) => {
+      handleMobileAuthUrl(url);
+    });
+
+    const launch = await appPlugin.getLaunchUrl();
+    if (launch?.url) await handleMobileAuthUrl(launch.url);
+  }
+
   async function redirectAuthenticatedUser() {
     if (!client) {
       showFeedback(copy('Não foi possível carregar a conexão com o Supabase.', 'Could not load the Supabase connection.'), 'error');
@@ -184,7 +284,7 @@
           password: passwordInput.value,
           options: {
             data: { full_name: nameInput.value.trim() },
-            emailRedirectTo: loginUrl()
+            emailRedirectTo: authRedirectUrl()
           }
         });
         if (error) throw error;
@@ -226,7 +326,7 @@
     showFeedback('');
     const { error } = await client.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: loginUrl() }
+      options: { redirectTo: authRedirectUrl() }
     });
     if (error) {
       showFeedback(friendlyError(error), 'error');
@@ -243,7 +343,7 @@
 
     setBusy(true);
     const { error } = await client.auth.resetPasswordForEmail(emailInput.value.trim(), {
-      redirectTo: loginUrl(true)
+      redirectTo: authRedirectUrl(true)
     });
     showFeedback(
       error ? friendlyError(error) : copy('Enviamos um link de recuperação para seu e-mail.', 'We sent a recovery link to your email.'),
@@ -267,5 +367,7 @@
   });
 
   setMode(mode);
-  redirectAuthenticatedUser();
+  setupMobileAuthRedirects()
+    .catch(() => {})
+    .finally(redirectAuthenticatedUser);
 })();

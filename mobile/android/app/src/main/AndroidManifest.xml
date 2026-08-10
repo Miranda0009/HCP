@@ -22,6 +22,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/custom_url_scheme"
+                    android:host="auth"
+                    android:pathPrefix="/callback" />
+            </intent-filter>
+
+            <!-- Compatibilidade com o Site URL antigo usado nos primeiros e-mails de confirmação. -->
+            <intent-filter android:autoVerify="false">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="localhost" />
+                <data android:port="3000" />
+            </intent-filter>
+
         </activity>
 
         <provider
