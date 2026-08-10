@@ -113,6 +113,29 @@
     }
   }
 
+  async function cacheAuthenticatedProfile(user) {
+    if (!user) return;
+    const metadata = user.user_metadata || {};
+    let profile = {};
+
+    try {
+      const result = await client
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', user.id)
+        .maybeSingle();
+      if (!result.error) profile = result.data || {};
+    } catch {
+      // Os metadados do Auth ainda permitem preparar as iniciais antes do redirecionamento.
+    }
+
+    window.hcpProfileCache?.write({
+      id: user.id,
+      full_name: profile.full_name || metadata.full_name || metadata.name || user.email?.split('@')[0] || '',
+      avatar_url: profile.avatar_url || metadata.avatar_url || metadata.picture || ''
+    });
+  }
+
   async function redirectAuthenticatedUser() {
     if (!client) {
       showFeedback(copy('Não foi possível carregar a conexão com o Supabase.', 'Could not load the Supabase connection.'), 'error');
@@ -125,7 +148,10 @@
       return;
     }
 
-    if (data.session && mode !== 'recovery') window.location.replace(dashboardUrl());
+    if (data.session && mode !== 'recovery') {
+      await cacheAuthenticatedProfile(data.session.user);
+      window.location.replace(dashboardUrl());
+    }
   }
 
   form.addEventListener('submit', async (event) => {
@@ -163,6 +189,7 @@
         });
         if (error) throw error;
         if (data.session) {
+          await cacheAuthenticatedProfile(data.user);
           window.location.replace(dashboardUrl());
         } else {
           showFeedback(copy('Conta criada. Confira seu e-mail para confirmar o acesso.', 'Account created. Check your email to confirm access.'), 'success');
@@ -170,11 +197,12 @@
         return;
       }
 
-      const { error } = await client.auth.signInWithPassword({
+      const { data, error } = await client.auth.signInWithPassword({
         email: emailInput.value.trim(),
         password: passwordInput.value
       });
       if (error) throw error;
+      await cacheAuthenticatedProfile(data.user);
       window.location.replace(dashboardUrl());
     } catch (error) {
       showFeedback(friendlyError(error), 'error');
@@ -226,6 +254,7 @@
   });
 
   modeToggle.addEventListener('click', () => setMode(mode === 'signup' ? 'signin' : 'signup'));
+  rememberSession.addEventListener('change', saveRememberChoice);
 
   try {
     rememberSession.checked = localStorage.getItem('hcp-remember') !== 'false';

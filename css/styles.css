@@ -602,6 +602,25 @@ button {
   letter-spacing: 0.03em;
 }
 
+html.profile-pending [data-user-avatar],
+html.profile-pending [data-profile-avatar] {
+  position: relative;
+  color: transparent !important;
+}
+
+html.profile-pending [data-user-avatar]::after,
+html.profile-pending [data-profile-avatar]::after {
+  content: var(--hcp-profile-initials, "");
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #FFFFFF;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
 .user-avatar img,
 .user-chip img {
   display: block;

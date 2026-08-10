@@ -3,6 +3,7 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
   const loginUrl = () => new URL('login.html', window.location.href).href;
 
   if (!client) {
+    window.hcpProfileCache?.clear();
     window.location.replace(loginUrl());
     return null;
   }
@@ -10,6 +11,7 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
   const { data, error } = await client.auth.getUser();
   const user = data?.user;
   if (error || !user) {
+    window.hcpProfileCache?.clear();
     window.location.replace(loginUrl());
     return null;
   }
@@ -79,6 +81,7 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
     };
 
     window.hcpProfile = normalizedProfile;
+    window.hcpProfileCache?.write(normalizedProfile);
 
     document.querySelectorAll('.user-name, [data-profile-name]').forEach((element) => {
       element.textContent = fullName;
@@ -124,6 +127,8 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
 
   const profile = profileResult.error ? {} : (profileResult.data || {});
   const renderedProfile = renderProfile(profile);
+  document.documentElement.classList.remove('profile-pending');
+  document.documentElement.style.removeProperty('--hcp-profile-initials');
 
   client.auth.onAuthStateChange((event) => {
     if (event === 'SIGNED_OUT') window.location.replace(loginUrl());

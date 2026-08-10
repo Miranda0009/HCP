@@ -734,6 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       showToast('Sessão encerrada em todos os dispositivos.');
+      window.hcpProfileCache?.clear();
       window.location.replace('login.html');
     });
   }

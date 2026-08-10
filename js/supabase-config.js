@@ -19,7 +19,7 @@
   const authStorage = {
     getItem(key) {
       try {
-        return selectedStorage().getItem(key) || localStorage.getItem(key) || sessionStorage.getItem(key);
+        return selectedStorage().getItem(key);
       } catch {
         return null;
       }

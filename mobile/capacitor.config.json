@@ -1,0 +1,13 @@
+{
+  "appId": "com.hcp.oportunidades",
+  "appName": "HCP",
+  "webDir": "www",
+  "backgroundColor": "#030409",
+  "android": {
+    "allowMixedContent": false,
+    "backgroundColor": "#030409"
+  },
+  "server": {
+    "androidScheme": "https"
+  }
+}
