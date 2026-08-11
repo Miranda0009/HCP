@@ -213,6 +213,7 @@ const HCP_ENGLISH = Object.freeze({
   "Acesso rápido": "Quick access",
   "Inicie uma pesquisa completa em um clique": "Start a complete search in one click",
   "Pesquisas pré-construídas por lead, com curadoria de nossos especialistas em prospecção.": "Prebuilt lead searches curated by our prospecting specialists.",
+  "Compartilhe quais fontes entregam os dados mais úteis e receba tokens para criar novas listas.": "Share which sources provide the most useful data and receive tokens to create new lists.",
   "Segmentos prontos": "Ready-made segments",
   "Troca de dados por tokens": "Data exchange for tokens",
   "Áreas de segmentos inteligentes": "Smart segment areas",
@@ -332,6 +333,80 @@ const originalDocumentTitle = document.title;
 
 function currentLanguage() {
   return readPreference(HCP_LANGUAGE_KEY, 'pt-BR');
+}
+
+const HCP_COMPANIES = Object.freeze([
+  { name: "Clínica Vitalis", cat: "Clínicas", city: "São Paulo", state: "SP", site: false, rating: 3.2 },
+  { name: "Academia Fit+", cat: "Academias", city: "Curitiba", state: "PR", site: true, rating: 4.5 },
+  { name: "Restaurante Sabor Real", cat: "Restaurantes", city: "Campinas", state: "SP", site: false, rating: 3.0 },
+  { name: "Farmácia Bem Estar", cat: "Farmácias", city: "São Paulo", state: "SP", site: true, rating: 4.1 },
+  { name: "Clínica Odonto Sorriso", cat: "Clínicas", city: "Santos", state: "SP", site: false, rating: 2.8 },
+  { name: "Pet Shop Amigo Fiel", cat: "Pet Shops", city: "Curitiba", state: "PR", site: false, rating: 4.7 },
+  { name: "Escritório Contábil Prime", cat: "Contabilidade", city: "Belo Horizonte", state: "MG", site: true, rating: 4.9 },
+  { name: "Oficina Auto Center", cat: "Automotivo", city: "São Paulo", state: "SP", site: false, rating: 3.6 },
+  { name: "Salão Bela Elegância", cat: "Beleza", city: "Rio de Janeiro", state: "RJ", site: false, rating: 3.9 },
+  { name: "Loja Construforte", cat: "Materiais de construção", city: "Campinas", state: "SP", site: true, rating: 4.3 },
+  { name: "Ágil Marketing Digital", cat: "Agências de Marketing", city: "São Paulo", state: "SP", site: false, rating: 3.4 },
+  { name: "Marketing Nova Era", cat: "Agências de Marketing", city: "Curitiba", state: "PR", site: false, rating: 3.1 },
+  { name: "Venda Norte Consultoria", cat: "Consultorias Comerciais / SDR / BDR", city: "Campinas", state: "SP", site: true, rating: 4.2 },
+  { name: "Outbound Prime", cat: "Consultorias Comerciais / SDR / BDR", city: "Belo Horizonte", state: "MG", site: false, rating: 3.8 },
+  { name: "Fluxo Certo BPO", cat: "Empresas de BPO Financeiro", city: "Rio de Janeiro", state: "RJ", site: true, rating: 4.4 },
+  { name: "BPO Financeiro Ágil", cat: "Empresas de BPO Financeiro", city: "São Paulo", state: "SP", site: false, rating: 3.7 },
+  { name: "Soluções Inteligentes", cat: "Consultorias Comerciais / SDR / BDR", city: "São Paulo", state: "SP", site: true, rating: 4.8 }
+]);
+
+function normalizeSearchTerm(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+function companyAnchor(name) {
+  return `empresa-${normalizeSearchTerm(name).replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+}
+
+function companySearchHref(name) {
+  return `pesquisar.html?empresa=${encodeURIComponent(name)}#${companyAnchor(name)}`;
+}
+
+const HCP_COMMAND_ENTRIES = Object.freeze([
+  { name: 'Painel', type: 'Página', meta: 'Visão geral do HCP', href: 'painel.html' },
+  { name: 'Pesquisar empresas', type: 'Página', meta: 'Filtros e lista de leads', href: 'pesquisar.html' },
+  { name: 'Segmentos inteligentes', type: 'Página', meta: 'Troca de dados por tokens', href: 'segmentos.html' },
+  { name: 'Favoritos', type: 'Página', meta: 'Empresas salvas', href: 'favoritos.html' },
+  { name: 'Histórico', type: 'Página', meta: 'Pesquisas realizadas', href: 'historico.html' },
+  { name: 'Planos e limites', type: 'Página', meta: 'Assinatura e consumo', href: 'assinatura.html' },
+  { name: 'Minha conta', type: 'Página', meta: 'Perfil e segurança', href: 'perfil.html' },
+  { name: 'Preferências', type: 'Página', meta: 'Tema, idioma e notificações', href: 'configuracoes.html' },
+  { name: 'Alimentos Membros', type: 'Empresa', meta: 'Centro Distribuição · Fênix, AZ', href: 'painel.html#empresa-alimentos-membros' },
+  { name: 'Cascata Funciona', type: 'Empresa', meta: 'Armazém · Atlanta, GA', href: 'painel.html#empresa-cascata-funciona' },
+  { name: 'Atlas Alimentos', type: 'Empresa', meta: 'Construção · Nashville, TN', href: 'painel.html#empresa-atlas-alimentos' },
+  { name: 'Soluções Pioneiras', type: 'Empresa', meta: 'Restaurante · Dallas, TX', href: 'painel.html#empresa-solucoes-pioneiras' },
+  ...HCP_COMPANIES.map((company) => ({
+    name: company.name,
+    type: 'Empresa',
+    meta: `${company.cat} · ${company.city}, ${company.state}`,
+    href: companySearchHref(company.name)
+  }))
+]);
+
+function findCommandEntries(value, limit = 7) {
+  const query = normalizeSearchTerm(value);
+  if (!query) return [];
+
+  return HCP_COMMAND_ENTRIES
+    .map((entry) => {
+      const name = normalizeSearchTerm(entry.name);
+      const meta = normalizeSearchTerm(`${entry.type} ${entry.meta}`);
+      const score = name.startsWith(query) ? 0 : (name.includes(query) ? 1 : (meta.includes(query) ? 2 : 99));
+      return { entry, score };
+    })
+    .filter((result) => result.score < 99)
+    .sort((a, b) => a.score - b.score || a.entry.name.localeCompare(b.entry.name, 'pt-BR'))
+    .slice(0, limit)
+    .map((result) => result.entry);
 }
 
 function translateValue(value) {
@@ -630,18 +705,145 @@ document.addEventListener('DOMContentLoaded', () => {
   const commandInput = document.getElementById('commandInput');
   const commandTrigger = document.getElementById('commandTrigger');
   const novaBuscaBtn = document.getElementById('novaBuscaBtn');
+  const commandHint = commandBackdrop?.querySelector('.command-hint');
+  const commandResults = document.createElement('div');
+  let visibleCommandEntries = [];
+  let activeCommandIndex = -1;
+
+  commandResults.className = 'command-results';
+  commandResults.id = 'commandResults';
+  commandResults.setAttribute('role', 'listbox');
+  commandResults.hidden = true;
+  commandHint?.insertAdjacentElement('afterend', commandResults);
+
+  if (commandInput) {
+    commandInput.setAttribute('role', 'combobox');
+    commandInput.setAttribute('aria-autocomplete', 'list');
+    commandInput.setAttribute('aria-controls', 'commandResults');
+    commandInput.setAttribute('aria-expanded', 'false');
+  }
+
+  const resetCommandSuggestions = () => {
+    visibleCommandEntries = [];
+    activeCommandIndex = -1;
+    commandResults.replaceChildren();
+    commandResults.hidden = true;
+    if (commandHint) commandHint.hidden = false;
+    if (commandInput) {
+      commandInput.setAttribute('aria-expanded', 'false');
+      commandInput.removeAttribute('aria-activedescendant');
+    }
+  };
+
+  const syncActiveCommand = () => {
+    const options = Array.from(commandResults.querySelectorAll('.command-result'));
+    options.forEach((option, index) => {
+      const active = index === activeCommandIndex;
+      option.classList.toggle('active', active);
+      option.setAttribute('aria-selected', String(active));
+      if (active) {
+        commandInput?.setAttribute('aria-activedescendant', option.id);
+        option.scrollIntoView({ block: 'nearest' });
+      }
+    });
+  };
+
+  const navigateFromCommand = (entry) => {
+    if (!entry?.href) return;
+    window.location.href = entry.href;
+  };
+
+  const renderCommandSuggestions = () => {
+    const query = normalizeSearchTerm(commandInput?.value);
+    if (!query) {
+      resetCommandSuggestions();
+      return;
+    }
+
+    visibleCommandEntries = findCommandEntries(query);
+
+    activeCommandIndex = visibleCommandEntries.length ? 0 : -1;
+    commandResults.replaceChildren();
+    commandResults.hidden = false;
+    if (commandHint) commandHint.hidden = true;
+    commandInput?.setAttribute('aria-expanded', 'true');
+
+    if (!visibleCommandEntries.length) {
+      const empty = document.createElement('p');
+      empty.className = 'command-empty';
+      empty.textContent = currentLanguage() === 'en-US'
+        ? 'No company or page found.'
+        : 'Nenhuma empresa ou página encontrada.';
+      commandResults.appendChild(empty);
+      return;
+    }
+
+    visibleCommandEntries.forEach((entry, index) => {
+      const option = document.createElement('button');
+      const icon = document.createElement('span');
+      const content = document.createElement('span');
+      const title = document.createElement('strong');
+      const meta = document.createElement('small');
+      const type = document.createElement('span');
+
+      option.type = 'button';
+      option.className = 'command-result';
+      option.id = `command-option-${index}`;
+      option.setAttribute('role', 'option');
+      option.setAttribute('aria-selected', String(index === activeCommandIndex));
+      icon.className = 'command-result-icon';
+      icon.textContent = entry.type === 'Empresa' ? '↗' : '⌘';
+      content.className = 'command-result-content';
+      title.textContent = entry.name;
+      meta.textContent = entry.meta;
+      type.className = 'command-result-type';
+      type.textContent = currentLanguage() === 'en-US'
+        ? (entry.type === 'Empresa' ? 'Company' : 'Page')
+        : entry.type;
+
+      content.append(title, meta);
+      option.append(icon, content, type);
+      option.addEventListener('mousemove', () => {
+        activeCommandIndex = index;
+        syncActiveCommand();
+      });
+      option.addEventListener('click', () => navigateFromCommand(entry));
+      commandResults.appendChild(option);
+    });
+
+    syncActiveCommand();
+  };
 
   const openCommand = () => {
     if (!commandBackdrop) return;
     commandBackdrop.classList.add('open');
     if (notifDropdown) notifDropdown.classList.remove('open');
+    renderCommandSuggestions();
     setTimeout(() => commandInput && commandInput.focus(), 50);
   };
   const closeCommand = () => {
     if (!commandBackdrop) return;
     commandBackdrop.classList.remove('open');
     if (commandInput) commandInput.value = '';
+    resetCommandSuggestions();
   };
+
+  commandInput?.addEventListener('input', renderCommandSuggestions);
+  commandInput?.addEventListener('keydown', (event) => {
+    if (!visibleCommandEntries.length) return;
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      activeCommandIndex = (activeCommandIndex + 1) % visibleCommandEntries.length;
+      syncActiveCommand();
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      activeCommandIndex = (activeCommandIndex - 1 + visibleCommandEntries.length) % visibleCommandEntries.length;
+      syncActiveCommand();
+    } else if (event.key === 'Enter' && activeCommandIndex >= 0) {
+      event.preventDefault();
+      navigateFromCommand(visibleCommandEntries[activeCommandIndex]);
+    }
+  });
 
   if (commandTrigger) commandTrigger.addEventListener('click', openCommand);
   if (novaBuscaBtn) novaBuscaBtn.addEventListener('click', openCommand);
@@ -769,25 +971,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Pesquisar empresas: busca simulada ---------- */
   const searchBtn = document.getElementById('searchCompaniesBtn');
   if (searchBtn) {
-    const COMPANIES = [
-      { name: "Clínica Vitalis", cat: "Clínicas", city: "São Paulo", state: "SP", site: false, rating: 3.2 },
-      { name: "Academia Fit+", cat: "Academias", city: "Curitiba", state: "PR", site: true, rating: 4.5 },
-      { name: "Restaurante Sabor Real", cat: "Restaurantes", city: "Campinas", state: "SP", site: false, rating: 3.0 },
-      { name: "Farmácia Bem Estar", cat: "Farmácias", city: "São Paulo", state: "SP", site: true, rating: 4.1 },
-      { name: "Clínica Odonto Sorriso", cat: "Clínicas", city: "Santos", state: "SP", site: false, rating: 2.8 },
-      { name: "Pet Shop Amigo Fiel", cat: "Pet Shops", city: "Curitiba", state: "PR", site: false, rating: 4.7 },
-      { name: "Escritório Contábil Prime", cat: "Contabilidade", city: "Belo Horizonte", state: "MG", site: true, rating: 4.9 },
-      { name: "Oficina Auto Center", cat: "Automotivo", city: "São Paulo", state: "SP", site: false, rating: 3.6 },
-      { name: "Salão Bela Elegância", cat: "Beleza", city: "Rio de Janeiro", state: "RJ", site: false, rating: 3.9 },
-      { name: "Loja Construforte", cat: "Materiais de construção", city: "Campinas", state: "SP", site: true, rating: 4.3 },
-      { name: "Ágil Marketing Digital", cat: "Agências de Marketing", city: "São Paulo", state: "SP", site: false, rating: 3.4 },
-      { name: "Marketing Nova Era", cat: "Agências de Marketing", city: "Curitiba", state: "PR", site: false, rating: 3.1 },
-      { name: "Venda Norte Consultoria", cat: "Consultorias Comerciais / SDR / BDR", city: "Campinas", state: "SP", site: true, rating: 4.2 },
-      { name: "Outbound Prime", cat: "Consultorias Comerciais / SDR / BDR", city: "Belo Horizonte", state: "MG", site: false, rating: 3.8 },
-      { name: "Fluxo Certo BPO", cat: "Empresas de BPO Financeiro", city: "Rio de Janeiro", state: "RJ", site: true, rating: 4.4 },
-      { name: "BPO Financeiro Ágil", cat: "Empresas de BPO Financeiro", city: "São Paulo", state: "SP", site: false, rating: 3.7 },
-    ];
-
     const cidadeInput = document.getElementById('cidadeInput');
     const estadoSelect = document.getElementById('estadoSelect');
     const categoriaSelect = document.getElementById('categoriaSelect');
@@ -797,6 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // veio de um card de "Segmentos inteligentes"? pré-preenche a categoria
     const urlParams = new URLSearchParams(window.location.search);
     const categoriaParam = urlParams.get('categoria');
+    const empresaParam = urlParams.get('empresa');
     if (categoriaParam && categoriaSelect) {
       const optionExists = Array.from(categoriaSelect.options).some((o) => o.value === categoriaParam || o.textContent === categoriaParam);
       if (optionExists) categoriaSelect.value = categoriaParam;
@@ -809,7 +993,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const noSitePill = document.querySelector('.pill[data-filter="sem-site"]');
       const wantsNoSite = noSitePill && noSitePill.classList.contains('selected');
 
-      const filtered = COMPANIES.filter((c) => {
+      const filtered = HCP_COMPANIES.filter((c) => {
+        if (empresaParam) return normalizeSearchTerm(c.name) === normalizeSearchTerm(empresaParam);
         if (cidade && !c.city.toLowerCase().includes(cidade)) return false;
         if (estado !== 'Todos os estados' && c.state !== estado) return false;
         if (categoria !== 'Todas as categorias' && c.cat !== categoria) return false;
@@ -826,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', () => {
           resultsContainer.innerHTML = '<p style="color:var(--gray); font-size:13px; padding:16px 0;">Nenhuma empresa encontrada com esses filtros.</p>';
         } else {
           resultsContainer.innerHTML = filtered.map((c) => (
-            '<div class="list-row">' +
+            '<div class="list-row" id="' + companyAnchor(c.name) + '">' +
             '<div class="row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 21V9l8-6 8 6v12"></path><path d="M9 21v-6h6v6"></path></svg></div>' +
             '<div class="row-info"><strong>' + c.name + '</strong><span>' + c.cat + ' · ' + c.city + ', ' + c.state + (c.site ? '' : ' · sem site') + '</span></div>' +
             '<span class="star-val">★ ' + c.rating.toFixed(1) + '</span>' +
@@ -836,6 +1021,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (currentLanguage() === 'en-US') applyLanguage('en-US');
+      if (empresaParam) {
+        requestAnimationFrame(() => {
+          const target = document.getElementById(companyAnchor(empresaParam));
+          target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          target?.classList.add('company-search-target');
+        });
+      }
     };
 
     searchBtn.addEventListener('click', runSearch);

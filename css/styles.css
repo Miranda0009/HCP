@@ -551,6 +551,95 @@ button {
   color: var(--gray);
 }
 
+.command-results {
+  max-height: min(410px, 58vh);
+  overflow-y: auto;
+  padding: 7px;
+}
+
+.command-result {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--white);
+  text-align: left;
+  cursor: pointer;
+}
+
+.command-result:hover,
+.command-result.active {
+  background: rgba(151, 71, 255, 0.13);
+  box-shadow: inset 0 0 0 1px rgba(151, 71, 255, 0.2);
+}
+
+.command-result-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(151, 71, 255, 0.14);
+  color: var(--purple-light);
+  font-size: 15px;
+}
+
+.command-result-content {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.command-result-content strong {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.command-result-content small {
+  overflow: hidden;
+  color: var(--gray);
+  font-size: 11.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.command-result-type {
+  padding: 4px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  color: var(--gray);
+  font-size: 10px;
+}
+
+.command-empty {
+  margin: 0;
+  padding: 18px 12px;
+  color: var(--gray);
+  font-size: 12.5px;
+  text-align: center;
+}
+
+.list-row:target,
+.list-row.company-search-target {
+  scroll-margin-top: 110px;
+  background: rgba(151, 71, 255, 0.13);
+  box-shadow: inset 3px 0 0 var(--purple-light), 0 0 24px rgba(151, 71, 255, 0.13);
+}
+
+html[data-theme="light"] .command-result:hover,
+html[data-theme="light"] .command-result.active,
+html[data-theme="light"] .list-row:target,
+html[data-theme="light"] .list-row.company-search-target {
+  background: rgba(111, 53, 198, 0.1);
+}
+
 .ico-sm svg {
   width: 14px;
   height: 14px;
@@ -2218,6 +2307,18 @@ table.data-table tr:last-child td {
 }
 
 @media (max-width: 420px) {
+  .command-backdrop {
+    padding: 9vh 10px 0;
+  }
+
+  .command-result {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .command-result-type {
+    display: none;
+  }
+
   .main {
     padding-inline: 12px;
   }

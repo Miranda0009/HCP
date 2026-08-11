@@ -1,7 +1,6 @@
 (function initializeSegmentExchange() {
   const tabs = Array.from(document.querySelectorAll('[data-segment-tab]'));
   const panels = Array.from(document.querySelectorAll('[data-segment-panel]'));
-  if (!tabs.length || !panels.length) return;
 
   const client = window.hcpSupabase;
   const cnpj = window.HCPCnpja;
@@ -50,8 +49,10 @@
     tab.addEventListener('click', () => activateTab(tab.dataset.segmentTab));
   });
 
-  const initialTab = window.location.hash === '#troca-tokens' ? 'exchange' : 'catalog';
-  activateTab(initialTab);
+  if (tabs.length && panels.length) {
+    const initialTab = window.location.hash === '#troca-tokens' ? 'exchange' : 'catalog';
+    activateTab(initialTab);
+  }
 
   async function loadTokenBalance() {
     if (!client || !tokenBalance) return;
