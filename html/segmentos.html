@@ -168,6 +168,14 @@
         </div>
       </div>
 
+      <div class="segment-tabs" role="tablist" aria-label="Áreas de segmentos inteligentes">
+        <button class="segment-tab active" type="button" role="tab" aria-selected="true"
+          data-segment-tab="catalog">Segmentos prontos</button>
+        <button class="segment-tab" type="button" role="tab" aria-selected="false"
+          data-segment-tab="exchange">Troca de dados por tokens <span>+25</span></button>
+      </div>
+
+      <section class="segment-tab-panel" data-segment-panel="catalog">
       <div class="intro-banner">
         <div class="ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M3 17l6-6 4 4 8-8"></path>
@@ -221,13 +229,131 @@
             </svg></a>
         </div>
       </div>
+      </section>
+
+      <section class="segment-tab-panel" data-segment-panel="exchange" hidden>
+        <div class="token-exchange-grid">
+          <section class="panel token-form-panel">
+            <div class="panel-head">
+              <div>
+                <h2>Compartilhe a qualidade da sua lista</h2>
+                <p>Informe de onde vieram os leads e quais dados foram realmente úteis para sua operação.</p>
+              </div>
+              <div class="token-balance-card">
+                <span>Seus tokens</span>
+                <strong id="tokenBalance">0</strong>
+              </div>
+            </div>
+
+            <form id="leadFeedbackForm" class="lead-feedback-form">
+              <div class="feedback-field feedback-field-wide">
+                <label for="feedbackCnpj">CNPJ da empresa</label>
+                <div class="cnpj-lookup-row">
+                  <input id="feedbackCnpj" name="cnpj" type="text" inputmode="numeric"
+                    placeholder="00.000.000/0000-00" maxlength="18" required>
+                  <button class="segment-btn" id="lookupCnpjBtn" type="button">Consultar CNPJá</button>
+                </div>
+                <p class="segment-feedback-message" id="cnpjaFeedback" role="status" hidden></p>
+              </div>
+
+              <div class="cnpja-company-card" id="cnpjaCompanyCard" hidden>
+                <div class="cnpja-source-mark">CNPJá</div>
+                <div>
+                  <strong id="cnpjaCompanyName"></strong>
+                  <span id="cnpjaCompanyMeta"></span>
+                </div>
+              </div>
+
+              <input id="feedbackCompanyName" type="hidden">
+
+              <div class="feedback-field">
+                <label for="feedbackApiSource">API ou origem dos dados</label>
+                <select id="feedbackApiSource" required>
+                  <option value="CNPJá">CNPJá</option>
+                  <option value="Google Places">Google Places</option>
+                  <option value="Apollo.io">Apollo.io</option>
+                  <option value="Lista própria">Lista própria</option>
+                  <option value="Outra API">Outra API</option>
+                </select>
+              </div>
+
+              <div class="feedback-field">
+                <label for="feedbackSourceList">Nome ou origem da lista</label>
+                <input id="feedbackSourceList" type="text" maxlength="120"
+                  placeholder="Ex.: Lista outbound de agosto" required>
+              </div>
+
+              <div class="feedback-field feedback-field-wide">
+                <label for="feedbackNiche">Nicho da empresa</label>
+                <input id="feedbackNiche" type="text" maxlength="120"
+                  placeholder="Ex.: Agência de marketing B2B" required>
+              </div>
+
+              <div class="feedback-field">
+                <label for="feedbackPhone">Telefone para contato</label>
+                <input id="feedbackPhone" type="tel" maxlength="16"
+                  placeholder="(11) 99999-9999" required>
+              </div>
+
+              <div class="feedback-field">
+                <label for="feedbackUserCount">Quantos usuários utilizarão o HCP?</label>
+                <input id="feedbackUserCount" type="number" min="1" max="10000"
+                  placeholder="Ex.: 5" required>
+              </div>
+
+              <div class="feedback-field">
+                <label for="feedbackUsefulness">Qualidade das informações</label>
+                <select id="feedbackUsefulness" required>
+                  <option value="5">5 — Muito certeiras</option>
+                  <option value="4">4 — Boas</option>
+                  <option value="3">3 — Razoáveis</option>
+                  <option value="2">2 — Pouco úteis</option>
+                  <option value="1">1 — Não ajudaram</option>
+                </select>
+              </div>
+
+              <div class="feedback-field">
+                <label for="feedbackNotes">Observações opcionais</label>
+                <input id="feedbackNotes" type="text" maxlength="500"
+                  placeholder="Quais campos ajudaram mais?">
+              </div>
+
+              <div class="feedback-form-actions feedback-field-wide">
+                <p>Os dados serão usados para comparar a qualidade das APIs e sugerir o plano mais adequado.</p>
+                <button class="primary-btn" id="submitLeadFeedback" type="submit">
+                  Enviar e receber 25 tokens
+                </button>
+              </div>
+              <p class="segment-feedback-message feedback-field-wide" id="leadFeedbackMessage"
+                role="status" aria-live="polite" hidden></p>
+            </form>
+          </section>
+
+          <aside class="panel token-info-panel">
+            <span class="token-kicker">COMO FUNCIONA</span>
+            <h2>Informação útil vira crédito</h2>
+            <ol class="token-steps">
+              <li><strong>1</strong><span>Consulte o CNPJ e confirme os dados da empresa.</span></li>
+              <li><strong>2</strong><span>Informe a origem da lista, o nicho, telefone e tamanho da equipe.</span></li>
+              <li><strong>3</strong><span>Avalie a qualidade da fonte e receba 25 tokens.</span></li>
+            </ol>
+            <div class="token-note">
+              <strong>Por que coletamos isso?</strong>
+              <p>As respostas mostram quais APIs entregam dados mais certeiros e ajudam o HCP a indicar o melhor plano.</p>
+            </div>
+            <p class="api-limit-note">API pública CNPJá: até 5 consultas por minuto.</p>
+          </aside>
+        </div>
+      </section>
 
     </main>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/auth-guard.js"></script>
+  <script src="../js/cnpja.js"></script>
   <script src="../js/script.js"></script>
+  <script src="../js/segmentos.js"></script>
 </body>
 
 </html>

@@ -56,7 +56,10 @@
     const knownMessages = {
       'Invalid login credentials': copy('E-mail ou senha incorretos.', 'Incorrect email or password.'),
       'Email not confirmed': copy('Confirme seu e-mail antes de entrar.', 'Confirm your email before signing in.'),
-      'User already registered': copy('Já existe uma conta com este e-mail.', 'An account with this email already exists.'),
+      'User already registered': copy(
+        'Erro. Esse endereço de e-mail já está conectado à outra conta.',
+        'Error. This email address is already connected to another account.'
+      ),
       'Unsupported provider: provider is not enabled': copy(
         'O acesso com Google ainda precisa ser ativado no painel do Supabase.',
         'Google sign-in still needs to be enabled in the Supabase dashboard.'
@@ -280,8 +283,9 @@
       }
 
       if (mode === 'signup') {
+        const email = emailInput.value.trim().toLowerCase();
         const { data, error } = await client.auth.signUp({
-          email: emailInput.value.trim(),
+          email,
           password: passwordInput.value,
           options: {
             data: { full_name: nameInput.value.trim() },
@@ -289,6 +293,13 @@
           }
         });
         if (error) throw error;
+        if (data.user?.identities?.length === 0) {
+          showFeedback(copy(
+            'Erro. Esse endereço de e-mail já está conectado à outra conta.',
+            'Error. This email address is already connected to another account.'
+          ), 'error');
+          return;
+        }
         if (data.session) {
           await cacheAuthenticatedProfile(data.user);
           window.location.replace(dashboardUrl());

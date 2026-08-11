@@ -7,10 +7,16 @@ Este diretório mantém a estrutura do banco versionada junto do repositório.
 - Cliente web: `../js/supabase-config.js`
 - Autenticação: `../js/auth.js` e `../js/auth-guard.js`
 - Perfil, avatar e senha: `../js/profile.js`
+- Qualidade das fontes e tokens: tabela `public.lead_source_feedback`
+- Integração pública CNPJá: `../js/cnpja.js` e `../js/segmentos.js`
 
 O navegador usa somente a chave **publishable**, que foi criada para uso público no frontend. Nunca adicione uma chave `secret` ou `service_role` ao repositório.
 
 O schema também cria o bucket público `avatars`, limitado a JPG, PNG ou WebP de até 2 MB. As políticas de escrita restringem cada usuário à pasta identificada pelo próprio UUID.
+
+A tabela `lead_source_feedback` aceita somente leitura e inserção do próprio usuário autenticado. Cada contribuição válida registra 25 tokens, a origem da lista/API, nicho, telefone, quantidade de usuários, CNPJ e nota de utilidade.
+
+No cadastro, o HCP interpreta o retorno protegido do Supabase Auth: uma resposta ofuscada sem identidades indica que o e-mail já pertence a uma conta, evitando exibir a confirmação de criação incorretamente.
 
 ## Desenvolvimento local
 

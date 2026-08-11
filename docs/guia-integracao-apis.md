@@ -14,6 +14,8 @@ Este guia explica como testar o cadastro do HCP e como conectar novas APIs sem e
 - Cada usuário só pode enviar, substituir ou remover o avatar da própria pasta.
 - Edição de nome, empresa e telefone.
 - Troca de senha com confirmação da senha atual.
+- Registro protegido da qualidade das listas/APIs em `public.lead_source_feedback`.
+- Consulta pública de CNPJ pela CNPJá na aba **Segmentos inteligentes → Troca de dados por tokens**.
 
 ## 2. Passo a passo para cadastrar uma conta por e-mail
 
@@ -212,3 +214,21 @@ Se um segredo for enviado ao GitHub por engano, removê-lo do arquivo não basta
 - Edge Functions e segredos: https://supabase.com/docs/guides/functions/secrets
 - Google Auth: https://supabase.com/docs/guides/auth/social-login/auth-google
 - Checklist de produção: https://supabase.com/docs/guides/deployment/going-into-prod
+
+## 12. Integração CNPJá no HCP
+
+O HCP usa a API pública oficial da CNPJá, sem chave secreta:
+
+`GET https://open.cnpja.com/office/:cnpj`
+
+O fluxo implementado:
+
+1. Remove a pontuação e valida os dígitos verificadores do CNPJ.
+2. Consulta a CNPJá e preenche razão social, situação, cidade, atividade principal e telefone.
+3. O cliente confirma a origem da lista/API, nicho, telefone, número de usuários e nota de utilidade.
+4. O Supabase salva a contribuição com RLS, associada ao usuário autenticado.
+5. Cada contribuição válida registra 25 tokens para criação de listas.
+
+A API pública não exige autenticação, mas possui limite oficial de 5 consultas por minuto por IP. Para volume maior ou pesquisa avançada, migre para a API comercial e mantenha o token em uma Edge Function autenticada — nunca no JavaScript ou no APK.
+
+Documentação oficial: https://cnpja.com/api/open

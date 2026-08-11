@@ -29,7 +29,7 @@ function createElement() {
   };
 }
 
-function loadAuth({ launchUrl } = {}) {
+function loadAuth({ launchUrl, emailExists = false } = {}) {
   const ids = [
     'authForm', 'nameField', 'emailField', 'loginName', 'loginEmail', 'loginPassword',
     'rememberField', 'rememberSession', 'authSubmitBtn', 'googleAuthBtn',
@@ -45,7 +45,8 @@ function loadAuth({ launchUrl } = {}) {
   const user = {
     id: 'mobile-user',
     email: 'mobile@hcp.test',
-    user_metadata: { full_name: 'Mobile HCP' }
+    user_metadata: { full_name: 'Mobile HCP' },
+    identities: emailExists ? [] : [{ id: 'email-identity', provider: 'email' }]
   };
 
   const client = {
@@ -142,6 +143,21 @@ test('cadastro no Android usa o deep link próprio do HCP', async () => {
 
   assert.equal(calls.signUps.length, 1);
   assert.equal(calls.signUps[0].options.emailRedirectTo, 'com.hcp.oportunidades://auth/callback');
+});
+
+test('cadastro bloqueia e-mail que já pertence a outra conta', async () => {
+  const { calls, elements } = loadAuth({ emailExists: true });
+  await flushPromises();
+
+  elements.authModeToggle.listener('click')();
+  elements.loginName.value = 'Conta Existente';
+  elements.loginEmail.value = 'existente@hcp.test';
+  elements.loginPassword.value = 'senha-segura';
+  await elements.authForm.listener('submit')({ preventDefault() {} });
+
+  assert.equal(calls.signUps.length, 1);
+  assert.equal(elements.authFeedback.textContent, 'Erro. Esse endereço de e-mail já está conectado à outra conta.');
+  assert.match(elements.authFeedback.className, /is-error/);
 });
 
 test('callback móvel cria a sessão e volta para o painel', async () => {
