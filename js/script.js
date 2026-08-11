@@ -476,6 +476,29 @@ document.addEventListener('DOMContentLoaded', () => {
     topbar.prepend(mobileMenuBtn);
 
     sidebar.id = 'hcpSidebar';
+    const sidebarTop = sidebar.querySelector('.sidebar-top');
+    const topbarProfile = topbar.querySelector('.user-chip');
+    let mobileSidebarProfile = null;
+
+    if (sidebarTop && topbarProfile) {
+      mobileSidebarProfile = topbarProfile.cloneNode(true);
+      mobileSidebarProfile.className = 'mobile-sidebar-profile';
+      mobileSidebarProfile.setAttribute(
+        'aria-label',
+        currentLanguage() === 'en-US' ? translateValue('Minha conta') : 'Minha conta'
+      );
+      mobileSidebarProfile.querySelector('div')?.classList.add('mobile-sidebar-profile-copy');
+      mobileSidebarProfile.insertAdjacentHTML(
+        'beforeend',
+        '<svg class="mobile-sidebar-profile-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg>'
+      );
+      sidebarTop.insertAdjacentElement('afterend', mobileSidebarProfile);
+
+      Promise.resolve(window.hcpProfileReady).then((profile) => {
+        if (profile && window.hcpRenderProfile) window.hcpRenderProfile(profile);
+      });
+    }
+
     const backdrop = document.createElement('button');
     backdrop.className = 'mobile-sidebar-backdrop';
     backdrop.type = 'button';
@@ -534,6 +557,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setDesktopSidebar(!app.classList.contains('sidebar-collapsed'));
     });
     backdrop.addEventListener('click', () => setMobileMenu(false));
+    mobileSidebarProfile?.addEventListener('click', () => setMobileMenu(false));
     sidebar.querySelectorAll('.nav-item').forEach((item) => {
       item.addEventListener('click', () => setMobileMenu(false));
     });

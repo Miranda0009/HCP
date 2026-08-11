@@ -1953,7 +1953,8 @@ table.data-table tr:last-child td {
 /* ---------- NAVEGAÇÃO COMPACTA E DRAWER MÓVEL ---------- */
 
 .mobile-menu-btn,
-.mobile-sidebar-backdrop {
+.mobile-sidebar-backdrop,
+.mobile-sidebar-profile {
   display: none;
 }
 
@@ -2041,7 +2042,21 @@ html.profile-pending .user-role::after {
 
   .sidebar-top {
     display: flex;
+    position: relative;
+    justify-content: center;
+    min-height: 42px;
     padding: 0 4px 18px;
+  }
+
+  .sidebar .logo {
+    justify-content: center;
+    margin: 0 auto;
+  }
+
+  .sidebar-top .hamburger-btn {
+    position: absolute;
+    top: 1px;
+    right: 4px;
   }
 
   .sidebar .logo-img {
@@ -2058,6 +2073,52 @@ html.profile-pending .user-role::after {
 
   .app.sidebar-collapsed .sidebar .logo {
     display: flex;
+  }
+
+  .mobile-sidebar-profile {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-width: 0;
+    margin: 2px 4px 8px;
+    padding: 11px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background: var(--card-bg);
+    color: var(--white);
+  }
+
+  .mobile-sidebar-profile:hover {
+    border-color: var(--purple-vivid);
+    background: var(--badge-bg);
+  }
+
+  .mobile-sidebar-profile .user-avatar {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+
+  .mobile-sidebar-profile-copy {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .mobile-sidebar-profile .user-name,
+  .mobile-sidebar-profile .user-role {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-sidebar-profile-arrow {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+    color: var(--gray);
   }
 
   .sidebar .plan-card {
@@ -2123,8 +2184,20 @@ html.profile-pending .user-role::after {
     grid-row: 1;
   }
 
-  .topbar .search {
-    grid-column: 2 / -1;
+  .topbar {
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+  }
+
+  .topbar .search,
+  .topbar > .primary-btn,
+  .topbar > .user-chip {
+    display: none;
+  }
+
+  .topbar .notif-wrap {
+    grid-column: 2;
     grid-row: 1;
+    justify-self: end;
   }
 }
