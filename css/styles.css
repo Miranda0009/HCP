@@ -174,11 +174,6 @@ button {
   padding-top: 7.5px; 
 }
 
-.app.sidebar-collapsed .logo-img {
-  width: 30px;
-  height: 30px;
-}
-
 .hamburger-btn {
   width: 30px;
   height: 30px;
@@ -265,10 +260,6 @@ button {
 }
 
 .app.sidebar-collapsed .sidebar-top {
-  justify-content: center;
-}
-
-.app.sidebar-collapsed .logo {
   justify-content: center;
 }
 
@@ -1999,68 +1990,20 @@ html.profile-pending .user-role::after {
 }
 
 @media (min-width: 721px) {
-  .app,
-  .app.sidebar-collapsed {
-    grid-template-columns: 76px minmax(0, 1fr);
-    transition: none;
-  }
-
   .sidebar {
     position: relative;
     z-index: 30;
-    padding: 24px 12px;
-    overflow: visible;
   }
 
-  .sidebar-top,
-  .sidebar .nav-section,
-  .sidebar .nav-label,
-  .sidebar .nav-badge,
-  .sidebar .plan-card,
-  .hamburger-btn {
+  .app.sidebar-collapsed .logo {
     display: none;
   }
 
-  .sidebar .nav-item {
-    position: relative;
+  .app.sidebar-collapsed .nav-item {
     width: 44px;
     min-height: 42px;
     margin: 0 auto 6px;
     padding: 10px;
-    justify-content: center;
-  }
-
-  .sidebar .nav-item svg {
-    width: 19px;
-    height: 19px;
-  }
-
-  .sidebar .nav-item::after {
-    content: attr(data-nav-label);
-    position: absolute;
-    top: 50%;
-    left: calc(100% + 10px);
-    z-index: 50;
-    padding: 7px 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background: var(--card-bg);
-    color: var(--white);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 1;
-    white-space: nowrap;
-    opacity: 0;
-    pointer-events: none;
-    transform: translate(-5px, -50%);
-    transition: opacity 0.15s ease, transform 0.15s ease;
-  }
-
-  .sidebar .nav-item:hover::after,
-  .sidebar .nav-item:focus-visible::after {
-    opacity: 1;
-    transform: translate(0, -50%);
   }
 }
 
@@ -2111,6 +2054,10 @@ html.profile-pending .user-role::after {
   .sidebar .nav-label,
   .sidebar .nav-badge {
     display: initial;
+  }
+
+  .app.sidebar-collapsed .sidebar .logo {
+    display: flex;
   }
 
   .sidebar .plan-card {

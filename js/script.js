@@ -441,10 +441,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
-  /* ---------- Navegação: trilho fixo no desktop e drawer no celular ---------- */
+  /* ---------- Navegação: hambúrguer no desktop e drawer no celular ---------- */
   const sidebar = document.querySelector('.sidebar');
   const topbar = document.querySelector('.topbar');
-  const drawerCloseBtn = document.getElementById('hamburgerBtn');
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
 
   document.querySelectorAll('.nav-item').forEach((item) => {
     const label = item.querySelector('.nav-label')?.textContent.trim();
@@ -455,12 +455,14 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if (app && sidebar && topbar) {
-    app.classList.remove('sidebar-collapsed');
+    const mobileMedia = window.matchMedia('(max-width: 720px)');
+    let savedSidebarState = false;
     try {
-      localStorage.removeItem('hcp-sidebar-collapsed');
+      savedSidebarState = localStorage.getItem('hcp-sidebar-collapsed') === 'true';
     } catch {
-      // A navegação continua fixa mesmo sem acesso ao armazenamento local.
+      // O menu continua funcionando mesmo sem acesso ao armazenamento local.
     }
+    app.classList.toggle('sidebar-collapsed', savedSidebarState);
 
     const openMenuLabel = currentLanguage() === 'en-US' ? translateValue('Abrir menu') : 'Abrir menu';
     const closeMenuLabel = currentLanguage() === 'en-US' ? translateValue('Fechar menu') : 'Fechar menu';
@@ -481,14 +483,40 @@ document.addEventListener('DOMContentLoaded', () => {
     backdrop.setAttribute('aria-label', closeMenuLabel);
     document.body.appendChild(backdrop);
 
-    if (drawerCloseBtn) {
-      drawerCloseBtn.setAttribute('aria-label', closeMenuLabel);
-      drawerCloseBtn.setAttribute('title', closeMenuLabel);
-      drawerCloseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
-    }
+    const hamburgerIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+    const closeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
+
+    const syncHamburger = () => {
+      if (!hamburgerBtn) return;
+      if (mobileMedia.matches) {
+        hamburgerBtn.innerHTML = closeIcon;
+        hamburgerBtn.setAttribute('aria-label', closeMenuLabel);
+        hamburgerBtn.setAttribute('title', closeMenuLabel);
+        return;
+      }
+
+      const collapsed = app.classList.contains('sidebar-collapsed');
+      const label = currentLanguage() === 'en-US'
+        ? translateValue(collapsed ? 'Abrir menu' : 'Recolher menu')
+        : (collapsed ? 'Abrir menu' : 'Recolher menu');
+      hamburgerBtn.innerHTML = hamburgerIcon;
+      hamburgerBtn.setAttribute('aria-label', label);
+      hamburgerBtn.setAttribute('title', label);
+      hamburgerBtn.setAttribute('aria-expanded', String(!collapsed));
+    };
+
+    const setDesktopSidebar = (collapsed) => {
+      app.classList.toggle('sidebar-collapsed', Boolean(collapsed));
+      try {
+        localStorage.setItem('hcp-sidebar-collapsed', String(Boolean(collapsed)));
+      } catch {
+        // O estado apenas deixa de persistir entre as páginas.
+      }
+      syncHamburger();
+    };
 
     const setMobileMenu = (open) => {
-      const shouldOpen = Boolean(open) && window.matchMedia('(max-width: 720px)').matches;
+      const shouldOpen = Boolean(open) && mobileMedia.matches;
       app.classList.toggle('mobile-menu-open', shouldOpen);
       document.body.classList.toggle('mobile-menu-open', shouldOpen);
       mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
@@ -498,7 +526,13 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileMenuBtn.addEventListener('click', () => {
       setMobileMenu(!app.classList.contains('mobile-menu-open'));
     });
-    drawerCloseBtn?.addEventListener('click', () => setMobileMenu(false));
+    hamburgerBtn?.addEventListener('click', () => {
+      if (mobileMedia.matches) {
+        setMobileMenu(false);
+        return;
+      }
+      setDesktopSidebar(!app.classList.contains('sidebar-collapsed'));
+    });
     backdrop.addEventListener('click', () => setMobileMenu(false));
     sidebar.querySelectorAll('.nav-item').forEach((item) => {
       item.addEventListener('click', () => setMobileMenu(false));
@@ -506,7 +540,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') setMobileMenu(false);
     });
-    window.matchMedia('(max-width: 720px)').addEventListener('change', () => setMobileMenu(false));
+    mobileMedia.addEventListener('change', () => {
+      setMobileMenu(false);
+      syncHamburger();
+    });
+    syncHamburger();
   }
 
   /* ---------- Notificações: dropdown ---------- */
