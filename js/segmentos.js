@@ -153,7 +153,6 @@
         source_list: document.getElementById('feedbackSourceList').value.trim(),
         niche: nicheInput.value.trim(),
         contact_phone: cnpj.onlyDigits(phoneInput.value),
-        user_count: Number(document.getElementById('feedbackUserCount').value),
         cnpj: cnpj.onlyDigits(cnpjInput.value),
         company_name: companyNameInput.value.trim() || null,
         usefulness_score: Number(document.getElementById('feedbackUsefulness').value),

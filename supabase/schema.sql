@@ -160,7 +160,7 @@ create table if not exists public.lead_source_feedback (
   source_list text not null,
   niche text not null,
   contact_phone text not null,
-  user_count smallint not null,
+  user_count smallint,
   cnpj text,
   company_name text,
   usefulness_score smallint not null,

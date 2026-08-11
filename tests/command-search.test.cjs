@@ -42,5 +42,6 @@ test('catálogo antigo de segmentos não aparece mais', () => {
   const segments = fs.readFileSync(path.join(root, 'html', 'segmentos.html'), 'utf8');
   assert.doesNotMatch(segments, /Segmentos prontos/);
   assert.doesNotMatch(segments, /Agências de Marketing – Principal cliente/);
+  assert.doesNotMatch(segments, /feedbackUserCount|Quantos usuários utilizarão o HCP/);
   assert.match(segments, /data-segment-panel="exchange"/);
 });
