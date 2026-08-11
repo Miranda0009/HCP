@@ -64,7 +64,7 @@ const HCP_ENGLISH = Object.freeze({
   "Pesquisas usadas": "Searches used",
   "Gerenciar": "Manage",
   "/mês": "/month",
-  "Busca rápida": "Quick search",
+  "Pesquisar leads": "Search leads",
   "Recolher menu": "Collapse menu",
   "Abrir menu": "Open menu",
   "Fechar menu": "Close menu",
