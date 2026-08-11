@@ -2185,18 +2185,24 @@ html.profile-pending .user-role::after {
   }
 
   .topbar {
-    grid-template-columns: auto auto;
-    justify-content: space-between;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    justify-content: stretch;
   }
 
-  .topbar .search,
   .topbar > .primary-btn,
   .topbar > .user-chip {
     display: none;
   }
 
-  .topbar .notif-wrap {
+  .topbar .search {
+    display: flex;
     grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+  }
+
+  .topbar .notif-wrap {
+    grid-column: 3;
     grid-row: 1;
     justify-self: end;
   }
