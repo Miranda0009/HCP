@@ -66,6 +66,8 @@ const HCP_ENGLISH = Object.freeze({
   "/mês": "/month",
   "Busca rápida": "Quick search",
   "Recolher menu": "Collapse menu",
+  "Abrir menu": "Open menu",
+  "Fechar menu": "Close menu",
   "Alternar modo escuro": "Toggle dark mode",
   "Idioma da interface": "Interface language",
   "Notificações": "Notifications",
@@ -439,16 +441,72 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3200);
   }
 
-  /* ---------- Hambúrguer: colapsa/expande o sidebar ---------- */
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  if (hamburgerBtn && app) {
-    const savedState = localStorage.getItem('hcp-sidebar-collapsed');
-    if (savedState === 'true') app.classList.add('sidebar-collapsed');
+  /* ---------- Navegação: trilho fixo no desktop e drawer no celular ---------- */
+  const sidebar = document.querySelector('.sidebar');
+  const topbar = document.querySelector('.topbar');
+  const drawerCloseBtn = document.getElementById('hamburgerBtn');
 
-    hamburgerBtn.addEventListener('click', () => {
-      app.classList.toggle('sidebar-collapsed');
-      localStorage.setItem('hcp-sidebar-collapsed', app.classList.contains('sidebar-collapsed'));
+  document.querySelectorAll('.nav-item').forEach((item) => {
+    const label = item.querySelector('.nav-label')?.textContent.trim();
+    if (!label) return;
+    item.dataset.navLabel = label;
+    item.setAttribute('title', label);
+    item.setAttribute('aria-label', label);
+  });
+
+  if (app && sidebar && topbar) {
+    app.classList.remove('sidebar-collapsed');
+    try {
+      localStorage.removeItem('hcp-sidebar-collapsed');
+    } catch {
+      // A navegação continua fixa mesmo sem acesso ao armazenamento local.
+    }
+
+    const openMenuLabel = currentLanguage() === 'en-US' ? translateValue('Abrir menu') : 'Abrir menu';
+    const closeMenuLabel = currentLanguage() === 'en-US' ? translateValue('Fechar menu') : 'Fechar menu';
+    const mobileMenuBtn = document.createElement('button');
+    mobileMenuBtn.className = 'mobile-menu-btn';
+    mobileMenuBtn.type = 'button';
+    mobileMenuBtn.setAttribute('aria-label', openMenuLabel);
+    mobileMenuBtn.setAttribute('aria-controls', 'hcpSidebar');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    mobileMenuBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>';
+    topbar.prepend(mobileMenuBtn);
+
+    sidebar.id = 'hcpSidebar';
+    const backdrop = document.createElement('button');
+    backdrop.className = 'mobile-sidebar-backdrop';
+    backdrop.type = 'button';
+    backdrop.tabIndex = -1;
+    backdrop.setAttribute('aria-label', closeMenuLabel);
+    document.body.appendChild(backdrop);
+
+    if (drawerCloseBtn) {
+      drawerCloseBtn.setAttribute('aria-label', closeMenuLabel);
+      drawerCloseBtn.setAttribute('title', closeMenuLabel);
+      drawerCloseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
+    }
+
+    const setMobileMenu = (open) => {
+      const shouldOpen = Boolean(open) && window.matchMedia('(max-width: 720px)').matches;
+      app.classList.toggle('mobile-menu-open', shouldOpen);
+      document.body.classList.toggle('mobile-menu-open', shouldOpen);
+      mobileMenuBtn.setAttribute('aria-expanded', String(shouldOpen));
+      if (shouldOpen) sidebar.querySelector('.nav-item')?.focus();
+    };
+
+    mobileMenuBtn.addEventListener('click', () => {
+      setMobileMenu(!app.classList.contains('mobile-menu-open'));
     });
+    drawerCloseBtn?.addEventListener('click', () => setMobileMenu(false));
+    backdrop.addEventListener('click', () => setMobileMenu(false));
+    sidebar.querySelectorAll('.nav-item').forEach((item) => {
+      item.addEventListener('click', () => setMobileMenu(false));
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setMobileMenu(false);
+    });
+    window.matchMedia('(max-width: 720px)').addEventListener('change', () => setMobileMenu(false));
   }
 
   /* ---------- Notificações: dropdown ---------- */

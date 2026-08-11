@@ -131,7 +131,7 @@
     try {
       const result = await client
         .from('profiles')
-        .select('full_name, avatar_url')
+        .select('full_name, avatar_url, company_name')
         .eq('id', user.id)
         .maybeSingle();
       if (!result.error) profile = result.data || {};
@@ -142,7 +142,8 @@
     window.hcpProfileCache?.write({
       id: user.id,
       full_name: profile.full_name || metadata.full_name || metadata.name || user.email?.split('@')[0] || '',
-      avatar_url: profile.avatar_url || metadata.avatar_url || metadata.picture || ''
+      avatar_url: profile.avatar_url || metadata.avatar_url || metadata.picture || '',
+      company_name: profile.company_name || ''
     });
   }
 

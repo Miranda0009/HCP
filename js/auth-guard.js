@@ -87,7 +87,7 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
       element.textContent = fullName;
     });
     document.querySelectorAll('[data-profile-greeting]').forEach((element) => {
-      element.textContent = fullName.split(/\s+/)[0] || fullName;
+      element.textContent = fullName;
     });
     document.querySelectorAll('.user-role').forEach((element) => {
       element.textContent = displayCompanyName;
@@ -129,6 +129,8 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
   const renderedProfile = renderProfile(profile);
   document.documentElement.classList.remove('profile-pending');
   document.documentElement.style.removeProperty('--hcp-profile-initials');
+  document.documentElement.style.removeProperty('--hcp-profile-name');
+  document.documentElement.style.removeProperty('--hcp-profile-company');
 
   client.auth.onAuthStateChange((event) => {
     if (event === 'SIGNED_OUT') window.location.replace(loginUrl());

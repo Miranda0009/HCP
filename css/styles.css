@@ -1958,3 +1958,226 @@ table.data-table tr:last-child td {
     width: 100%;
   }
 }
+
+/* ---------- NAVEGAÇÃO COMPACTA E DRAWER MÓVEL ---------- */
+
+.mobile-menu-btn,
+.mobile-sidebar-backdrop {
+  display: none;
+}
+
+html.profile-pending .user-name,
+html.profile-pending .user-role,
+html.profile-pending [data-profile-name],
+html.profile-pending [data-profile-greeting] {
+  display: inline-grid;
+  color: transparent !important;
+}
+
+html.profile-pending .user-name::after,
+html.profile-pending [data-profile-name]::after,
+html.profile-pending [data-profile-greeting]::after {
+  content: var(--hcp-profile-name, "");
+  grid-area: 1 / 1;
+  color: var(--white);
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+}
+
+html.profile-pending [data-profile-greeting]::after {
+  color: var(--purple-light);
+}
+
+html.profile-pending .user-role::after {
+  content: var(--hcp-profile-company, "Conta HCP");
+  grid-area: 1 / 1;
+  color: var(--gray);
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
+}
+
+@media (min-width: 721px) {
+  .app,
+  .app.sidebar-collapsed {
+    grid-template-columns: 76px minmax(0, 1fr);
+    transition: none;
+  }
+
+  .sidebar {
+    position: relative;
+    z-index: 30;
+    padding: 24px 12px;
+    overflow: visible;
+  }
+
+  .sidebar-top,
+  .sidebar .nav-section,
+  .sidebar .nav-label,
+  .sidebar .nav-badge,
+  .sidebar .plan-card,
+  .hamburger-btn {
+    display: none;
+  }
+
+  .sidebar .nav-item {
+    position: relative;
+    width: 44px;
+    min-height: 42px;
+    margin: 0 auto 6px;
+    padding: 10px;
+    justify-content: center;
+  }
+
+  .sidebar .nav-item svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .sidebar .nav-item::after {
+    content: attr(data-nav-label);
+    position: absolute;
+    top: 50%;
+    left: calc(100% + 10px);
+    z-index: 50;
+    padding: 7px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--white);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.24);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-5px, -50%);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .sidebar .nav-item:hover::after,
+  .sidebar .nav-item:focus-visible::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+}
+
+@media (max-width: 720px) {
+  body.mobile-menu-open {
+    overflow: hidden;
+  }
+
+  .app,
+  .app.sidebar-collapsed {
+    grid-template-columns: minmax(0, 1fr);
+    transition: none;
+  }
+
+  .sidebar {
+    display: flex;
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 120;
+    width: min(286px, 86vw);
+    padding: 20px 16px 24px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: var(--bg-main);
+    box-shadow: 20px 0 55px rgba(0, 0, 0, 0.38);
+    transform: translateX(-105%);
+    visibility: hidden;
+    transition: transform 0.22s ease, visibility 0.22s ease;
+  }
+
+  .app.mobile-menu-open .sidebar {
+    transform: translateX(0);
+    visibility: visible;
+  }
+
+  .sidebar-top {
+    display: flex;
+    padding: 0 4px 18px;
+  }
+
+  .sidebar .logo-img {
+    width: 42px;
+    height: 42px;
+    padding-top: 0;
+  }
+
+  .sidebar .logo-text,
+  .sidebar .nav-label,
+  .sidebar .nav-badge {
+    display: initial;
+  }
+
+  .sidebar .plan-card {
+    display: block;
+  }
+
+  .sidebar .nav-section {
+    display: block;
+  }
+
+  .sidebar .nav-item {
+    justify-content: flex-start;
+  }
+
+  .hamburger-btn,
+  .mobile-menu-btn {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--card-bg);
+    color: var(--white);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex: 0 0 40px;
+  }
+
+  .hamburger-btn,
+  .mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .hamburger-btn svg,
+  .mobile-menu-btn svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  .mobile-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: rgba(3, 4, 9, 0.68);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.22s ease, visibility 0.22s ease;
+  }
+
+  body.mobile-menu-open .mobile-sidebar-backdrop {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .topbar .mobile-menu-btn {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .topbar .search {
+    grid-column: 2 / -1;
+    grid-row: 1;
+  }
+}

@@ -36,7 +36,8 @@
         const normalized = {
           userId: String(profile?.id || profile?.userId || ''),
           fullName: String(profile?.full_name || profile?.fullName || ''),
-          avatarUrl: String(profile?.avatar_url || profile?.avatarUrl || '')
+          avatarUrl: String(profile?.avatar_url || profile?.avatarUrl || ''),
+          companyName: String(profile?.company_name || profile?.companyName || '')
         };
         storage.setItem(PROFILE_CACHE_KEY, JSON.stringify(normalized));
         otherProfileStorage(storage).removeItem(PROFILE_CACHE_KEY);
@@ -68,7 +69,11 @@
   if (!['', 'index.html', 'login.html'].includes(pageName)) {
     const cachedProfile = profileCache.read();
     const initials = profileInitials(cachedProfile?.fullName);
+    const fullName = String(cachedProfile?.fullName || '');
+    const companyName = String(cachedProfile?.companyName || 'Conta HCP');
     document.documentElement.classList.add('profile-pending');
     document.documentElement.style.setProperty('--hcp-profile-initials', JSON.stringify(initials));
+    document.documentElement.style.setProperty('--hcp-profile-name', JSON.stringify(fullName));
+    document.documentElement.style.setProperty('--hcp-profile-company', JSON.stringify(companyName));
   }
 })();
