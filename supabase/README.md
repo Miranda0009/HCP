@@ -8,13 +8,16 @@ Este diretório mantém a estrutura do banco versionada junto do repositório.
 - Autenticação: `../js/auth.js` e `../js/auth-guard.js`
 - Perfil, avatar e senha: `../js/profile.js`
 - Qualidade das fontes e tokens: tabela `public.lead_source_feedback`
+- Cliente foco para criação de listas: tabela `public.client_focus_profiles`
 - Integração pública CNPJá: `../js/cnpja.js` e `../js/segmentos.js`
 
 O navegador usa somente a chave **publishable**, que foi criada para uso público no frontend. Nunca adicione uma chave `secret` ou `service_role` ao repositório.
 
 O schema também cria o bucket público `avatars`, limitado a JPG, PNG ou WebP de até 2 MB. As políticas de escrita restringem cada usuário à pasta identificada pelo próprio UUID.
 
-A tabela `lead_source_feedback` aceita somente leitura e inserção do próprio usuário autenticado. Cada contribuição válida registra 25 tokens, a origem da lista/API, nicho, telefone, quantidade de usuários, CNPJ e nota de utilidade.
+A tabela `lead_source_feedback` aceita somente leitura e inserção do próprio usuário autenticado. Cada contribuição válida registra 25 tokens, a origem da lista/API, nicho, telefone, CNPJ e nota de utilidade.
+
+A tabela `client_focus_profiles` mantém uma única preferência por usuário: nicho desejado, porte das empresas-alvo e principal sinal de oportunidade. As políticas permitem somente leitura, criação e atualização do próprio registro.
 
 No cadastro, o HCP interpreta o retorno protegido do Supabase Auth: uma resposta ofuscada sem identidades indica que o e-mail já pertence a uma conta, evitando exibir a confirmação de criação incorretamente.
 

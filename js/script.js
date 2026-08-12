@@ -214,6 +214,34 @@ const HCP_ENGLISH = Object.freeze({
   "Inicie uma pesquisa completa em um clique": "Start a complete search in one click",
   "Pesquisas pré-construídas por lead, com curadoria de nossos especialistas em prospecção.": "Prebuilt lead searches curated by our prospecting specialists.",
   "Compartilhe quais fontes entregam os dados mais úteis e receba tokens para criar novas listas.": "Share which sources provide the most useful data and receive tokens to create new lists.",
+  "Defina seu cliente foco e compartilhe quais fontes entregam os dados mais úteis para suas listas.": "Define your target customer and share which sources provide the most useful data for your lists.",
+  "3 perguntas": "3 questions",
+  "Qual é o seu cliente foco?": "Who is your target customer?",
+  "Conte ao HCP quem você quer encontrar. Suas respostas ficarão salvas na conta e orientarão as próximas listas.": "Tell HCP who you want to find. Your answers will be saved to your account and guide your next lists.",
+  "Ainda não definido": "Not defined yet",
+  "Perfil definido": "Profile defined",
+  "Qual nicho você quer alcançar?": "Which niche do you want to reach?",
+  "Escolha uma sugestão ou escreva o nicho desejado.": "Choose a suggestion or enter the desired niche.",
+  "Ex.: clínicas odontológicas": "E.g.: dental clinics",
+  "Qual porte de empresa combina mais com sua oferta?": "Which company size best fits your offer?",
+  "Este é o porte dos clientes que você deseja prospectar.": "This is the size of the customers you want to prospect.",
+  "Selecione o porte": "Select the company size",
+  "Microempresa (1–9 funcionários)": "Micro company (1–9 employees)",
+  "Pequena empresa (10–49)": "Small company (10–49)",
+  "Média empresa (50–249)": "Mid-sized company (50–249)",
+  "Grande empresa (250+)": "Large company (250+)",
+  "Qualquer porte": "Any company size",
+  "Qual sinal indica uma boa oportunidade?": "Which signal indicates a good opportunity?",
+  "Escolha o fator mais importante para priorizar um lead.": "Choose the most important factor for prioritizing a lead.",
+  "Selecione o principal sinal": "Select the main signal",
+  "Empresa sem site": "Company without a website",
+  "Avaliação baixa no Google": "Low Google rating",
+  "Crescimento ou novas contratações": "Growth or new hires",
+  "Empresa aberta recentemente": "Recently opened company",
+  "Necessidade de estrutura comercial": "Need for a sales structure",
+  "Qualquer oportunidade": "Any opportunity",
+  "Você poderá atualizar estas respostas quando o seu público mudar.": "You can update these answers when your audience changes.",
+  "Salvar cliente foco": "Save target customer",
   "Segmentos prontos": "Ready-made segments",
   "Troca de dados por tokens": "Data exchange for tokens",
   "Áreas de segmentos inteligentes": "Smart segment areas",
@@ -494,6 +522,9 @@ function applyLanguage(language = currentLanguage()) {
   const languageSelect = document.getElementById('languageSelect');
   if (languageSelect) languageSelect.value = supportedLanguage;
   savePreference(HCP_LANGUAGE_KEY, supportedLanguage);
+  document.dispatchEvent(new CustomEvent('hcp:languagechange', {
+    detail: { language: supportedLanguage }
+  }));
 }
 
 function applyTheme(theme) {

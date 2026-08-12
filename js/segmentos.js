@@ -15,6 +15,15 @@
   const sourceSelect = document.getElementById('feedbackApiSource');
   const tokenBalance = document.getElementById('tokenBalance');
   const formFeedback = document.getElementById('leadFeedbackMessage');
+  const focusForm = document.getElementById('clientFocusForm');
+  const focusNiche = document.getElementById('clientFocusNiche');
+  const focusCompanySize = document.getElementById('clientFocusCompanySize');
+  const focusSignal = document.getElementById('clientFocusSignal');
+  const focusState = document.getElementById('clientFocusState');
+  const focusFeedback = document.getElementById('clientFocusMessage');
+  const focusSubmit = document.getElementById('saveClientFocus');
+  const focusNicheSuggestions = document.getElementById('clientFocusNicheSuggestions');
+  let hasSavedFocus = false;
   const isEnglish = () => {
     try {
       return localStorage.getItem('hcp-language') === 'en-US';
@@ -29,6 +38,27 @@
     element.textContent = message;
     element.className = `segment-feedback-message${type ? ` is-${type}` : ''}`;
     element.hidden = !message;
+  };
+
+  const setFocusState = (isComplete) => {
+    hasSavedFocus = isComplete;
+    if (!focusState) return;
+    focusState.textContent = isComplete
+      ? copy('Perfil definido', 'Profile defined')
+      : copy('Ainda não definido', 'Not defined yet');
+    focusState.classList.toggle('is-complete', isComplete);
+  };
+
+  const updateNicheSuggestions = () => {
+    if (!focusNicheSuggestions) return;
+    const values = isEnglish()
+      ? ['Marketing Agencies', 'Sales Consulting / SDR / BDR', 'Financial BPO Companies', 'Clinics and practices', 'Accounting firms', 'Manufacturers', 'Retail']
+      : ['Agências de Marketing', 'Consultorias Comerciais / SDR / BDR', 'Empresas de BPO Financeiro', 'Clínicas e consultórios', 'Escritórios contábeis', 'Indústrias', 'Varejo'];
+    focusNicheSuggestions.replaceChildren(...values.map((value) => {
+      const option = document.createElement('option');
+      option.value = value;
+      return option;
+    }));
   };
 
   const activateTab = (name) => {
@@ -66,6 +96,102 @@
     }
     tokenBalance.textContent = String((data || []).reduce((sum, row) => sum + Number(row.tokens_awarded || 0), 0));
   }
+
+  async function loadClientFocus() {
+    if (!client || !focusForm) return;
+    try {
+      await window.hcpProfileReady;
+      const { data: authData, error: authError } = await client.auth.getUser();
+      if (authError) throw authError;
+      const user = authData?.user;
+      if (!user) return;
+
+      const { data, error } = await client
+        .from('client_focus_profiles')
+        .select('target_niche, company_size, opportunity_signal')
+        .eq('user_id', user.id)
+        .maybeSingle();
+      if (error) throw error;
+      if (!data?.target_niche || !data.company_size || !data.opportunity_signal) {
+        setFocusState(false);
+        return;
+      }
+
+      focusNiche.value = data.target_niche || '';
+      focusCompanySize.value = data.company_size || '';
+      focusSignal.value = data.opportunity_signal || '';
+      setFocusState(true);
+    } catch (error) {
+      console.error('Não foi possível carregar o cliente foco.', error);
+      setMessage(
+        focusFeedback,
+        copy('Não foi possível carregar suas respostas agora.', 'Could not load your answers right now.'),
+        'error'
+      );
+    }
+  }
+
+  focusForm?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    setMessage(focusFeedback, '');
+    if (!focusForm.checkValidity()) {
+      focusForm.reportValidity();
+      return;
+    }
+    if (!client) {
+      setMessage(focusFeedback, copy('A conexão com o HCP não está disponível.', 'The HCP connection is unavailable.'), 'error');
+      return;
+    }
+
+    focusSubmit.disabled = true;
+    focusSubmit.textContent = copy('Salvando...', 'Saving...');
+
+    try {
+      await window.hcpProfileReady;
+      const { data: authData, error: authError } = await client.auth.getUser();
+      if (authError) throw authError;
+      const user = authData?.user;
+      if (!user) throw new Error('missing_user');
+
+      const payload = {
+        user_id: user.id,
+        target_niche: focusNiche.value.trim(),
+        company_size: focusCompanySize.value,
+        opportunity_signal: focusSignal.value,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await client
+        .from('client_focus_profiles')
+        .upsert(payload, { onConflict: 'user_id' });
+      if (error) throw error;
+
+      setFocusState(true);
+      setMessage(
+        focusFeedback,
+        copy(
+          'Cliente foco salvo. O HCP usará essas respostas para orientar suas próximas listas.',
+          'Target customer saved. HCP will use these answers to guide your next lists.'
+        ),
+        'success'
+      );
+    } catch (error) {
+      console.error('Não foi possível salvar o cliente foco.', error);
+      setMessage(
+        focusFeedback,
+        copy('Não foi possível salvar suas respostas. Tente novamente.', 'Could not save your answers. Please try again.'),
+        'error'
+      );
+    } finally {
+      focusSubmit.disabled = false;
+      focusSubmit.textContent = copy('Salvar cliente foco', 'Save target customer');
+    }
+  });
+
+  document.addEventListener('hcp:languagechange', () => {
+    updateNicheSuggestions();
+    setFocusState(hasSavedFocus);
+  });
 
   cnpjInput?.addEventListener('input', () => {
     cnpjInput.value = cnpj.formatCnpj(cnpjInput.value);
@@ -185,5 +311,7 @@
     }
   });
 
+  updateNicheSuggestions();
+  loadClientFocus();
   loadTokenBalance();
 })();

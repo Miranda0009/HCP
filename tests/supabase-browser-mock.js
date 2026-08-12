@@ -11,6 +11,7 @@
     company_name: 'Conta HCP',
     phone: null
   };
+  let clientFocus = null;
 
   const client = {
     auth: {
@@ -21,7 +22,31 @@
       }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } })
     },
-    from() {
+    from(table) {
+      if (table === 'client_focus_profiles') {
+        return {
+          select() {
+            return {
+              eq() {
+                return {
+                  maybeSingle: async () => ({ data: clientFocus, error: null })
+                };
+              }
+            };
+          },
+          upsert: async (payload) => {
+            clientFocus = { ...payload };
+            return { data: clientFocus, error: null };
+          }
+        };
+      }
+
+      if (table === 'lead_source_feedback') {
+        return {
+          select: async () => ({ data: [], error: null })
+        };
+      }
+
       return {
         select() {
           return {

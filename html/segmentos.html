@@ -164,9 +164,80 @@
       <div class="page-head">
         <div>
           <h1>Segmentos inteligentes</h1>
-          <p>Compartilhe quais fontes entregam os dados mais úteis e receba tokens para criar novas listas.</p>
+          <p>Defina seu cliente foco e compartilhe quais fontes entregam os dados mais úteis para suas listas.</p>
         </div>
       </div>
+
+      <section class="panel client-focus-panel" aria-labelledby="clientFocusTitle">
+        <div class="client-focus-head">
+          <div>
+            <span class="client-focus-kicker">3 perguntas</span>
+            <h2 id="clientFocusTitle">Qual é o seu cliente foco?</h2>
+            <p>Conte ao HCP quem você quer encontrar. Suas respostas ficarão salvas na conta e orientarão as próximas listas.</p>
+          </div>
+          <span class="client-focus-state" id="clientFocusState">Ainda não definido</span>
+        </div>
+
+        <form class="client-focus-form" id="clientFocusForm">
+          <label class="client-focus-question" for="clientFocusNiche">
+            <span class="client-focus-question-number">1</span>
+            <span class="client-focus-question-copy">
+              <strong>Qual nicho você quer alcançar?</strong>
+              <small>Escolha uma sugestão ou escreva o nicho desejado.</small>
+            </span>
+            <input id="clientFocusNiche" list="clientFocusNicheSuggestions" type="text" maxlength="120"
+              placeholder="Ex.: clínicas odontológicas" required>
+          </label>
+          <datalist id="clientFocusNicheSuggestions">
+            <option value="Agências de Marketing"></option>
+            <option value="Consultorias Comerciais / SDR / BDR"></option>
+            <option value="Empresas de BPO Financeiro"></option>
+            <option value="Clínicas e consultórios"></option>
+            <option value="Escritórios contábeis"></option>
+            <option value="Indústrias"></option>
+            <option value="Varejo"></option>
+          </datalist>
+
+          <label class="client-focus-question" for="clientFocusCompanySize">
+            <span class="client-focus-question-number">2</span>
+            <span class="client-focus-question-copy">
+              <strong>Qual porte de empresa combina mais com sua oferta?</strong>
+              <small>Este é o porte dos clientes que você deseja prospectar.</small>
+            </span>
+            <select id="clientFocusCompanySize" required>
+              <option value="" selected disabled>Selecione o porte</option>
+              <option value="micro">Microempresa (1–9 funcionários)</option>
+              <option value="small">Pequena empresa (10–49)</option>
+              <option value="medium">Média empresa (50–249)</option>
+              <option value="large">Grande empresa (250+)</option>
+              <option value="any">Qualquer porte</option>
+            </select>
+          </label>
+
+          <label class="client-focus-question" for="clientFocusSignal">
+            <span class="client-focus-question-number">3</span>
+            <span class="client-focus-question-copy">
+              <strong>Qual sinal indica uma boa oportunidade?</strong>
+              <small>Escolha o fator mais importante para priorizar um lead.</small>
+            </span>
+            <select id="clientFocusSignal" required>
+              <option value="" selected disabled>Selecione o principal sinal</option>
+              <option value="no_site">Empresa sem site</option>
+              <option value="low_ratings">Avaliação baixa no Google</option>
+              <option value="growth">Crescimento ou novas contratações</option>
+              <option value="recently_opened">Empresa aberta recentemente</option>
+              <option value="commercial_structure">Necessidade de estrutura comercial</option>
+              <option value="any">Qualquer oportunidade</option>
+            </select>
+          </label>
+
+          <div class="client-focus-actions">
+            <p>Você poderá atualizar estas respostas quando o seu público mudar.</p>
+            <button class="primary-btn" id="saveClientFocus" type="submit">Salvar cliente foco</button>
+          </div>
+          <p class="segment-feedback-message" id="clientFocusMessage" role="status" aria-live="polite" hidden></p>
+        </form>
+      </section>
 
       <section class="segment-tab-panel" data-segment-panel="exchange">
         <div class="token-exchange-grid">
