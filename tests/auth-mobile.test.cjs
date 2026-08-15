@@ -30,7 +30,7 @@ function createElement() {
   };
 }
 
-function loadAuth({ launchUrl, emailExists = false } = {}) {
+function loadAuth({ launchUrl, emailExists = false, desktop = false } = {}) {
   const ids = [
     'authForm', 'nameField', 'emailField', 'loginName', 'loginEmail', 'loginPassword',
     'signupFields', 'loginPhone', 'loginCompanyNiche', 'loginUserCount', 'loginPlanBuilderBtn', 'signupPlanSummary',
@@ -40,8 +40,9 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
   ];
   const elements = Object.fromEntries(ids.map((id) => [id, createElement()]));
   const storage = new Map();
-  const calls = { redirects: [], sessions: [], signUps: [], oauth: [], planBuilder: [] };
+  const calls = { redirects: [], sessions: [], signUps: [], oauth: [], planBuilder: [], externalUrls: [] };
   let appUrlListener;
+  let desktopUrlListener;
   let currentSession = null;
 
   const user = {
@@ -60,7 +61,7 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
       },
       signInWithOAuth: async (payload) => {
         calls.oauth.push(payload);
-        return { data: {}, error: null };
+        return { data: { url: 'https://accounts.google.com/o/oauth2/auth?client=hcp' }, error: null };
       },
       setSession: async (tokens) => {
         calls.sessions.push(tokens);
@@ -101,7 +102,7 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
     hcpProfileCache: { write() {} },
     HCPPlanBuilder: { open(options) { calls.planBuilder.push(options); } },
     history: { replaceState() {} },
-    Capacitor: {
+    Capacitor: desktop ? undefined : {
       isNativePlatform: () => true,
       getPlatform: () => 'android',
       Plugins: {
@@ -114,7 +115,19 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
           }
         }
       }
-    }
+    },
+    hcpDesktop: desktop ? {
+      isDesktopApp: true,
+      onAuthUrl(listener) {
+        desktopUrlListener = listener;
+      },
+      async getLaunchUrl() {
+        return launchUrl || '';
+      },
+      async openExternal(url) {
+        calls.externalUrls.push(url);
+      }
+    } : undefined
   };
 
   const localStorage = {
@@ -133,7 +146,13 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
     console
   });
 
-  return { appUrlListener: () => appUrlListener, calls, elements, storage };
+  return {
+    appUrlListener: () => appUrlListener,
+    desktopUrlListener: () => desktopUrlListener,
+    calls,
+    elements,
+    storage
+  };
 }
 
 const flushPromises = () => new Promise((resolvePromise) => setImmediate(resolvePromise));
@@ -235,5 +254,30 @@ test('callback móvel cria a sessão e volta para o painel', async () => {
   assert.equal(calls.sessions.length, 1);
   assert.equal(calls.sessions[0].access_token, 'access-token');
   assert.equal(calls.sessions[0].refresh_token, 'refresh-token');
+  assert.ok(calls.redirects.some((url) => url === 'https://localhost/html/painel.html'));
+});
+
+test('aplicativo de Windows abre o Google no navegador e usa o deep link do HCP', async () => {
+  const { calls, elements } = loadAuth({ desktop: true });
+  await flushPromises();
+
+  await elements.googleAuthBtn.listener('click')();
+
+  assert.equal(calls.oauth.length, 1);
+  assert.equal(calls.oauth[0].options.redirectTo, 'com.hcp.oportunidades://auth/callback');
+  assert.equal(calls.oauth[0].options.skipBrowserRedirect, true);
+  assert.deepEqual(calls.externalUrls, ['https://accounts.google.com/o/oauth2/auth?client=hcp']);
+  assert.match(elements.authFeedback.textContent, /navegador/);
+});
+
+test('callback do Windows cria a sessão e retorna ao painel do aplicativo', async () => {
+  const callback = 'com.hcp.oportunidades://auth/callback#access_token=desktop-access&refresh_token=desktop-refresh&type=signup';
+  const { calls } = loadAuth({ desktop: true, launchUrl: callback });
+  await flushPromises();
+  await flushPromises();
+
+  assert.equal(calls.sessions.length, 1);
+  assert.equal(calls.sessions[0].access_token, 'desktop-access');
+  assert.equal(calls.sessions[0].refresh_token, 'desktop-refresh');
   assert.ok(calls.redirects.some((url) => url === 'https://localhost/html/painel.html'));
 });

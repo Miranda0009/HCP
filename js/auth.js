@@ -45,9 +45,14 @@
   const copy = (pt, en) => isEnglish() ? en : pt;
   const loginUrl = (recovery = false) => new URL(`login.html${recovery ? '?recovery=1' : ''}`, window.location.href).href;
   const dashboardUrl = () => new URL('painel.html', window.location.href).href;
+  const isDesktopApp = () => Boolean(window.hcpDesktop?.isDesktopApp);
   const isNativeApp = () => {
     const capacitor = window.Capacitor;
-    return Boolean(capacitor?.isNativePlatform?.() || capacitor?.getPlatform?.() === 'android');
+    return Boolean(
+      isDesktopApp()
+      || capacitor?.isNativePlatform?.()
+      || capacitor?.getPlatform?.() === 'android'
+    );
   };
   const authRedirectUrl = (recovery = false) => {
     if (!isNativeApp()) return loginUrl(recovery);
@@ -363,7 +368,17 @@
     }
   }
 
-  async function setupMobileAuthRedirects() {
+  async function setupNativeAuthRedirects() {
+    const desktop = window.hcpDesktop;
+    if (desktop?.isDesktopApp) {
+      desktop.onAuthUrl?.((url) => {
+        handleMobileAuthUrl(url);
+      });
+
+      const launchUrl = await desktop.getLaunchUrl?.();
+      if (launchUrl) await handleMobileAuthUrl(launchUrl);
+    }
+
     const appPlugin = window.Capacitor?.Plugins?.App;
     if (!appPlugin?.addListener || !appPlugin?.getLaunchUrl) return;
 
@@ -484,14 +499,36 @@
     saveRememberChoice();
     setBusy(true);
     showFeedback('');
-    const { error } = await client.auth.signInWithOAuth({
+    const desktopOAuth = isDesktopApp();
+    const { data, error } = await client.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: authRedirectUrl() }
+      options: {
+        redirectTo: authRedirectUrl(),
+        ...(desktopOAuth ? { skipBrowserRedirect: true } : {})
+      }
     });
     if (error) {
       if (mode === 'signup') clearPendingOnboarding();
       showFeedback(friendlyError(error), 'error');
       setBusy(false);
+      return;
+    }
+
+    if (desktopOAuth) {
+      try {
+        if (!data?.url) throw new Error(copy('Não foi possível abrir o acesso com Google.', 'Could not open Google sign-in.'));
+        await window.hcpDesktop.openExternal(data.url);
+        showFeedback(
+          copy('Conclua o acesso com Google no navegador. O HCP será reaberto automaticamente.', 'Finish signing in with Google in your browser. HCP will reopen automatically.'),
+          'success'
+        );
+      } catch (desktopError) {
+        if (mode === 'signup') clearPendingOnboarding();
+        showFeedback(friendlyError(desktopError), 'error');
+      } finally {
+        setBusy(false);
+        submitButton.textContent = mode === 'signup' ? copy('Criar conta', 'Create account') : copy('Entrar agora', 'Sign in now');
+      }
     }
   });
 
@@ -566,7 +603,7 @@
   });
 
   setMode(mode);
-  setupMobileAuthRedirects()
+  setupNativeAuthRedirects()
     .catch(() => {})
     .finally(redirectAuthenticatedUser);
 })();

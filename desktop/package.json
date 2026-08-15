@@ -1,0 +1,29 @@
+{
+  "name": "hcp-desktop",
+  "productName": "HCP",
+  "version": "0.1.0",
+  "description": "Aplicativo HCP para inteligência comercial no Windows.",
+  "author": "HCP",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {
+    "sync:web": "node scripts/sync-web.mjs",
+    "icon": "node scripts/generate-icon.mjs",
+    "start": "npm run sync:web && npm run icon && electron-forge start",
+    "package": "npm run sync:web && npm run icon && electron-forge package",
+    "installer": "npm run sync:web && npm run icon && electron-forge make && node scripts/copy-installer.mjs"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "1.0.1"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "7.11.2",
+    "@electron-forge/maker-squirrel": "7.11.2",
+    "electron": "43.4.0",
+    "png-to-ico": "3.0.2"
+  },
+  "overrides": {
+    "tar": "7.5.22",
+    "tmp": "0.2.7"
+  }
+}
