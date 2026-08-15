@@ -83,6 +83,15 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
     window.hcpProfile = normalizedProfile;
     window.hcpProfileCache?.write(normalizedProfile);
 
+    const profileFullNameField = document.getElementById('profileFullName');
+    const profileCompanyField = document.getElementById('profileCompany');
+    const profilePhoneField = document.getElementById('profilePhone');
+    const profileEmailField = document.getElementById('profileEmail');
+    if (profileFullNameField) profileFullNameField.value = fullName;
+    if (profileCompanyField) profileCompanyField.value = companyName === 'Conta HCP' ? '' : companyName;
+    if (profilePhoneField) profilePhoneField.value = phone;
+    if (profileEmailField) profileEmailField.value = email;
+
     document.querySelectorAll('.user-name, [data-profile-name]').forEach((element) => {
       element.textContent = fullName;
     });
@@ -133,7 +142,10 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
   document.documentElement.style.removeProperty('--hcp-profile-company');
 
   client.auth.onAuthStateChange((event) => {
-    if (event === 'SIGNED_OUT') window.location.replace(loginUrl());
+    if (event === 'SIGNED_OUT') {
+      window.hcpProfileCache?.clear();
+      window.location.replace(loginUrl());
+    }
   });
 
   return renderedProfile;

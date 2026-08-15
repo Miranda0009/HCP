@@ -4,8 +4,14 @@
   if (!form) return;
 
   const nameField = document.getElementById('nameField');
+  const signupFields = document.getElementById('signupFields');
   const emailField = document.getElementById('emailField');
   const nameInput = document.getElementById('loginName');
+  const phoneInput = document.getElementById('loginPhone');
+  const companyNicheInput = document.getElementById('loginCompanyNiche');
+  const userCountInput = document.getElementById('loginUserCount');
+  const planBuilderButton = document.getElementById('loginPlanBuilderBtn');
+  const planSummary = document.getElementById('signupPlanSummary');
   const emailInput = document.getElementById('loginEmail');
   const passwordInput = document.getElementById('loginPassword');
   const rememberField = document.getElementById('rememberField');
@@ -21,9 +27,12 @@
   const prompt = document.getElementById('authPrompt');
   const feedback = document.getElementById('authFeedback');
   const MOBILE_AUTH_CALLBACK = 'com.hcp.oportunidades://auth/callback';
+  const PENDING_ONBOARDING_KEY = 'hcp-pending-onboarding';
+  const PENDING_ONBOARDING_TTL_MS = 30 * 60 * 1000;
   const isRecoveryCallback = new URLSearchParams(window.location.search).get('recovery') === '1';
   let mode = isRecoveryCallback ? 'recovery' : 'signin';
   let lastMobileAuthUrl = '';
+  let customPlanSelection = null;
 
   const isEnglish = () => {
     try {
@@ -82,7 +91,11 @@
     const isRecovery = mode === 'recovery';
 
     nameField.hidden = !isSignup;
+    if (signupFields) signupFields.hidden = !isSignup;
     nameInput.required = isSignup;
+    if (phoneInput) phoneInput.required = isSignup;
+    if (companyNicheInput) companyNicheInput.required = isSignup;
+    if (userCountInput) userCountInput.required = isSignup;
     emailField.hidden = isRecovery;
     emailInput.required = !isRecovery;
     rememberField.hidden = isSignup || isRecovery;
@@ -118,6 +131,126 @@
     modeToggle.textContent = copy('Crie uma conta', 'Create an account');
   }
 
+  function onboardingValues() {
+    const selectedPlan = customPlanSelection
+      ? 'custom'
+      : (document.querySelector?.('input[name="signupPlan"]:checked')?.value || 'later');
+    return {
+      full_name: nameInput?.value.trim() || '',
+      phone: phoneInput?.value.trim() || '',
+      company_niche: companyNicheInput?.value.trim() || '',
+      expected_user_count: Number(userCountInput?.value || 0),
+      selected_plan: selectedPlan,
+      plan_builder_config: customPlanSelection
+    };
+  }
+
+  function validateOnboarding() {
+    if (mode !== 'signup') return true;
+    const values = onboardingValues();
+    if (nameInput && values.full_name.length < 2) {
+      showFeedback(copy('Informe seu nome completo.', 'Enter your full name.'), 'error');
+      nameInput?.focus();
+      return false;
+    }
+    if (phoneInput && values.phone.replace(/\D/g, '').length < 10) {
+      showFeedback(copy('Informe um telefone válido com DDD.', 'Enter a valid phone number with area code.'), 'error');
+      phoneInput?.focus();
+      return false;
+    }
+    if (companyNicheInput && values.company_niche.length < 2) {
+      showFeedback(copy('Informe o nicho da sua empresa.', 'Enter your company niche.'), 'error');
+      companyNicheInput?.focus();
+      return false;
+    }
+    if (userCountInput && (!Number.isInteger(values.expected_user_count) || values.expected_user_count < 1 || values.expected_user_count > 10000)) {
+      showFeedback(copy('Informe quantas pessoas utilizarão o HCP.', 'Enter how many people will use HCP.'), 'error');
+      userCountInput?.focus();
+      return false;
+    }
+    return true;
+  }
+
+  function normalizeEmail(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function clearPendingOnboarding() {
+    try {
+      localStorage.removeItem(PENDING_ONBOARDING_KEY);
+    } catch {
+      // O armazenamento pode estar indisponível; os metadados do Auth continuam protegidos.
+    }
+  }
+
+  function savePendingOnboarding(values = onboardingValues(), context = {}) {
+    try {
+      localStorage.setItem(PENDING_ONBOARDING_KEY, JSON.stringify({
+        ...values,
+        email: normalizeEmail(context.email ?? emailInput?.value),
+        user_id: context.user_id || null,
+        flow: context.flow === 'google' ? 'google' : 'email',
+        created_at: Date.now()
+      }));
+    } catch {
+      // O cadastro por e-mail ainda envia os mesmos dados nos metadados do Auth.
+    }
+  }
+
+  async function applyPendingOnboarding(user) {
+    if (!user || !client) return;
+    let pending = null;
+    try {
+      pending = JSON.parse(localStorage.getItem(PENDING_ONBOARDING_KEY) || 'null');
+    } catch {
+      pending = null;
+    }
+    if (!pending) return;
+
+    const pendingAge = Date.now() - Number(pending.created_at || 0);
+    const googleFlowWithoutEmail = pending.flow === 'google' && !pending.email;
+    const emailMatches = googleFlowWithoutEmail
+      || (pending.email && normalizeEmail(user.email) === normalizeEmail(pending.email));
+    const userMatches = !pending.user_id || pending.user_id === user.id;
+    if (!emailMatches || !userMatches || !Number.isFinite(pendingAge) || pendingAge < 0 || pendingAge > PENDING_ONBOARDING_TTL_MS) {
+      clearPendingOnboarding();
+      return;
+    }
+
+    const expectedUserCount = Number(pending.expected_user_count);
+    const accountUpdates = {
+      phone: pending.phone || null,
+      company_niche: pending.company_niche || null,
+      expected_user_count: Number.isInteger(expectedUserCount) && expectedUserCount > 0 ? expectedUserCount : null
+    };
+
+    try {
+      const [profileResult, accountResult, authResult] = await Promise.all([
+        client.from('profiles').update({
+          full_name: pending.full_name || undefined,
+          phone: pending.phone || null
+        }).eq('id', user.id),
+        client.from('accounts').update(accountUpdates).eq('owner_user_id', user.id),
+        client.auth.updateUser({
+          data: {
+            full_name: pending.full_name || undefined,
+            phone: pending.phone || null,
+            company_niche: pending.company_niche || null,
+            expected_user_count: accountUpdates.expected_user_count,
+            selected_plan: pending.selected_plan || 'later',
+            plan_builder_config: pending.plan_builder_config || null
+          }
+        })
+      ]);
+
+      const onboardingError = profileResult?.error || accountResult?.error || authResult?.error;
+      if (onboardingError) throw onboardingError;
+      clearPendingOnboarding();
+    } catch {
+      // O rascunho permanece para uma nova tentativa após a próxima autenticação.
+    }
+  }
+
   function saveRememberChoice() {
     try {
       localStorage.setItem('hcp-remember', String(rememberSession.checked));
@@ -128,6 +261,7 @@
 
   async function cacheAuthenticatedProfile(user) {
     if (!user) return;
+    await applyPendingOnboarding(user);
     const metadata = user.user_metadata || {};
     let profile = {};
 
@@ -224,6 +358,7 @@
       await cacheAuthenticatedProfile(session.user);
       window.location.replace(dashboardUrl());
     } catch (error) {
+      if (mode === 'signup') clearPendingOnboarding();
       showFeedback(friendlyError(error), 'error');
     }
   }
@@ -283,23 +418,28 @@
       }
 
       if (mode === 'signup') {
+        if (!validateOnboarding()) return;
         const email = emailInput.value.trim().toLowerCase();
+        const onboarding = onboardingValues();
+        savePendingOnboarding(onboarding, { email, flow: 'email' });
         const { data, error } = await client.auth.signUp({
           email,
           password: passwordInput.value,
           options: {
-            data: { full_name: nameInput.value.trim() },
+            data: onboarding,
             emailRedirectTo: authRedirectUrl()
           }
         });
         if (error) throw error;
         if (data.user?.identities?.length === 0) {
+          clearPendingOnboarding();
           showFeedback(copy(
             'Erro. Esse endereço de e-mail já está conectado à outra conta.',
             'Error. This email address is already connected to another account.'
           ), 'error');
           return;
         }
+        savePendingOnboarding(onboarding, { email, user_id: data.user?.id, flow: 'email' });
         if (data.session) {
           await cacheAuthenticatedProfile(data.user);
           window.location.replace(dashboardUrl());
@@ -309,6 +449,7 @@
         return;
       }
 
+      clearPendingOnboarding();
       const { data, error } = await client.auth.signInWithPassword({
         email: emailInput.value.trim(),
         password: passwordInput.value
@@ -317,6 +458,7 @@
       await cacheAuthenticatedProfile(data.user);
       window.location.replace(dashboardUrl());
     } catch (error) {
+      if (mode === 'signup') clearPendingOnboarding();
       showFeedback(friendlyError(error), 'error');
     } finally {
       setBusy(false);
@@ -333,6 +475,12 @@
       return;
     }
 
+    if (mode === 'signup' && !validateOnboarding()) return;
+    if (mode === 'signup') {
+      savePendingOnboarding(onboardingValues(), { email: '', flow: 'google' });
+    } else {
+      clearPendingOnboarding();
+    }
     saveRememberChoice();
     setBusy(true);
     showFeedback('');
@@ -341,6 +489,7 @@
       options: { redirectTo: authRedirectUrl() }
     });
     if (error) {
+      if (mode === 'signup') clearPendingOnboarding();
       showFeedback(friendlyError(error), 'error');
       setBusy(false);
     }
@@ -365,8 +514,46 @@
     submitButton.textContent = copy('Entrar agora', 'Sign in now');
   });
 
-  modeToggle.addEventListener('click', () => setMode(mode === 'signup' ? 'signin' : 'signup'));
+  modeToggle.addEventListener('click', () => {
+    if (mode === 'signup') clearPendingOnboarding();
+    setMode(mode === 'signup' ? 'signin' : 'signup');
+  });
   rememberSession.addEventListener('change', saveRememberChoice);
+
+  (document.querySelectorAll?.('input[name="signupPlan"]') || []).forEach((input) => {
+    input.addEventListener('change', () => {
+      if (!input.checked) return;
+      customPlanSelection = null;
+      if (planSummary) {
+        planSummary.textContent = input.value === 'later'
+          ? copy('Você poderá escolher ou alterar seu plano depois.', 'You can choose or change your plan later.')
+          : copy(`Plano ${input.closest('label')?.querySelector('strong')?.textContent || input.value} selecionado.`, `${input.closest('label')?.querySelector('strong')?.textContent || input.value} plan selected.`);
+      }
+    });
+  });
+
+  planBuilderButton?.addEventListener('click', () => {
+    const expectedUserCount = Number(userCountInput?.value || 0);
+    window.HCPPlanBuilder?.open?.({
+      source: 'signup',
+      answers: {
+        users: Number.isInteger(expectedUserCount) && expectedUserCount > 0 ? expectedUserCount : 1
+      }
+    });
+  });
+
+  window.addEventListener?.('hcp:plan-selected', (event) => {
+    customPlanSelection = event.detail || null;
+    if (!customPlanSelection) return;
+    (document.querySelectorAll?.('input[name="signupPlan"]') || []).forEach((input) => { input.checked = false; });
+    if (planSummary) {
+      const recommendation = customPlanSelection.recommendation?.planName || 'HCP';
+      planSummary.textContent = copy(
+        `Configuração personalizada pronta · recomendação ${recommendation}.`,
+        `Custom configuration ready · ${recommendation} recommended.`
+      );
+    }
+  });
 
   try {
     rememberSession.checked = localStorage.getItem('hcp-remember') !== 'false';

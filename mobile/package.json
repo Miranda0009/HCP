@@ -6,12 +6,14 @@
   "scripts": {
     "sync:web": "node scripts/sync-web.mjs",
     "cap:sync": "npm run sync:web && cap sync android",
-    "apk:debug": "npm run cap:sync && cd android && gradlew.bat assembleDebug && cd .. && node scripts/copy-apk.mjs"
+    "apk:debug": "npm run cap:sync && cd android && gradlew.bat --gradle-user-home ../.gradle-user-home assembleDebug && cd .. && node scripts/copy-apk.mjs"
   },
   "dependencies": {
     "@capacitor/android": "8.5.0",
     "@capacitor/app": "8.1.1",
-    "@capacitor/core": "8.5.0"
+    "@capacitor/core": "8.5.0",
+    "@capacitor/filesystem": "8.1.2",
+    "@capacitor/share": "8.0.1"
   },
   "devDependencies": {
     "@capacitor/cli": "8.5.0"

@@ -6,6 +6,8 @@
   const fullNameInput = document.getElementById('profileFullName');
   const companyInput = document.getElementById('profileCompany');
   const phoneInput = document.getElementById('profilePhone');
+  const companyNicheInput = document.getElementById('profileCompanyNiche');
+  const userCountInput = document.getElementById('profileUserCount');
   const emailInput = document.getElementById('profileEmail');
   const saveProfileButton = document.getElementById('saveProfileBtn');
   const profileFeedback = document.getElementById('profileFeedback');
@@ -61,13 +63,43 @@
     return data.user;
   }
 
+  async function getAccountMembership(userId) {
+    const { data: memberships, error } = await client
+      .from('account_memberships')
+      .select('account_id, role, created_at')
+      .eq('user_id', userId);
+
+    if (error) throw error;
+    const rolePriority = { owner: 0, admin: 1, member: 2 };
+    const membership = (memberships || []).slice().sort((first, second) => {
+      const roleDifference = (rolePriority[first.role] ?? 3) - (rolePriority[second.role] ?? 3);
+      if (roleDifference) return roleDifference;
+      return String(first.created_at || '').localeCompare(String(second.created_at || ''));
+    })[0];
+    if (!membership?.account_id) {
+      throw new Error(copy(
+        'Não encontramos uma conta HCP vinculada ao seu usuário.',
+        'We could not find an HCP account linked to your user.'
+      ));
+    }
+    return membership;
+  }
+
   function fillForm(profile) {
     if (!profile) return;
-    fullNameInput.value = profile.full_name || '';
-    companyInput.value = profile.company_name === 'Conta HCP' ? '' : (profile.company_name || '');
-    phoneInput.value = profile.phone || '';
-    emailInput.value = profile.email || '';
-    removePhotoButton.hidden = !profile.avatar_url;
+    if (Object.hasOwn(profile, 'full_name')) fullNameInput.value = profile.full_name || '';
+    if (Object.hasOwn(profile, 'company_name')) {
+      companyInput.value = profile.company_name === 'Conta HCP' ? '' : (profile.company_name || '');
+    }
+    if (Object.hasOwn(profile, 'phone')) phoneInput.value = profile.phone || '';
+    if (Object.hasOwn(profile, 'email')) emailInput.value = profile.email || '';
+    if (companyNicheInput && Object.hasOwn(profile, 'company_niche')) {
+      companyNicheInput.value = profile.company_niche || '';
+    }
+    if (userCountInput && Object.hasOwn(profile, 'expected_user_count')) {
+      userCountInput.value = profile.expected_user_count || '';
+    }
+    if (Object.hasOwn(profile, 'avatar_url')) removePhotoButton.hidden = !profile.avatar_url;
   }
 
   profileForm.addEventListener('submit', async (event) => {
@@ -82,12 +114,19 @@
       showFeedback(profileFeedback, copy('Informe seu nome completo.', 'Enter your full name.'), 'error');
       return;
     }
+    const expectedUserCount = Number(userCountInput?.value || 0);
+    if (!Number.isInteger(expectedUserCount) || expectedUserCount < 1 || expectedUserCount > 10000) {
+      showFeedback(profileFeedback, copy('Informe uma quantidade válida de usuários.', 'Enter a valid number of users.'), 'error');
+      userCountInput?.focus();
+      return;
+    }
 
     setBusy(saveProfileButton, true, copy('Salvando...', 'Saving...'), copy('Salvar alterações', 'Save changes'));
     showFeedback(profileFeedback, '');
 
     try {
       const user = await getAuthenticatedUser();
+      const membership = await getAccountMembership(user.id);
       const updates = {
         id: user.id,
         full_name: fullName,
@@ -102,9 +141,30 @@
         .single();
       if (error) throw error;
 
-      await client.auth.updateUser({ data: { full_name: fullName } });
-      const rendered = window.hcpRenderProfile?.({ ...data, email: user.email });
-      fillForm(rendered || { ...data, email: user.email });
+      const { data: account, error: accountError } = await client
+        .from('accounts')
+        .update({
+          company_name: companyInput.value.trim() || null,
+          phone: phoneInput.value.trim() || null,
+          company_niche: companyNicheInput?.value.trim() || null,
+          expected_user_count: expectedUserCount
+        })
+        .eq('id', membership.account_id)
+        .select('company_niche, expected_user_count')
+        .maybeSingle();
+      if (accountError) throw accountError;
+      if (!account) {
+        throw new Error(copy(
+          'Sua conta não permite alterar os dados empresariais. Peça ajuda ao proprietário do espaço de trabalho.',
+          'Your account cannot change company details. Ask the workspace owner for help.'
+        ));
+      }
+
+      const { error: authError } = await client.auth.updateUser({ data: { full_name: fullName } });
+      if (authError) throw authError;
+      const combined = { ...data, ...(account || {}), email: user.email };
+      const rendered = window.hcpRenderProfile?.(combined);
+      fillForm(rendered || combined);
       showFeedback(profileFeedback, copy('Perfil atualizado com sucesso.', 'Profile updated successfully.'), 'success');
     } catch (error) {
       showFeedback(profileFeedback, friendlyError(error), 'error');
@@ -237,7 +297,49 @@
     }
   });
 
+  document.querySelectorAll('.account-accordion').forEach((section) => {
+    const trigger = section.querySelector('.account-accordion-trigger');
+    const body = section.querySelector('.account-accordion-body');
+    if (!trigger || !body) return;
+    trigger.addEventListener('click', () => {
+      const shouldOpen = !section.classList.contains('is-open');
+      section.classList.toggle('is-open', shouldOpen);
+      trigger.setAttribute('aria-expanded', String(shouldOpen));
+      body.hidden = !shouldOpen;
+    });
+  });
+
+  async function loadAccountDetails() {
+    try {
+      const user = await getAuthenticatedUser();
+      emailInput.value = user.email || '';
+      const membership = await getAccountMembership(user.id);
+      const { data, error } = await client
+        .from('accounts')
+        .select('company_name, phone, company_niche, expected_user_count')
+        .eq('id', membership.account_id)
+        .maybeSingle();
+      if (error) throw error;
+      fillForm(data || {});
+      const accountName = String(data?.company_name || 'Conta HCP').trim();
+      const roleLabel = membership.role === 'admin'
+        ? copy('Administrador do espaço de trabalho', 'Workspace administrator')
+        : membership.role === 'member'
+          ? copy('Membro do espaço de trabalho', 'Workspace member')
+          : copy('Proprietário do espaço de trabalho', 'Workspace owner');
+      document.querySelectorAll('[data-profile-sub]').forEach((element) => {
+        element.textContent = `${roleLabel} · ${accountName}`;
+      });
+    } catch (error) {
+      // Os campos pessoais continuam disponíveis mesmo em contas legadas.
+      console.warn('Não foi possível carregar os dados empresariais da conta.', error);
+    }
+  }
+
   Promise.resolve(window.hcpProfileReady)
-    .then(fillForm)
+    .then(async (profile) => {
+      fillForm(profile);
+      await loadAccountDetails();
+    })
     .catch((error) => showFeedback(profileFeedback, friendlyError(error), 'error'));
 })();

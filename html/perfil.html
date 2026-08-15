@@ -205,13 +205,19 @@
         </section>
 
         <div class="stack-panels">
-          <section class="panel">
+          <section class="panel account-accordion is-open">
+            <button class="account-accordion-trigger" id="profileDetailsAccordionTrigger" type="button" aria-expanded="true"
+              aria-controls="profileDetailsAccordionBody">
             <div class="panel-head">
               <div>
                 <h2>Dados do perfil</h2>
                 <p>Estas informações aparecem na sua conta e no menu do HCP.</p>
               </div>
             </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <div class="account-accordion-body" id="profileDetailsAccordionBody" role="region"
+              aria-labelledby="profileDetailsAccordionTrigger">
             <form id="profileForm">
               <div class="profile-form-grid">
                 <label class="profile-field" for="profileFullName">
@@ -230,26 +236,51 @@
                   <span>E-mail de acesso</span>
                   <input class="text-input" id="profileEmail" type="email" readonly>
                 </label>
+                <label class="profile-field" for="profileCompanyNiche">
+                  <span>Nicho da empresa</span>
+                  <input class="text-input" id="profileCompanyNiche" type="text" list="profileNicheSuggestions"
+                    placeholder="Selecione ou digite seu nicho">
+                </label>
+                <label class="profile-field" for="profileUserCount">
+                  <span>Usuários previstos no HCP</span>
+                  <input class="text-input" id="profileUserCount" type="number" min="1" max="10000" step="1" inputmode="numeric">
+                </label>
               </div>
+              <datalist id="profileNicheSuggestions">
+                <option value="Agência de Marketing"></option>
+                <option value="Consultoria Comercial / SDR / BDR"></option>
+                <option value="BPO Financeiro"></option>
+                <option value="Tecnologia / SaaS"></option>
+              </datalist>
               <p class="form-feedback" id="profileFeedback" role="status" aria-live="polite" hidden></p>
               <button class="primary-btn" id="saveProfileBtn" type="submit">Salvar alterações</button>
             </form>
+            </div>
           </section>
 
-          <section class="panel">
+          <section class="panel account-accordion">
+            <button class="account-accordion-trigger" id="monthlyUsageAccordionTrigger" type="button" aria-expanded="false"
+              aria-controls="monthlyUsageAccordionBody">
             <div class="panel-head">
               <div>
                 <h2>Uso este mês</h2>
               </div>
             </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <div class="account-accordion-body" id="monthlyUsageAccordionBody" role="region"
+              aria-labelledby="monthlyUsageAccordionTrigger" hidden>
             <div class="usage-grid">
               <div class="usage-box"><strong>680 / 1.000</strong><span>Pesquisas</span></div>
               <div class="usage-box"><strong>37 / 100</strong><span>Exportações</span></div>
               <div class="usage-box"><strong>146</strong><span>Favoritos</span></div>
             </div>
+            </div>
           </section>
 
-          <section class="panel">
+          <section class="panel account-accordion">
+            <button class="account-accordion-trigger" id="passwordAccordionTrigger" type="button" aria-expanded="false"
+              aria-controls="passwordAccordionBody">
             <div class="section-title-row">
               <div class="ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                   <circle cx="12" cy="12" r="3"></circle>
@@ -259,6 +290,10 @@
                 </svg></div>
               <h3>Alterar senha</h3>
             </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <div class="account-accordion-body" id="passwordAccordionBody" role="region"
+              aria-labelledby="passwordAccordionTrigger" hidden>
             <p class="security-help">Confirme sua senha atual e escolha uma nova senha com pelo menos 8 caracteres.</p>
             <form id="passwordForm">
               <div class="form-row">
@@ -272,9 +307,12 @@
               <p class="form-feedback" id="passwordFeedback" role="status" aria-live="polite" hidden></p>
               <button class="primary-btn" id="updatePasswordBtn" type="submit">Atualizar senha</button>
             </form>
+            </div>
           </section>
 
-          <section class="panel">
+          <section class="panel account-accordion">
+            <button class="account-accordion-trigger" id="notificationsAccordionTrigger" type="button" aria-expanded="false"
+              aria-controls="notificationsAccordionBody">
             <div class="section-title-row">
               <div class="ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                   <path d="M6 9a6 6 0 1 1 12 0c0 5 2 6 2 6H4s2-1 2-6z"></path>
@@ -282,17 +320,23 @@
                 </svg></div>
               <h3>Notificações</h3>
             </div>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+            </button>
+            <div class="account-accordion-body" id="notificationsAccordionBody" role="region"
+              aria-labelledby="notificationsAccordionTrigger" hidden>
             <div class="settings-row">
-              <div><strong>Digestão semanal de novas perspectivas</strong></div>
-              <div class="toggle-switch on"></div>
+              <div><strong id="weeklyDigestLabel">Digestão semanal de novas perspectivas</strong></div>
+              <div class="toggle-switch on" aria-labelledby="weeklyDigestLabel" data-setting-key="weekly-digest"></div>
             </div>
             <div class="settings-row">
-              <div><strong>Exportar notificações prontas</strong></div>
-              <div class="toggle-switch on"></div>
+              <div><strong id="exportNotificationsLabel">Exportar notificações prontas</strong></div>
+              <div class="toggle-switch on" aria-labelledby="exportNotificationsLabel"
+                data-setting-key="export-ready-notifications"></div>
             </div>
             <div class="settings-row">
-              <div><strong>Produto atualiza</strong></div>
-              <div class="toggle-switch"></div>
+              <div><strong id="productUpdatesLabel">Produto atualiza</strong></div>
+              <div class="toggle-switch" aria-labelledby="productUpdatesLabel" data-setting-key="product-updates"></div>
+            </div>
             </div>
           </section>
         </div>
@@ -302,9 +346,9 @@
   </div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2"></script>
   <script src="../js/supabase-config.js"></script>
-  <script src="../js/auth-guard.js"></script>
+  <script src="../js/auth-guard.js?v=20260815"></script>
   <script src="../js/script.js"></script>
-  <script src="../js/profile.js"></script>
+  <script src="../js/profile.js?v=20260815"></script>
 </body>
 
 </html>

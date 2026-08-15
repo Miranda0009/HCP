@@ -312,6 +312,108 @@ a {
   box-shadow: 0 0 0 3px rgba(151, 71, 255, 0.14);
 }
 
+.signup-fields {
+  padding: 2px 0 4px;
+}
+
+.signup-field-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(120px, 0.85fr);
+  gap: 12px;
+}
+
+.signup-plan-choice {
+  margin: 2px 0 20px;
+  padding: 14px;
+  border: 1px solid var(--login-border);
+  border-radius: 12px;
+  background: var(--login-panel-soft);
+}
+
+.signup-plan-choice legend {
+  padding: 0 6px;
+  color: var(--login-text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.signup-plan-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.signup-plan-options label {
+  min-width: 0;
+  cursor: pointer;
+}
+
+.signup-plan-options input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.signup-plan-options span {
+  min-height: 54px;
+  padding: 9px 10px;
+  border: 1px solid var(--login-border);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: border-color 0.16s ease, background-color 0.16s ease, transform 0.16s ease;
+}
+
+.signup-plan-options strong,
+.signup-plan-options small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.signup-plan-options strong {
+  color: var(--login-text);
+  font-size: 11.5px;
+}
+
+.signup-plan-options small {
+  margin-top: 2px;
+  color: var(--login-muted);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.signup-plan-options input:checked + span,
+.signup-plan-options input:focus-visible + span {
+  border-color: var(--login-purple);
+  background: rgba(151, 71, 255, 0.1);
+  box-shadow: 0 0 0 2px rgba(151, 71, 255, 0.1);
+}
+
+.plan-builder-entry {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--login-purple);
+  border-radius: 9px;
+  background: transparent;
+  color: var(--login-purple-light);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.plan-builder-entry:hover {
+  background: rgba(151, 71, 255, 0.09);
+}
+
+.signup-plan-summary {
+  margin-top: 9px;
+  color: var(--login-muted);
+  font-size: 10.5px;
+  line-height: 1.45;
+}
+
 .password-row {
   display: flex;
   align-items: center;
@@ -573,6 +675,11 @@ a {
 
   .login-heading h2 {
     font-size: 28px;
+  }
+
+  .signup-field-grid,
+  .signup-plan-options {
+    grid-template-columns: 1fr;
   }
 }
 

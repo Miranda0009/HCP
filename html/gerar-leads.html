@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerar Lista de Leads - HCP</title>
+  <link rel="icon" type="image/png" href="../imgs/favicon.png">
+  <script src="../js/theme-init.js"></script>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .lead-generator-page .main {
+      min-width: 0;
+    }
+
+    .lead-builder-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .lead-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .lead-field {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .lead-field-wide {
+      grid-column: 1 / -1;
+    }
+
+    .lead-field label,
+    .lead-filter-fieldset legend {
+      color: var(--white);
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .lead-field small,
+    .lead-filter-fieldset > p {
+      color: var(--gray);
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .lead-field .text-input,
+    .lead-field .select-input {
+      min-height: 44px;
+    }
+
+    .lead-filter-fieldset {
+      grid-column: 1 / -1;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 2px 0 0;
+    }
+
+    .lead-filter-fieldset legend {
+      padding: 0 8px;
+    }
+
+    .lead-filter-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .lead-form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding-top: 4px;
+    }
+
+    .lead-secondary-btn,
+    .lead-action-btn {
+      min-height: 40px;
+      border: 1px solid var(--border-color);
+      border-radius: 9px;
+      background: var(--bg-main);
+      color: var(--white);
+      padding: 9px 14px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 12.5px;
+      font-weight: 600;
+    }
+
+    .lead-secondary-btn:hover,
+    .lead-action-btn:hover:not(:disabled) {
+      border-color: var(--purple-vivid);
+      color: var(--purple-light);
+    }
+
+    .lead-action-btn:disabled,
+    .lead-generator-page button:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+    }
+
+    .lead-credit-panel {
+      position: sticky;
+      top: 18px;
+      overflow: hidden;
+    }
+
+    .lead-credit-panel::before {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -70px;
+      top: -70px;
+      border-radius: 50%;
+      background: rgba(151, 71, 255, .2);
+      filter: blur(25px);
+      pointer-events: none;
+    }
+
+    .lead-credit-panel h2 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .lead-credit-panel > p {
+      color: var(--gray);
+      font-size: 12px;
+      line-height: 1.55;
+      margin-bottom: 18px;
+    }
+
+    .lead-credit-list {
+      display: grid;
+      gap: 11px;
+    }
+
+    .lead-credit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .lead-credit-row strong {
+      color: var(--white);
+      font-size: 16px;
+    }
+
+    .lead-credit-row:last-child {
+      border-bottom: 0;
+    }
+
+    .lead-credit-note {
+      margin-top: 16px;
+      padding: 11px 12px;
+      border: 1px solid rgba(151, 71, 255, .34);
+      border-radius: 10px;
+      background: rgba(151, 71, 255, .08);
+      color: var(--gray);
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .lead-status {
+      grid-column: 1 / -1;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 11px 13px;
+      color: var(--gray);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+
+    .lead-status.is-error {
+      border-color: rgba(255, 81, 132, .45);
+      background: rgba(255, 81, 132, .08);
+      color: var(--pink);
+    }
+
+    .lead-status.is-success {
+      border-color: rgba(40, 208, 132, .4);
+      background: rgba(40, 208, 132, .08);
+      color: var(--green);
+    }
+
+    .lead-results-panel,
+    .lead-saved-panel {
+      margin-top: 20px;
+    }
+
+    .lead-results-toolbar {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .lead-results-toolbar h2 {
+      font-size: 17px;
+      margin-bottom: 4px;
+    }
+
+    .lead-results-toolbar p {
+      color: var(--gray);
+      font-size: 12px;
+    }
+
+    .lead-toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: 8px;
+    }
+
+    .lead-list-name {
+      width: min(240px, 100%);
+      min-height: 40px;
+    }
+
+    .lead-table-wrap {
+      overflow: auto;
+      max-height: 560px;
+      border: 1px solid var(--border-color);
+      border-radius: 11px;
+    }
+
+    .lead-table {
+      min-width: 1180px;
+    }
+
+    .lead-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: var(--panel-bg);
+    }
+
+    .lead-table td,
+    .lead-table th {
+      white-space: nowrap;
+    }
+
+    .lead-table td:first-child,
+    .lead-table th:first-child {
+      width: 42px;
+      text-align: center;
+    }
+
+    .lead-table input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--purple-vivid);
+    }
+
+    .lead-table a {
+      color: var(--purple-light);
+      text-decoration: none;
+    }
+
+    .lead-empty {
+      padding: 36px 18px;
+      text-align: center;
+      color: var(--gray);
+      font-size: 13px;
+    }
+
+    .lead-saved-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .lead-saved-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 14px;
+    }
+
+    .lead-saved-row strong,
+    .lead-saved-row span {
+      display: block;
+    }
+
+    .lead-saved-row span {
+      color: var(--gray);
+      font-size: 11.5px;
+      margin-top: 3px;
+    }
+
+    .lead-saved-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    @media (max-width: 1050px) {
+      .lead-builder-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .lead-credit-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .lead-form-grid,
+      .lead-filter-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .lead-form-actions,
+      .lead-results-toolbar,
+      .lead-toolbar-actions,
+      .lead-saved-row {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .lead-form-actions button,
+      .lead-toolbar-actions button,
+      .lead-list-name {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body class="lead-generator-page">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <a class="logo" href="painel.html"><img src="../imgs/logo.png" alt="Logo HCP" class="logo-img"><span
+            class="nav-label logo-text">HCP</span></a>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Recolher menu" title="Recolher menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="nav-section nav-label">ESPAÇO DE TRABALHO</div>
+      <a class="nav-item" href="painel.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 0 1-1 1h-4v-6H9v6H5a1 1 0 0 1-1-1z"></path></svg><span
+          class="nav-label">Painel</span></a>
+      <a class="nav-item active" href="gerar-leads.html"><svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path
+            d="M8 9h8M8 13h5M17 16v4M15 18h4"></path></svg><span class="nav-label">Gerar Lista de Leads</span></a>
+      <a class="nav-item" href="segmentos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"></path><path d="M15 7h6v6"></path></svg><span
+          class="nav-label">Segmentos inteligentes</span></a>
+      <a class="nav-item" href="favoritos.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"></path></svg><span
+          class="nav-label">Favoritos</span></a>
+      <a class="nav-item" href="historico.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg><span
+          class="nav-label">Histórico</span></a>
+
+      <div class="nav-section nav-label">CONTA</div>
+      <a class="nav-item" href="assinatura.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M3 10h18"></path></svg><span
+          class="nav-label">Planos e limites</span></a>
+      <a class="nav-item" href="perfil.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4.4 3.6-7 8-7s8 2.6 8 7"></path></svg><span
+          class="nav-label">Minha conta</span></a>
+      <a class="nav-item" href="configuracoes.html"><svg viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path
+            d="M19 12a7 7 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7 7 0 0 0-2-1.2L14 3h-4l-.5 2.6a7 7 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6A7 7 0 0 0 5 12c0 .4 0 .8.1 1.2l-2 1.6 2 3.4 2.4-1a7 7 0 0 0 2 1.2L10 21h4l.5-2.6a7 7 0 0 0 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2z"></path></svg><span
+          class="nav-label">Preferências</span></a>
+      <div class="plan-card">
+        <div class="plan-row"><div><div class="plan-label">Seu plano</div><div class="plan-name">Pro</div></div><a
+            class="btn-manage" href="assinatura.html">Gerenciar</a></div>
+        <div class="plan-usage-label"><span>Créditos usados</span><span id="sidebarCreditUsage">0%</span></div>
+        <div class="progress-track"><div class="progress-fill" id="sidebarCreditProgress" style="width:0%"></div></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <div class="search" id="commandTrigger">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle
+              cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+          <input type="text" placeholder="Pesquisar leads" readonly aria-label="Abrir pesquisa geral">
+          <span class="kbd">Alt+Espaço</span>
+        </div>
+        <a class="user-chip" href="conta.html"><span class="user-avatar user-initials-avatar" data-user-avatar
+            aria-hidden="true">HC</span><div><div class="user-name">Usuário HCP</div><div class="user-role">Conta HCP</div></div></a>
+      </div>
+
+      <div class="command-backdrop" id="commandBackdrop">
+        <div class="command-modal">
+          <div class="command-input-row">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle
+                cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3"></path></svg>
+            <input type="text" id="commandInput" placeholder="Pesquisar empresas, segmentos, cidades..."
+              autocomplete="off"><span class="kbd">Esc</span>
+          </div>
+          <div class="command-hint">
+            <div class="hint-row">Digite para pesquisar empresas, segmentos ou páginas</div>
+            <div class="hint-row">Ir para: Painel, Segmentos, Favoritos, Histórico</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <div><h1>Gerar Lista de Leads</h1><p>Defina seu público, confira o consumo de créditos e gere uma lista pronta para seleção e exportação.</p></div>
+      </div>
+
+      <div class="lead-builder-layout">
+        <section class="panel" aria-labelledby="leadFormTitle">
+          <div class="panel-head"><div><h2 id="leadFormTitle">Critérios da lista</h2><p>Escolha uma sugestão ou escreva livremente o nicho desejado.</p></div></div>
+          <form id="leadGenerationForm" class="lead-form-grid" novalidate>
+            <div class="lead-field lead-field-wide">
+              <label for="leadNiche">Nicho ou segmento</label>
+              <input class="text-input" id="leadNiche" list="leadNicheSuggestions" maxlength="120"
+                placeholder="Ex.: clínicas odontológicas" autocomplete="off" required>
+              <small>Você pode selecionar uma sugestão ou digitar um nicho próprio.</small>
+              <datalist id="leadNicheSuggestions">
+                <option value="Agências de Marketing"></option><option value="Consultorias Comerciais / SDR / BDR"></option>
+                <option value="Empresas de BPO Financeiro"></option><option value="Clínicas odontológicas"></option>
+                <option value="Escritórios contábeis"></option><option value="Indústrias"></option><option value="Varejo"></option>
+              </datalist>
+            </div>
+            <div class="lead-field">
+              <label for="leadState">Estado (UF)</label>
+              <select class="select-input" id="leadState" required>
+                <option value="ALL">Todos os estados</option>
+                <option value="AC">Acre</option><option value="AL">Alagoas</option><option value="AP">Amapá</option>
+                <option value="AM">Amazonas</option><option value="BA">Bahia</option><option value="CE">Ceará</option>
+                <option value="DF">Distrito Federal</option><option value="ES">Espírito Santo</option><option value="GO">Goiás</option>
+                <option value="MA">Maranhão</option><option value="MT">Mato Grosso</option><option value="MS">Mato Grosso do Sul</option>
+                <option value="MG">Minas Gerais</option><option value="PA">Pará</option><option value="PB">Paraíba</option>
+                <option value="PR">Paraná</option><option value="PE">Pernambuco</option><option value="PI">Piauí</option>
+                <option value="RJ">Rio de Janeiro</option><option value="RN">Rio Grande do Norte</option>
+                <option value="RS">Rio Grande do Sul</option><option value="RO">Rondônia</option><option value="RR">Roraima</option>
+                <option value="SC">Santa Catarina</option><option value="SP">São Paulo</option><option value="SE">Sergipe</option>
+                <option value="TO">Tocantins</option>
+              </select>
+            </div>
+            <div class="lead-field">
+              <label for="leadCity">Cidade</label>
+              <input class="text-input" id="leadCity" maxlength="80" placeholder="Todas as cidades">
+              <small>Deixe em branco para pesquisar em todo o estado selecionado.</small>
+            </div>
+            <div class="lead-field lead-field-wide">
+              <label for="leadQuantity">Quantidade de leads</label>
+              <select class="select-input" id="leadQuantity" required>
+                <option value="50">50 leads</option><option value="100">100 leads</option><option value="150">150 leads</option>
+                <option value="200">200 leads</option><option value="250">250 leads</option><option value="300">300 leads</option>
+              </select>
+            </div>
+
+            <fieldset class="lead-filter-fieldset">
+              <legend>Filtros básicos</legend>
+              <p>Os filtros são opcionais e ajudam a deixar a lista mais próxima do seu cliente foco.</p>
+              <div class="lead-filter-grid">
+                <div class="lead-field"><label for="leadCompanySize">Porte da empresa</label><select class="select-input" id="leadCompanySize">
+                  <option value="any">Qualquer porte</option><option value="micro">Microempresa</option><option value="small">Pequena</option>
+                  <option value="medium">Média</option><option value="large">Grande</option></select></div>
+                <div class="lead-field"><label for="leadStatus">Situação cadastral</label><select class="select-input" id="leadStatus">
+                  <option value="active">Ativa</option><option value="any">Qualquer situação</option><option value="inactive">Inativa</option></select></div>
+                <div class="lead-field"><label for="leadCompanyType">Tipo de empresa</label><select class="select-input" id="leadCompanyType">
+                  <option value="any">Qualquer tipo</option><option value="mei">MEI</option><option value="ltda">Sociedade Limitada</option>
+                  <option value="sa">Sociedade Anônima</option><option value="individual">Empresário Individual</option></select></div>
+                <div class="lead-field"><label for="leadWebsite">Presença digital</label><select class="select-input" id="leadWebsite">
+                  <option value="any">Com ou sem site</option><option value="with">Possui site</option><option value="without">Não possui site</option></select></div>
+              </div>
+            </fieldset>
+
+            <p class="lead-status" id="leadFormMessage" role="status" aria-live="polite" hidden></p>
+            <div class="lead-form-actions"><button class="lead-secondary-btn" id="clearLeadForm" type="button">Limpar</button>
+              <button class="primary-btn" id="generateLeadsButton" type="submit">Gerar lista</button></div>
+          </form>
+        </section>
+
+        <aside class="panel lead-credit-panel" aria-labelledby="creditSummaryTitle">
+          <h2 id="creditSummaryTitle">Resumo de créditos</h2>
+          <p>Cada lead gerado utiliza 1 crédito do saldo da sua conta.</p>
+          <div class="lead-credit-list">
+            <div class="lead-credit-row"><span>Saldo disponível</span><strong id="availableCredits">1.000</strong></div>
+            <div class="lead-credit-row"><span>Custo desta lista</span><strong id="estimatedCost">50</strong></div>
+            <div class="lead-credit-row"><span>Saldo após gerar</span><strong id="creditsAfterGeneration">950</strong></div>
+          </div>
+          <div class="lead-credit-note">O débito é registrado de forma segura e não é repetido ao tentar novamente a mesma solicitação.</div>
+        </aside>
+      </div>
+
+      <section class="panel lead-results-panel" id="leadResultsPanel" aria-labelledby="leadResultsTitle">
+        <div class="lead-results-toolbar">
+          <div><h2 id="leadResultsTitle">Resultados</h2><p id="leadResultsSummary">Gere uma lista para visualizar e selecionar os leads.</p></div>
+          <div class="lead-toolbar-actions">
+            <input class="text-input lead-list-name" id="leadListName" maxlength="80" placeholder="Nome da lista">
+            <button class="lead-action-btn" id="saveLeadList" type="button" disabled>Salvar lista</button>
+            <button class="lead-action-btn" id="exportLeadCsv" type="button" disabled>Exportar CSV</button>
+            <button class="lead-action-btn" id="exportLeadXlsx" type="button" disabled>Exportar Excel (.XLSX)</button>
+          </div>
+        </div>
+        <p class="lead-status" id="leadResultsMessage" role="status" aria-live="polite" hidden></p>
+        <div class="lead-table-wrap">
+          <table class="data-table lead-table">
+            <thead><tr><th><input id="selectAllLeads" type="checkbox" aria-label="Selecionar todos os leads" disabled></th>
+              <th>Empresa</th><th>CNPJ</th><th>Nicho</th><th>Localização</th><th>Telefone</th><th>E-mail</th>
+              <th>Site</th><th>Porte</th><th>Situação</th><th>Tipo</th><th>Avaliação</th></tr></thead>
+            <tbody id="leadResultsBody"><tr><td colspan="12"><div class="lead-empty">Nenhuma lista gerada até o momento.</div></td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel lead-saved-panel" aria-labelledby="savedListsTitle">
+        <div class="panel-head"><div><h2 id="savedListsTitle">Listas salvas neste dispositivo</h2><p>As listas ficam separadas neste navegador ou aplicativo. Para usá-las em outro ambiente, exporte o arquivo.</p></div></div>
+        <div class="lead-saved-list" id="savedLeadLists"><div class="lead-empty">Nenhuma lista salva.</div></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2"></script>
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/script.js"></script>
+  <script src="../js/leads.js"></script>
+</body>
+
+</html>

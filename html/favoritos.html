@@ -164,76 +164,51 @@
       <div class="page-head">
         <div>
           <h1>Favoritos</h1>
-          <p>3 empresas salvas</p>
+          <p>Organize os nichos que acompanha e as listas de leads que deseja reutilizar.</p>
         </div>
-        <button class="primary-btn" id="exportBtn"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="1.8">
-            <rect x="3" y="6" width="18" height="12" rx="2"></rect>
-            <path d="M3 10h18"></path>
-          </svg>Exportação</button>
+        <a class="primary-btn" href="gerar-leads.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="1.8"><path d="M12 5v14M5 12h14"></path></svg>Gerar nova lista</a>
       </div>
 
-      <section class="panel">
-        <div class="table-toolbar">
-          <div class="search-bar-inline"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-              stroke-width="1.8">
-              <circle cx="11" cy="11" r="7"></circle>
-              <path d="M21 21l-4.3-4.3"></path>
-            </svg><input class="table-filter-input" placeholder="Pesquisar favoritos..."></div>
-          <select class="select-input" style="max-width:180px;">Todos estados</select>
+      <div class="favorite-tabs" role="tablist" aria-label="Tipos de favoritos">
+        <button class="favorite-tab active" id="favoriteNichesTab" type="button" role="tab" aria-selected="true"
+          aria-controls="favoriteNichesPanel" data-favorite-tab="niches">Nichos Favoritos</button>
+        <button class="favorite-tab" id="favoriteListsTab" type="button" role="tab" aria-selected="false"
+          aria-controls="favoriteListsPanel" data-favorite-tab="lists">Listas Favoritas</button>
+      </div>
+
+      <section class="panel favorite-panel" id="favoriteNichesPanel" role="tabpanel" aria-labelledby="favoriteNichesTab">
+        <div class="panel-head">
+          <div><h2>Nichos Favoritos</h2><p>Acesse rapidamente os públicos de maior interesse.</p></div>
         </div>
-        <div class="table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>Empresa</th>
-                <th>Categoria</th>
-                <th>Localização</th>
-                <th>Classificação</th>
-                <th>Avaliações</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar">AM</div><strong>Alimentos Membros</strong>
-                  </div>
-                </td>
-                <td>Centro Distribuição</td>
-                <td>Fênix, AZ</td>
-                <td class="star-val">★ 4.7</td>
-                <td>447</td>
-                <td><span class="remove-link">Remover</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar">SP</div><strong>Soluções Pioneiras</strong>
-                  </div>
-                </td>
-                <td>Restaurante</td>
-                <td>Dallas, TX</td>
-                <td class="star-val">★ 3.0</td>
-                <td>408</td>
-                <td><span class="remove-link">Remover</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar">TH</div><strong>Tecnologia Harbor</strong>
-                  </div>
-                </td>
-                <td>Fazenda</td>
-                <td>Brooklyn, NY</td>
-                <td class="star-val">★ 3.3</td>
-                <td>369</td>
-                <td><span class="remove-link">Remover</span></td>
-              </tr>
-            </tbody>
-          </table>
+        <div class="favorite-card-grid" id="favoriteNichesGrid">
+          <article class="favorite-card" data-favorite-niche="Agências de Marketing">
+            <span class="favorite-card-icon">🎯</span><div><h3>Agências de Marketing</h3><p>Principal cliente · prospecção B2B</p></div>
+            <div class="favorite-card-actions"><a class="chip-btn" href="gerar-leads.html?nicho=Ag%C3%AAncias%20de%20Marketing">Gerar lista</a><button class="chip-btn favorite-remove" type="button">Remover</button></div>
+          </article>
+          <article class="favorite-card" data-favorite-niche="Consultorias Comerciais / SDR / BDR">
+            <span class="favorite-card-icon">📞</span><div><h3>Consultorias Comerciais / SDR / BDR</h3><p>Vendas consultivas e outbound</p></div>
+            <div class="favorite-card-actions"><a class="chip-btn" href="gerar-leads.html?nicho=Consultorias%20Comerciais%20%2F%20SDR%20%2F%20BDR">Gerar lista</a><button class="chip-btn favorite-remove" type="button">Remover</button></div>
+          </article>
+          <article class="favorite-card" data-favorite-niche="Empresas de BPO Financeiro">
+            <span class="favorite-card-icon">💰</span><div><h3>Empresas de BPO Financeiro</h3><p>Operações financeiras terceirizadas</p></div>
+            <div class="favorite-card-actions"><a class="chip-btn" href="gerar-leads.html?nicho=Empresas%20de%20BPO%20Financeiro">Gerar lista</a><button class="chip-btn favorite-remove" type="button">Remover</button></div>
+          </article>
         </div>
+        <p class="favorite-empty" id="favoriteNichesEmpty" hidden>Nenhum nicho favorito. Você pode adicioná-los durante uma pesquisa.</p>
+      </section>
+
+      <section class="panel favorite-panel" id="favoriteListsPanel" role="tabpanel" aria-labelledby="favoriteListsTab" hidden>
+        <div class="panel-head">
+          <div><h2>Listas Favoritas</h2><p>Listas salvas ficam disponíveis para revisar e exportar novamente.</p></div>
+        </div>
+        <div class="favorite-list-grid" id="favoriteListsGrid">
+          <article class="favorite-list-card" data-default-favorite-list>
+            <div><span class="favorite-list-badge">3 leads</span><h3>Empresas favoritas</h3><p>Alimentos Membros · Soluções Pioneiras · Tecnologia Harbor</p><small>Lista preservada dos seus favoritos anteriores</small></div>
+            <div class="favorite-card-actions"><button class="chip-btn favorite-list-open" type="button">Ver empresas</button><button class="chip-btn favorite-list-export" type="button">Exportar CSV</button><button class="chip-btn favorite-remove" type="button">Remover</button></div>
+          </article>
+        </div>
+        <p class="favorite-empty" id="favoriteListsEmpty" hidden>Nenhuma lista favorita. Gere uma lista e marque-a como favorita.</p>
       </section>
 
     </main>

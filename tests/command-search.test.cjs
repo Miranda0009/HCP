@@ -38,6 +38,17 @@ test('empresa pesquisada recebe um destino direto para sua posição', () => {
   assert.match(panel, /id="empresa-solucoes-pioneiras"/);
 });
 
+test('busca global aceita termos em inglês e devolve rótulos localizados', () => {
+  const [leadGenerator] = vm.runInContext("findCommandEntries('generate lead list', 7, 'en-US')", context);
+  assert.equal(leadGenerator.name, 'Generate Lead List');
+  assert.equal(leadGenerator.meta, 'Create, select, and export leads');
+  assert.equal(leadGenerator.type, 'Page');
+
+  const [favorites] = vm.runInContext("findCommandEntries('favorites', 7, 'en-US')", context);
+  assert.equal(favorites.name, 'Favorites');
+  assert.equal(favorites.href, 'favoritos.html');
+});
+
 test('catálogo antigo de segmentos não aparece mais', () => {
   const segments = fs.readFileSync(path.join(root, 'html', 'segmentos.html'), 'utf8');
   assert.doesNotMatch(segments, /Segmentos prontos/);

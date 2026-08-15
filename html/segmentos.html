@@ -247,9 +247,24 @@
                 <h2>Compartilhe a qualidade da sua lista</h2>
                 <p>Informe de onde vieram os leads e quais dados foram realmente úteis para sua operação.</p>
               </div>
-              <div class="token-balance-card">
-                <span>Seus tokens</span>
+            </div>
+
+            <div class="usage-grid exchange-usage-summary" aria-label="Limites mensais de troca">
+              <div class="usage-box">
+                <strong id="monthlyExchangeUsed">0 / 3</strong>
+                <span id="monthlyExchangeUsedLabel">Trocas usadas no mês</span>
+              </div>
+              <div class="usage-box">
+                <strong id="monthlyExchangeRemaining">3</strong>
+                <span id="monthlyExchangeRemainingLabel">Trocas restantes</span>
+              </div>
+              <div class="usage-box">
+                <strong id="monthlyExchangeRenewal">—</strong>
+                <span id="monthlyExchangeRenewalLabel">Próxima renovação</span>
+              </div>
+              <div class="usage-box">
                 <strong id="tokenBalance">0</strong>
+                <span id="tokenBalanceLabel">Seus tokens</span>
               </div>
             </div>
 
@@ -291,6 +306,11 @@
                   placeholder="Ex.: Lista outbound de agosto" required>
               </div>
 
+              <div class="feedback-field">
+                <label id="feedbackExchangeDateLabel" for="feedbackExchangeDate">Data da troca</label>
+                <input id="feedbackExchangeDate" type="text" readonly aria-readonly="true">
+              </div>
+
               <div class="feedback-field feedback-field-wide">
                 <label for="feedbackNiche">Nicho da empresa</label>
                 <input id="feedbackNiche" type="text" maxlength="120"
@@ -319,6 +339,13 @@
                 <input id="feedbackNotes" type="text" maxlength="500"
                   placeholder="Quais campos ajudaram mais?">
               </div>
+
+              <label class="feedback-field-wide" for="confirmLeadExchange"
+                style="display:flex;align-items:flex-start;gap:10px;color:var(--white);font-size:12.5px;font-weight:600;">
+                <input id="confirmLeadExchange" type="checkbox" required
+                  style="width:auto;height:auto;margin-top:2px;accent-color:var(--purple-vivid);">
+                <span id="confirmLeadExchangeText">Confirmo esta troca de informações e o recebimento de 25 tokens.</span>
+              </label>
 
               <div class="feedback-form-actions feedback-field-wide">
                 <p>Os dados serão usados para comparar a qualidade das APIs e sugerir o plano mais adequado.</p>

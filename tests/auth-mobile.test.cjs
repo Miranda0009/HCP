@@ -23,6 +23,7 @@ function createElement() {
     },
     checkValidity: () => true,
     reportValidity() {},
+    focus() {},
     listener(type) {
       return listeners.get(type);
     }
@@ -32,13 +33,14 @@ function createElement() {
 function loadAuth({ launchUrl, emailExists = false } = {}) {
   const ids = [
     'authForm', 'nameField', 'emailField', 'loginName', 'loginEmail', 'loginPassword',
+    'signupFields', 'loginPhone', 'loginCompanyNiche', 'loginUserCount', 'loginPlanBuilderBtn', 'signupPlanSummary',
     'rememberField', 'rememberSession', 'authSubmitBtn', 'googleAuthBtn',
     'forgotPasswordBtn', 'authDivider', 'authFooter', 'authModeToggle', 'authTitle',
     'authDescription', 'authPrompt', 'authFeedback'
   ];
   const elements = Object.fromEntries(ids.map((id) => [id, createElement()]));
   const storage = new Map();
-  const calls = { redirects: [], sessions: [], signUps: [] };
+  const calls = { redirects: [], sessions: [], signUps: [], oauth: [], planBuilder: [] };
   let appUrlListener;
   let currentSession = null;
 
@@ -55,6 +57,10 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
       signUp: async (payload) => {
         calls.signUps.push(payload);
         return { data: { session: null, user }, error: null };
+      },
+      signInWithOAuth: async (payload) => {
+        calls.oauth.push(payload);
+        return { data: {}, error: null };
       },
       setSession: async (tokens) => {
         calls.sessions.push(tokens);
@@ -93,6 +99,7 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
     location,
     hcpSupabase: client,
     hcpProfileCache: { write() {} },
+    HCPPlanBuilder: { open(options) { calls.planBuilder.push(options); } },
     history: { replaceState() {} },
     Capacitor: {
       isNativePlatform: () => true,
@@ -126,7 +133,7 @@ function loadAuth({ launchUrl, emailExists = false } = {}) {
     console
   });
 
-  return { appUrlListener: () => appUrlListener, calls, elements };
+  return { appUrlListener: () => appUrlListener, calls, elements, storage };
 }
 
 const flushPromises = () => new Promise((resolvePromise) => setImmediate(resolvePromise));
@@ -137,20 +144,30 @@ test('cadastro no Android usa o deep link próprio do HCP', async () => {
 
   elements.authModeToggle.listener('click')();
   elements.loginName.value = 'Mobile HCP';
+  elements.loginPhone.value = '(11) 99999-9999';
+  elements.loginCompanyNiche.value = 'Agência de Marketing';
+  elements.loginUserCount.value = '3';
   elements.loginEmail.value = 'mobile@hcp.test';
   elements.loginPassword.value = 'senha-segura';
   await elements.authForm.listener('submit')({ preventDefault() {} });
 
   assert.equal(calls.signUps.length, 1);
   assert.equal(calls.signUps[0].options.emailRedirectTo, 'com.hcp.oportunidades://auth/callback');
+  assert.equal(calls.signUps[0].options.data.phone, '(11) 99999-9999');
+  assert.equal(calls.signUps[0].options.data.company_niche, 'Agência de Marketing');
+  assert.equal(calls.signUps[0].options.data.expected_user_count, 3);
+  assert.equal(calls.signUps[0].options.data.selected_plan, 'later');
 });
 
-test('cadastro bloqueia e-mail que já pertence a outra conta', async () => {
-  const { calls, elements } = loadAuth({ emailExists: true });
+test('cadastro bloqueia e-mail existente sem deixar onboarding para outra conta', async () => {
+  const { calls, elements, storage } = loadAuth({ emailExists: true });
   await flushPromises();
 
   elements.authModeToggle.listener('click')();
   elements.loginName.value = 'Conta Existente';
+  elements.loginPhone.value = '(11) 98888-7777';
+  elements.loginCompanyNiche.value = 'BPO Financeiro';
+  elements.loginUserCount.value = '2';
   elements.loginEmail.value = 'existente@hcp.test';
   elements.loginPassword.value = 'senha-segura';
   await elements.authForm.listener('submit')({ preventDefault() {} });
@@ -158,6 +175,55 @@ test('cadastro bloqueia e-mail que já pertence a outra conta', async () => {
   assert.equal(calls.signUps.length, 1);
   assert.equal(elements.authFeedback.textContent, 'Erro. Esse endereço de e-mail já está conectado à outra conta.');
   assert.match(elements.authFeedback.className, /is-error/);
+  assert.equal(storage.has('hcp-pending-onboarding'), false);
+});
+
+test('cadastro com Google preserva onboarding sem exigir e-mail digitado', async () => {
+  const { calls, elements, storage } = loadAuth();
+  await flushPromises();
+
+  elements.authModeToggle.listener('click')();
+  elements.loginName.value = 'Conta Google';
+  elements.loginPhone.value = '(11) 97777-6666';
+  elements.loginCompanyNiche.value = 'Consultoria Comercial';
+  elements.loginUserCount.value = '4';
+  elements.loginEmail.value = '';
+  await elements.googleAuthBtn.listener('click')();
+
+  assert.equal(calls.oauth.length, 1);
+  assert.equal(calls.oauth[0].provider, 'google');
+  const pending = JSON.parse(storage.get('hcp-pending-onboarding'));
+  assert.equal(pending.flow, 'google');
+  assert.equal(pending.email, '');
+  assert.equal(pending.company_niche, 'Consultoria Comercial');
+});
+
+test('cadastro com Google exige nome antes de abrir o OAuth', async () => {
+  const { calls, elements } = loadAuth();
+  await flushPromises();
+
+  elements.authModeToggle.listener('click')();
+  elements.loginName.value = '';
+  elements.loginPhone.value = '(11) 97777-6666';
+  elements.loginCompanyNiche.value = 'Consultoria Comercial';
+  elements.loginUserCount.value = '4';
+  await elements.googleAuthBtn.listener('click')();
+
+  assert.equal(calls.oauth.length, 0);
+  assert.equal(elements.authFeedback.textContent, 'Informe seu nome completo.');
+});
+
+test('Monte seu Plano parte da quantidade de usuários informada no cadastro', async () => {
+  const { calls, elements } = loadAuth();
+  await flushPromises();
+
+  elements.authModeToggle.listener('click')();
+  elements.loginUserCount.value = '7';
+  elements.loginPlanBuilderBtn.listener('click')();
+
+  assert.equal(calls.planBuilder.length, 1);
+  assert.equal(calls.planBuilder[0].source, 'signup');
+  assert.equal(calls.planBuilder[0].answers.users, 7);
 });
 
 test('callback móvel cria a sessão e volta para o painel', async () => {

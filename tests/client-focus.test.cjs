@@ -7,10 +7,9 @@ const root = path.resolve(__dirname, '..');
 const html = fs.readFileSync(path.join(root, 'html', 'segmentos.html'), 'utf8');
 const script = fs.readFileSync(path.join(root, 'js', 'segmentos.js'), 'utf8');
 const translations = fs.readFileSync(path.join(root, 'js', 'script.js'), 'utf8');
-const migration = fs.readFileSync(
-  path.join(root, 'supabase', 'migrations', '20260812164342_create_client_focus_profiles.sql'),
-  'utf8'
-);
+const migrationName = fs.readdirSync(path.join(root, 'supabase', 'migrations'))
+  .find((name) => name.endsWith('_create_client_focus_profiles.sql'));
+const migration = fs.readFileSync(path.join(root, 'supabase', 'migrations', migrationName), 'utf8');
 
 test('cliente foco tem exatamente três perguntas e não pede usuários do HCP', () => {
   assert.equal((html.match(/<label class="client-focus-question"/g) || []).length, 3);

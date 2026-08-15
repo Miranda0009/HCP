@@ -29,7 +29,7 @@ const HCP_ENGLISH = Object.freeze({
   "Preferências - HCP": "Preferences - HCP",
   "HCP - Login": "HCP - Sign in",
   "HCP, inteligência comercial": "HCP, sales intelligence",
-  "INTELIGÊNCIA COMERCIAL": "SALES INTELLIGENCE",
+  "INTELIGÊNCIA COMERCIAL": "COMMERCIAL INTELLIGENCE",
   "Bem-vindo ao HCP,": "Welcome to HCP,",
   "seu gerenciador de oportunidades.": "your opportunity manager.",
   "Encontre as empresas certas, descubra oportunidades reais e transforme pesquisa em vendas.": "Find the right companies, uncover real opportunities, and turn research into sales.",
@@ -53,6 +53,17 @@ const HCP_ENGLISH = Object.freeze({
   "ESPAÇO DE TRABALHO": "WORKSPACE",
   "CONTA": "ACCOUNT",
   "Painel": "Dashboard",
+  "Gerar Lista de Leads": "Generate Lead List",
+  "Gerar Lista de Leads - HCP": "Generate Lead List - HCP",
+  "Crie, selecione e exporte leads": "Create, select, and export leads",
+  "Visão geral do HCP": "HCP overview",
+  "Filtros e lista de leads": "Filters and lead list",
+  "Empresas salvas": "Saved companies",
+  "Pesquisas realizadas": "Completed searches",
+  "Assinatura e consumo": "Subscription and usage",
+  "Perfil e segurança": "Profile and security",
+  "Tema, idioma e notificações": "Theme, language, and notifications",
+  "Defina seu público, confira o consumo de créditos e gere uma lista pronta para seleção e exportação.": "Define your audience, review credit usage, and generate a list ready for selection and export.",
   "Pesquisar empresas": "Search companies",
   "Segmentos inteligentes": "Smart segments",
   "Favoritos": "Favorites",
@@ -60,11 +71,27 @@ const HCP_ENGLISH = Object.freeze({
   "Planos e limites": "Plans and limits",
   "Minha conta": "My account",
   "Preferências": "Preferences",
+  "Usuários do HCP": "HCP users",
+  "Selecione uma sugestão ou digite seu nicho": "Select a suggestion or enter your niche",
+  "Agência de Marketing": "Marketing Agency",
+  "Consultoria Comercial / SDR / BDR": "Sales Consulting / SDR / BDR",
+  "BPO Financeiro": "Financial BPO",
+  "Tecnologia / SaaS": "Technology / SaaS",
+  "Serviços profissionais": "Professional services",
+  "Como deseja escolher seu plano?": "How would you like to choose your plan?",
+  "Para começar": "To get started",
+  "Para equipes": "For teams",
+  "Alto volume": "High volume",
+  "Selecionar depois": "Select later",
+  "Cadastre-se sem plano": "Sign up without a plan",
+  "Monte seu Plano": "Build Your Plan",
+  "Você poderá escolher ou alterar seu plano depois.": "You can choose or change your plan later.",
   "Seu plano": "Your plan",
   "Pesquisas usadas": "Searches used",
   "Gerenciar": "Manage",
   "/mês": "/month",
   "Pesquisar leads": "Search leads",
+  "Pesquisar empresas, segmentos, cidades...": "Search companies, segments, cities...",
   "Recolher menu": "Collapse menu",
   "Abrir menu": "Open menu",
   "Fechar menu": "Close menu",
@@ -128,6 +155,46 @@ const HCP_ENGLISH = Object.freeze({
   "Categoria empresarial": "Business category",
   "Todos os estados": "All states",
   "Todos estados": "All states",
+  "Critérios da lista": "List criteria",
+  "Escolha uma sugestão ou escreva livremente o nicho desejado.": "Choose a suggestion or freely enter the desired niche.",
+  "Nicho ou segmento": "Niche or segment",
+  "Você pode selecionar uma sugestão ou digitar um nicho próprio.": "You can select a suggestion or enter your own niche.",
+  "Estado (UF)": "State",
+  "Todas as cidades": "All cities",
+  "Deixe em branco para pesquisar em todo o estado selecionado.": "Leave blank to search the entire selected state.",
+  "Quantidade de leads": "Lead quantity",
+  "Filtros básicos": "Basic filters",
+  "Os filtros são opcionais e ajudam a deixar a lista mais próxima do seu cliente foco.": "Filters are optional and help align the list with your target customer.",
+  "Porte da empresa": "Company size",
+  "Situação cadastral": "Registration status",
+  "Tipo de empresa": "Company type",
+  "Presença digital": "Digital presence",
+  "Qualquer porte": "Any size",
+  "Microempresa": "Micro business",
+  "Pequena": "Small",
+  "Média": "Medium",
+  "Grande": "Large",
+  "Ativa": "Active",
+  "Inativa": "Inactive",
+  "Qualquer situação": "Any status",
+  "Qualquer tipo": "Any type",
+  "Com ou sem site": "With or without a website",
+  "Não possui site": "No website",
+  "Limpar": "Clear",
+  "Resumo de créditos": "Credit summary",
+  "Cada lead gerado utiliza 1 crédito do saldo da sua conta.": "Each generated lead uses 1 credit from your account balance.",
+  "Saldo disponível": "Available balance",
+  "Custo desta lista": "This list cost",
+  "Saldo após gerar": "Balance after generation",
+  "O débito é registrado de forma segura e não é repetido ao tentar novamente a mesma solicitação.": "The debit is recorded securely and is not repeated when retrying the same request.",
+  "As listas ficam separadas neste navegador ou aplicativo. Para usá-las em outro ambiente, exporte o arquivo.": "Lists are stored separately in this browser or app. Export the file to use them elsewhere.",
+  "Gere uma lista para visualizar e selecionar os leads.": "Generate a list to view and select leads.",
+  "Nome da lista": "List name",
+  "Salvar lista": "Save list",
+  "Exportar Excel (.XLSX)": "Export Excel (.XLSX)",
+  "Listas salvas neste dispositivo": "Lists saved on this device",
+  "As listas locais ficam disponíveis no site e no aplicativo deste dispositivo.": "Local lists are available on the website and app on this device.",
+  "Nenhuma lista salva.": "No saved lists.",
   "Todas as categorias": "All categories",
   "Possui site": "Has a website",
   "Nenhum site": "No website",
@@ -176,11 +243,41 @@ const HCP_ENGLISH = Object.freeze({
   "Data": "Date",
   "Ações": "Actions",
   "Remover": "Remove",
+  "Organize os nichos que acompanha e as listas de leads que deseja reutilizar.": "Organize the niches you follow and the lead lists you want to reuse.",
+  "Gerar nova lista": "Generate new list",
+  "Tipos de favoritos": "Favorite types",
+  "Nichos Favoritos": "Favorite Niches",
+  "Listas Favoritas": "Favorite Lists",
+  "Acesse rapidamente os públicos de maior interesse.": "Quickly access your highest-priority audiences.",
+  "Principal cliente · prospecção B2B": "Primary customer · B2B prospecting",
+  "Vendas consultivas e outbound": "Consultative sales and outbound",
+  "Operações financeiras terceirizadas": "Outsourced financial operations",
+  "Gerar lista": "Generate list",
+  "Nenhum nicho favorito. Você pode adicioná-los durante uma pesquisa.": "No favorite niches. You can add them during a search.",
+  "Listas salvas ficam disponíveis para revisar e exportar novamente.": "Saved lists remain available for review and export.",
+  "Empresas favoritas": "Favorite companies",
+  "Lista preservada dos seus favoritos anteriores": "List preserved from your previous favorites",
+  "Ver empresas": "View companies",
+  "Ocultar empresas": "Hide companies",
+  "Exportar CSV": "Export CSV",
+  "Lista sem nome": "Untitled list",
+  "Lista pronta para revisar": "List ready for review",
+  "Lista salva": "Saved list",
+  "Esta lista ainda não possui leads para exportar.": "This list does not have leads to export yet.",
+  "Lista exportada em CSV.": "List exported as CSV.",
+  "Favorito removido.": "Favorite removed.",
+  "Nenhuma lista favorita. Gere uma lista e marque-a como favorita.": "No favorite lists. Generate a list and save it as a favorite.",
   "Semana passada": "Last week",
   "Suas últimas 20 pesquisas realizadas.": "Your last 20 completed searches.",
   "Histórico de pesquisas": "Search history",
   "Histórico 7 dias": "7-day history",
   "Escolha o plano que escala com sua prospecção.": "Choose the plan that scales with your prospecting.",
+  "ALTERNATIVA PERSONALIZADA": "CUSTOM ALTERNATIVE",
+  "CONFIGURAÇÃO SOB MEDIDA": "TAILORED CONFIGURATION",
+  "Responda quatro etapas rápidas e veja qual configuração combina com o volume, a equipe e os recursos da sua operação.": "Complete four quick steps to see which configuration fits your volume, team, and operation needs.",
+  "Começar configuração": "Start configuration",
+  "Defina usuários, listas, leads e funcionalidades. O HCP explica como cada resposta influencia a recomendação antes de você confirmar.": "Define users, lists, leads, and features. HCP explains how each answer influences the recommendation before you confirm.",
+  "Montar configuração": "Build configuration",
   "Arranque": "Starter",
   "Negócios": "Business",
   "Pró · $89/mo": "Pro · $89/month",
@@ -285,6 +382,8 @@ const HCP_ENGLISH = Object.freeze({
   "Nome completo": "Full name",
   "Empresa": "Company",
   "Telefone": "Phone",
+  "Usuários previstos no HCP": "Expected HCP users",
+  "Selecione ou digite seu nicho": "Select or enter your niche",
   "E-mail de acesso": "Sign-in email",
   "Salvar alterações": "Save changes",
   "Alterar foto": "Change photo",
@@ -400,6 +499,7 @@ function companySearchHref(name) {
 
 const HCP_COMMAND_ENTRIES = Object.freeze([
   { name: 'Painel', type: 'Página', meta: 'Visão geral do HCP', href: 'painel.html' },
+  { name: 'Gerar Lista de Leads', type: 'Página', meta: 'Crie, selecione e exporte leads', href: 'gerar-leads.html' },
   { name: 'Pesquisar empresas', type: 'Página', meta: 'Filtros e lista de leads', href: 'pesquisar.html' },
   { name: 'Segmentos inteligentes', type: 'Página', meta: 'Troca de dados por tokens', href: 'segmentos.html' },
   { name: 'Favoritos', type: 'Página', meta: 'Empresas salvas', href: 'favoritos.html' },
@@ -419,16 +519,32 @@ const HCP_COMMAND_ENTRIES = Object.freeze([
   }))
 ]);
 
-function findCommandEntries(value, limit = 7) {
+function localizedCommandEntry(entry, language = currentLanguage()) {
+  if (language !== 'en-US') return entry;
+  return {
+    ...entry,
+    name: translateValue(entry.name),
+    meta: translateValue(entry.meta),
+    type: entry.type === 'Empresa' ? 'Company' : 'Page'
+  };
+}
+
+function findCommandEntries(value, limit = 7, language = currentLanguage()) {
   const query = normalizeSearchTerm(value);
   if (!query) return [];
 
   return HCP_COMMAND_ENTRIES
     .map((entry) => {
-      const name = normalizeSearchTerm(entry.name);
-      const meta = normalizeSearchTerm(`${entry.type} ${entry.meta}`);
-      const score = name.startsWith(query) ? 0 : (name.includes(query) ? 1 : (meta.includes(query) ? 2 : 99));
-      return { entry, score };
+      const localizedEntry = localizedCommandEntry(entry, language);
+      const originalName = normalizeSearchTerm(entry.name);
+      const localizedName = normalizeSearchTerm(localizedEntry.name);
+      const originalMeta = normalizeSearchTerm(`${entry.type} ${entry.meta}`);
+      const localizedMeta = normalizeSearchTerm(`${localizedEntry.type} ${localizedEntry.meta}`);
+      const startsWithQuery = originalName.startsWith(query) || localizedName.startsWith(query);
+      const includesQuery = originalName.includes(query) || localizedName.includes(query);
+      const metaIncludesQuery = originalMeta.includes(query) || localizedMeta.includes(query);
+      const score = startsWithQuery ? 0 : (includesQuery ? 1 : (metaIncludesQuery ? 2 : 99));
+      return { entry: localizedEntry, score };
     })
     .filter((result) => result.score < 99)
     .sort((a, b) => a.score - b.score || a.entry.name.localeCompare(b.entry.name, 'pt-BR'))
@@ -470,6 +586,9 @@ function translateValue(value) {
   const savedCompaniesMatch = normalizedValue.match(/^(\d+) empresas salvas$/);
   if (savedCompaniesMatch) return `${savedCompaniesMatch[1]} saved companies`;
 
+  const savedOnMatch = normalizedValue.match(/^Salva em (.+)$/);
+  if (savedOnMatch) return `Saved on ${savedOnMatch[1]}`;
+
   const planMatch = normalizedValue.match(/^Plano (.+) selecionado\. Redirecionando para o checkout\.\.\.$/);
   if (planMatch) return `${translateValue(planMatch[1])} plan selected. Redirecting to checkout...`;
 
@@ -501,6 +620,9 @@ function applyLanguage(language = currentLanguage()) {
 
   document.querySelectorAll('option').forEach((option) => {
     if (!option.hasAttribute('value')) option.setAttribute('value', option.textContent.trim());
+  });
+  document.querySelectorAll('datalist[data-translate-values] option[value]').forEach((option) => {
+    translateAttribute(option, 'value', supportedLanguage);
   });
 
   const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
@@ -550,6 +672,58 @@ document.addEventListener('DOMContentLoaded', () => {
   applyTheme(readPreference(HCP_THEME_KEY, 'dark'));
   applyLanguage(currentLanguage());
 
+  /* ---------- Estrutura global aditiva: marca e Gerar Lista de Leads ---------- */
+  const logoLabel = document.querySelector('.logo .logo-text');
+  if (logoLabel && !logoLabel.querySelector('.brand-title')) {
+    logoLabel.replaceChildren();
+    const title = document.createElement('strong');
+    const subtitle = document.createElement('small');
+    title.className = 'brand-title';
+    subtitle.className = 'brand-subtitle';
+    title.textContent = 'HCP';
+    subtitle.textContent = 'INTELIGÊNCIA COMERCIAL';
+    logoLabel.append(title, subtitle);
+  }
+
+  const sidebarPanelLink = document.querySelector('.sidebar .nav-item[href="painel.html"]');
+  const existingLeadGeneratorLink = document.querySelector('.sidebar .nav-item[href="gerar-leads.html"]');
+  if (sidebarPanelLink && !existingLeadGeneratorLink) {
+    const leadLink = document.createElement('a');
+    const isLeadPage = /(?:^|\/)gerar-leads\.html$/i.test(window.location.pathname);
+    leadLink.className = `nav-item${isLeadPage ? ' active' : ''}`;
+    leadLink.href = 'gerar-leads.html';
+    leadLink.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16M4 12h10M4 19h7"></path><path d="M18 15v6M15 18h6"></path></svg><span class="nav-label">Gerar Lista de Leads</span>';
+    if (isLeadPage) sidebarPanelLink.classList.remove('active');
+    sidebarPanelLink.insertAdjacentElement('afterend', leadLink);
+  }
+
+  // A marca e a nova rota são inseridas depois da primeira tradução da página.
+  // Aplicar novamente mantém o primeiro carregamento e futuras trocas de idioma coerentes.
+  applyLanguage(currentLanguage());
+
+  const commandTriggerIcon = document.getElementById('commandTrigger');
+  if (commandTriggerIcon) {
+    const label = currentLanguage() === 'en-US' ? 'Open search' : 'Abrir pesquisa';
+    commandTriggerIcon.setAttribute('role', 'button');
+    commandTriggerIcon.setAttribute('tabindex', '0');
+    commandTriggerIcon.setAttribute('aria-label', label);
+    commandTriggerIcon.setAttribute('title', label);
+  }
+
+  const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let glowFrame = 0;
+  if (app && finePointer.matches && !reducedMotion.matches) {
+    window.addEventListener('pointermove', (event) => {
+      if (glowFrame) return;
+      glowFrame = requestAnimationFrame(() => {
+        app.style.setProperty('--cursor-x', `${event.clientX}px`);
+        app.style.setProperty('--cursor-y', `${event.clientY}px`);
+        glowFrame = 0;
+      });
+    }, { passive: true });
+  }
+
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
@@ -568,10 +742,15 @@ document.addEventListener('DOMContentLoaded', () => {
     toastStack.className = 'toast-stack';
     document.body.appendChild(toastStack);
   }
+  toastStack.setAttribute('aria-live', 'polite');
+  toastStack.setAttribute('aria-atomic', 'false');
+  toastStack.setAttribute('aria-relevant', 'additions');
   function showToast(message) {
     const visibleMessage = currentLanguage() === 'en-US' ? translateValue(message) : message;
     const toast = document.createElement('div');
     toast.className = 'toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
     toast.innerHTML =
       '<div class="row-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"></path></svg></div>' +
       '<span>' + visibleMessage + '</span>';
@@ -581,6 +760,20 @@ document.addEventListener('DOMContentLoaded', () => {
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 250);
     }, 3200);
+  }
+
+  if (document.querySelector('[data-hcp-plan-builder], [data-plan-builder]')) {
+    window.addEventListener('hcp:plan-selected', (event) => {
+      const recommendation = event.detail?.recommendation;
+      if (!recommendation) return;
+      const english = currentLanguage() === 'en-US';
+      const planName = recommendation.isCustom
+        ? (english ? 'Custom configuration' : 'Configuração personalizada')
+        : recommendation.planName;
+      showToast(english
+        ? `Configuration confirmed. Recommendation: ${planName}.`
+        : `Configuração confirmada. Recomendação: ${planName}.`);
+    });
   }
 
   /* ---------- Navegação: hambúrguer no desktop e drawer no celular ---------- */
@@ -735,10 +928,34 @@ document.addEventListener('DOMContentLoaded', () => {
   const commandInput = document.getElementById('commandInput');
   const commandTrigger = document.getElementById('commandTrigger');
   const novaBuscaBtn = document.getElementById('novaBuscaBtn');
+  const commandModal = commandBackdrop?.querySelector('.command-modal');
   const commandHint = commandBackdrop?.querySelector('.command-hint');
   const commandResults = document.createElement('div');
   let visibleCommandEntries = [];
   let activeCommandIndex = -1;
+  let commandPreviousFocus = null;
+
+  const commandDialogTitle = commandModal ? document.createElement('h2') : null;
+  if (commandModal && commandDialogTitle) {
+    commandDialogTitle.id = 'hcpCommandDialogTitle';
+    commandDialogTitle.textContent = currentLanguage() === 'en-US' ? 'Global search' : 'Pesquisa global';
+    Object.assign(commandDialogTitle.style, {
+      position: 'absolute',
+      width: '1px',
+      height: '1px',
+      padding: '0',
+      margin: '-1px',
+      overflow: 'hidden',
+      clip: 'rect(0, 0, 0, 0)',
+      whiteSpace: 'nowrap',
+      border: '0'
+    });
+    commandModal.prepend(commandDialogTitle);
+    commandModal.setAttribute('role', 'dialog');
+    commandModal.setAttribute('aria-modal', 'true');
+    commandModal.setAttribute('aria-labelledby', commandDialogTitle.id);
+  }
+  commandBackdrop?.setAttribute('aria-hidden', 'true');
 
   commandResults.className = 'command-results';
   commandResults.id = 'commandResults';
@@ -751,6 +968,7 @@ document.addEventListener('DOMContentLoaded', () => {
     commandInput.setAttribute('aria-autocomplete', 'list');
     commandInput.setAttribute('aria-controls', 'commandResults');
     commandInput.setAttribute('aria-expanded', 'false');
+    commandInput.setAttribute('aria-label', currentLanguage() === 'en-US' ? 'Search companies and pages' : 'Pesquisar empresas e páginas');
   }
 
   const resetCommandSuggestions = () => {
@@ -822,14 +1040,13 @@ document.addEventListener('DOMContentLoaded', () => {
       option.setAttribute('role', 'option');
       option.setAttribute('aria-selected', String(index === activeCommandIndex));
       icon.className = 'command-result-icon';
-      icon.textContent = entry.type === 'Empresa' ? '↗' : '⌘';
+      const isCompanyEntry = entry.type === 'Empresa' || entry.type === 'Company';
+      icon.textContent = isCompanyEntry ? '↗' : '⌘';
       content.className = 'command-result-content';
       title.textContent = entry.name;
       meta.textContent = entry.meta;
       type.className = 'command-result-type';
-      type.textContent = currentLanguage() === 'en-US'
-        ? (entry.type === 'Empresa' ? 'Company' : 'Page')
-        : entry.type;
+      type.textContent = entry.type;
 
       content.append(title, meta);
       option.append(icon, content, type);
@@ -846,7 +1063,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const openCommand = () => {
     if (!commandBackdrop) return;
+    commandPreviousFocus = document.activeElement;
     commandBackdrop.classList.add('open');
+    commandBackdrop.setAttribute('aria-hidden', 'false');
     if (notifDropdown) notifDropdown.classList.remove('open');
     renderCommandSuggestions();
     setTimeout(() => commandInput && commandInput.focus(), 50);
@@ -854,9 +1073,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeCommand = () => {
     if (!commandBackdrop) return;
     commandBackdrop.classList.remove('open');
+    commandBackdrop.setAttribute('aria-hidden', 'true');
     if (commandInput) commandInput.value = '';
     resetCommandSuggestions();
+    commandPreviousFocus?.focus?.();
+    commandPreviousFocus = null;
   };
+
+  commandModal?.addEventListener('keydown', (event) => {
+    if (event.key !== 'Tab' || !commandBackdrop?.classList.contains('open')) return;
+    const focusable = Array.from(commandModal.querySelectorAll(
+      'button:not([disabled]):not([hidden]), input:not([disabled]):not([hidden]), [href], [tabindex]:not([tabindex="-1"])'
+    )).filter((element) => element.getClientRects().length > 0);
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  document.addEventListener('hcp:languagechange', () => {
+    const english = currentLanguage() === 'en-US';
+    if (commandDialogTitle) commandDialogTitle.textContent = english ? 'Global search' : 'Pesquisa global';
+    commandInput?.setAttribute('aria-label', english ? 'Search companies and pages' : 'Pesquisar empresas e páginas');
+    if (commandTrigger) {
+      const triggerLabel = english ? 'Open search' : 'Abrir pesquisa';
+      commandTrigger.setAttribute('aria-label', triggerLabel);
+      commandTrigger.setAttribute('title', triggerLabel);
+    }
+    if (commandBackdrop?.classList.contains('open')) renderCommandSuggestions();
+  });
 
   commandInput?.addEventListener('input', renderCommandSuggestions);
   commandInput?.addEventListener('keydown', (event) => {
@@ -875,7 +1126,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (commandTrigger) commandTrigger.addEventListener('click', openCommand);
+  if (commandTrigger) {
+    commandTrigger.addEventListener('click', openCommand);
+    commandTrigger.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openCommand();
+      }
+    });
+  }
   if (novaBuscaBtn) novaBuscaBtn.addEventListener('click', openCommand);
   if (commandBackdrop) {
     commandBackdrop.addEventListener('click', (e) => {
@@ -906,9 +1165,32 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.setAttribute('tabindex', '0');
     toggle.setAttribute('aria-checked', toggle.classList.contains('on') ? 'true' : 'false');
 
+    const scopedSettingKey = () => {
+      const setting = toggle.dataset.settingKey;
+      const userId = window.hcpCurrentUser?.id || window.hcpProfile?.id;
+      return setting && userId ? `hcp-user-setting:${userId}:${setting}` : '';
+    };
+
+    const restoreSetting = () => {
+      const storageKey = scopedSettingKey();
+      if (!storageKey) return;
+      const stored = readPreference(storageKey, '');
+      if (!['true', 'false'].includes(stored)) return;
+      const enabled = stored === 'true';
+      toggle.classList.toggle('on', enabled);
+      toggle.setAttribute('aria-checked', String(enabled));
+    };
+
+    if (toggle.dataset.settingKey) {
+      Promise.resolve(window.hcpProfileReady).then(restoreSetting).catch(() => {});
+    }
+
     const flip = () => {
       toggle.classList.toggle('on');
-      toggle.setAttribute('aria-checked', toggle.classList.contains('on') ? 'true' : 'false');
+      const enabled = toggle.classList.contains('on');
+      toggle.setAttribute('aria-checked', enabled ? 'true' : 'false');
+      const storageKey = scopedSettingKey();
+      if (storageKey) savePreference(storageKey, String(enabled));
     };
 
     toggle.addEventListener('click', flip);
@@ -944,7 +1226,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const billingButtons = document.querySelectorAll('.billing-toggle button[data-billing]');
   const priceValues = document.querySelectorAll('.price-value[data-monthly-price]');
 
-  const updateBillingCycle = (billingCycle) => {
+  const updateBillingCycle = (billingCycle, options = {}) => {
+    const persist = options.persist !== false;
+    const syncLanguage = options.syncLanguage !== false;
     const cycle = billingCycle === 'yearly' ? 'yearly' : 'monthly';
     const hasYearlyDiscount = cycle === 'yearly';
 
@@ -965,12 +1249,34 @@ document.addEventListener('DOMContentLoaded', () => {
         maximumFractionDigits: 2
       });
       const period = document.createElement('span');
-      period.textContent = '/mês';
+      period.textContent = language === 'en-US' ? '/month' : '/mês';
       priceValue.replaceChildren(document.createTextNode(`$${formattedPrice}`), period);
+
+      const priceCard = priceValue.closest('.price-card');
+      let breakdown = priceCard?.querySelector('.annual-breakdown');
+      if (!breakdown && priceCard) {
+        breakdown = document.createElement('div');
+        breakdown.className = 'annual-breakdown';
+        priceValue.insertAdjacentElement('afterend', breakdown);
+      }
+      if (breakdown) {
+        breakdown.hidden = !hasYearlyDiscount;
+        if (hasYearlyDiscount) {
+          const annualTotal = displayedPrice * 12;
+          const annualSavings = (monthlyPrice * 12) - annualTotal;
+          const formatMoney = (value) => value.toLocaleString(language, {
+            minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+            maximumFractionDigits: 2
+          });
+          breakdown.innerHTML = language === 'en-US'
+            ? `<span>Monthly equivalent <strong>$${formatMoney(displayedPrice)}/month</strong></span><span>Annual total upfront <strong>$${formatMoney(annualTotal)}</strong></span><span class="annual-saving">You save <strong>$${formatMoney(annualSavings)}</strong> versus monthly</span>`
+            : `<span>Equivalente mensal <strong>$${formatMoney(displayedPrice)}/mês</strong></span><span>Total anual à vista <strong>$${formatMoney(annualTotal)}</strong></span><span class="annual-saving">Você economiza <strong>$${formatMoney(annualSavings)}</strong> comparado ao mensal</span>`;
+        }
+      }
     });
 
-    savePreference(HCP_BILLING_KEY, cycle);
-    applyLanguage(currentLanguage());
+    if (persist) savePreference(HCP_BILLING_KEY, cycle);
+    if (syncLanguage) applyLanguage(currentLanguage());
   };
 
   billingButtons.forEach((btn) => {
@@ -979,9 +1285,261 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  document.addEventListener('hcp:languagechange', () => {
+    const activeCycle = Array.from(billingButtons).find((button) => button.classList.contains('active'))?.dataset.billing;
+    if (activeCycle) updateBillingCycle(activeCycle, { persist: false, syncLanguage: false });
+  });
+
   if (billingButtons.length && priceValues.length) {
     updateBillingCycle(readPreference(HCP_BILLING_KEY, 'monthly'));
   }
+
+  /* ---------- Favoritos organizados por nichos e listas ---------- */
+  const favoriteTabs = document.querySelectorAll('[data-favorite-tab]');
+  const favoriteNichesPanel = document.getElementById('favoriteNichesPanel');
+  const favoriteListsPanel = document.getElementById('favoriteListsPanel');
+  const favoriteNichesGrid = document.getElementById('favoriteNichesGrid');
+  const favoriteListsGrid = document.getElementById('favoriteListsGrid');
+  const favoriteNichesEmpty = document.getElementById('favoriteNichesEmpty');
+  const favoriteListsEmpty = document.getElementById('favoriteListsEmpty');
+  const favoriteListStorageBaseKey = 'hcp-favorite-lead-lists';
+  const hiddenNichesStorageBaseKey = 'hcp-hidden-favorite-niches';
+  const hiddenDefaultListStorageBaseKey = 'hcp-hide-default-favorite-list';
+  let favoriteListStorageKey = favoriteListStorageBaseKey;
+  let hiddenNichesStorageKey = hiddenNichesStorageBaseKey;
+  let hiddenDefaultListStorageKey = hiddenDefaultListStorageBaseKey;
+  const favoriteCopy = (pt, en) => currentLanguage() === 'en-US' ? en : pt;
+
+  const formatFavoriteSavedDate = (value) => {
+    if (!value) return favoriteCopy('Lista salva', 'Saved list');
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return favoriteCopy('Lista salva', 'Saved list');
+    return `${favoriteCopy('Salva em', 'Saved on')} ${date.toLocaleDateString(currentLanguage())}`;
+  };
+
+  const migrateFavoriteStorage = (userId) => {
+    if (!userId) return false;
+    favoriteListStorageKey = `${favoriteListStorageBaseKey}:${userId}`;
+    hiddenNichesStorageKey = `${hiddenNichesStorageBaseKey}:${userId}`;
+    hiddenDefaultListStorageKey = `${hiddenDefaultListStorageBaseKey}:${userId}`;
+
+    try {
+      const legacyLists = JSON.parse(localStorage.getItem(favoriteListStorageBaseKey) || '[]');
+      const scopedLists = JSON.parse(localStorage.getItem(favoriteListStorageKey) || '[]');
+      if (Array.isArray(legacyLists) && legacyLists.length) {
+        const merged = new Map();
+        [...(Array.isArray(scopedLists) ? scopedLists : []), ...legacyLists].forEach((list) => {
+          const key = list?.id || JSON.stringify(list);
+          if (key) merged.set(key, list);
+        });
+        localStorage.setItem(favoriteListStorageKey, JSON.stringify(Array.from(merged.values())));
+      }
+      localStorage.removeItem(favoriteListStorageBaseKey);
+
+      const legacyNiches = JSON.parse(localStorage.getItem(hiddenNichesStorageBaseKey) || '[]');
+      const scopedNiches = JSON.parse(localStorage.getItem(hiddenNichesStorageKey) || '[]');
+      if (Array.isArray(legacyNiches) && legacyNiches.length) {
+        localStorage.setItem(hiddenNichesStorageKey, JSON.stringify(Array.from(new Set([
+          ...(Array.isArray(scopedNiches) ? scopedNiches : []),
+          ...legacyNiches
+        ]))));
+      }
+      localStorage.removeItem(hiddenNichesStorageBaseKey);
+
+      const legacyDefault = localStorage.getItem(hiddenDefaultListStorageBaseKey);
+      const scopedDefault = localStorage.getItem(hiddenDefaultListStorageKey);
+      if (legacyDefault !== null) {
+        localStorage.setItem(hiddenDefaultListStorageKey, String(legacyDefault === 'true' || scopedDefault === 'true'));
+      }
+      localStorage.removeItem(hiddenDefaultListStorageBaseKey);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const csvEscape = (value) => {
+    const text = String(value ?? '');
+    return /[",\r\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+  };
+
+  const downloadCsv = (fileName, leads) => {
+    const columns = ['Empresa', 'Nicho', 'Cidade', 'UF', 'CNPJ', 'Telefone'];
+    const lines = leads.map((lead) => [
+      lead.name || lead.company || '',
+      lead.niche || lead.cat || '',
+      lead.city || '',
+      lead.state || '',
+      lead.cnpj || '',
+      lead.phone || ''
+    ].map(csvEscape).join(','));
+    const blob = new Blob([`\uFEFF${[columns.join(','), ...lines].join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${fileName.replace(/[^a-z0-9-_]+/gi, '-').replace(/(^-|-$)/g, '') || 'lista-hcp'}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
+  const readFavoriteLists = () => {
+    try {
+      const parsed = JSON.parse(localStorage.getItem(favoriteListStorageKey) || '[]');
+      return Array.isArray(parsed) ? parsed : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const saveFavoriteLists = (lists) => {
+    try { localStorage.setItem(favoriteListStorageKey, JSON.stringify(lists)); } catch { /* sessão sem armazenamento */ }
+  };
+
+  const defaultFavoriteLeads = [
+    { name: 'Alimentos Membros', niche: 'Centro Distribuição', city: 'Fênix', state: 'AZ' },
+    { name: 'Soluções Pioneiras', niche: 'Restaurante', city: 'Dallas', state: 'TX' },
+    { name: 'Tecnologia Harbor', niche: 'Fazenda', city: 'Brooklyn', state: 'NY' }
+  ];
+
+  const syncFavoriteEmptyStates = () => {
+    if (favoriteNichesEmpty && favoriteNichesGrid) favoriteNichesEmpty.hidden = favoriteNichesGrid.children.length > 0;
+    if (favoriteListsEmpty && favoriteListsGrid) favoriteListsEmpty.hidden = favoriteListsGrid.children.length > 0;
+  };
+
+  const attachFavoriteCardActions = (card, listRecord = null) => {
+    const openButton = card.querySelector('.favorite-list-open');
+    const exportButton = card.querySelector('.favorite-list-export');
+    const removeButton = card.querySelector('.favorite-remove');
+    const leads = listRecord?.leads || (card.matches('[data-default-favorite-list]') ? defaultFavoriteLeads : []);
+
+    openButton?.addEventListener('click', () => {
+      let details = card.querySelector('.favorite-list-details');
+      if (!details) {
+        details = document.createElement('ol');
+        details.className = 'favorite-list-details';
+        leads.forEach((lead) => {
+          const item = document.createElement('li');
+          item.textContent = `${lead.name || lead.company || 'Empresa'} · ${lead.city || 'Cidade'}, ${lead.state || 'UF'}`;
+          details.appendChild(item);
+        });
+        card.appendChild(details);
+      } else {
+        details.hidden = !details.hidden;
+      }
+      openButton.textContent = details.hidden
+        ? favoriteCopy('Ver empresas', 'View companies')
+        : favoriteCopy('Ocultar empresas', 'Hide companies');
+    });
+
+    exportButton?.addEventListener('click', () => {
+      if (!leads.length) {
+        showToast(favoriteCopy(
+          'Esta lista ainda não possui leads para exportar.',
+          'This list does not have leads to export yet.'
+        ));
+        return;
+      }
+      downloadCsv(listRecord?.name || 'empresas-favoritas', leads);
+      showToast(favoriteCopy('Lista exportada em CSV.', 'List exported as CSV.'));
+    });
+
+    removeButton?.addEventListener('click', () => {
+      if (card.dataset.favoriteNiche) {
+        let hiddenNiches = [];
+        try { hiddenNiches = JSON.parse(localStorage.getItem(hiddenNichesStorageKey) || '[]'); } catch { hiddenNiches = []; }
+        const next = Array.from(new Set([...hiddenNiches, card.dataset.favoriteNiche]));
+        try { localStorage.setItem(hiddenNichesStorageKey, JSON.stringify(next)); } catch { /* sem persistência */ }
+      } else if (listRecord?.id) {
+        saveFavoriteLists(readFavoriteLists().filter((list) => list.id !== listRecord.id));
+      } else if (card.matches('[data-default-favorite-list]')) {
+        try { localStorage.setItem(hiddenDefaultListStorageKey, 'true'); } catch { /* sem persistência */ }
+      }
+      card.remove();
+      syncFavoriteEmptyStates();
+      showToast(favoriteCopy('Favorito removido.', 'Favorite removed.'));
+    });
+  };
+
+  const syncFavoriteDynamicLanguage = () => {
+    favoriteListsGrid?.querySelectorAll('[data-favorite-created-at]').forEach((date) => {
+      date.textContent = formatFavoriteSavedDate(date.dataset.favoriteCreatedAt);
+    });
+    favoriteListsGrid?.querySelectorAll('.favorite-list-open').forEach((button) => {
+      const details = button.closest('.favorite-list-card')?.querySelector('.favorite-list-details');
+      button.textContent = details && !details.hidden
+        ? favoriteCopy('Ocultar empresas', 'Hide companies')
+        : favoriteCopy('Ver empresas', 'View companies');
+    });
+  };
+
+  const initializeFavorites = async () => {
+    if (!favoriteTabs.length) return;
+    try {
+      await Promise.resolve(window.hcpProfileReady);
+    } catch {
+      return;
+    }
+    const favoriteUserId = window.hcpCurrentUser?.id || window.hcpProfile?.id;
+    if (!favoriteUserId) return;
+    migrateFavoriteStorage(favoriteUserId);
+
+    favoriteTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const showLists = tab.dataset.favoriteTab === 'lists';
+        favoriteTabs.forEach((item) => {
+          const active = item === tab;
+          item.classList.toggle('active', active);
+          item.setAttribute('aria-selected', String(active));
+        });
+        if (favoriteNichesPanel) favoriteNichesPanel.hidden = showLists;
+        if (favoriteListsPanel) favoriteListsPanel.hidden = !showLists;
+      });
+    });
+
+    let hiddenNiches = [];
+    try { hiddenNiches = JSON.parse(localStorage.getItem(hiddenNichesStorageKey) || '[]'); } catch { hiddenNiches = []; }
+    favoriteNichesGrid?.querySelectorAll('[data-favorite-niche]').forEach((card) => {
+      if (hiddenNiches.includes(card.dataset.favoriteNiche)) card.remove();
+      else attachFavoriteCardActions(card);
+    });
+
+    const defaultList = favoriteListsGrid?.querySelector('[data-default-favorite-list]');
+    let hideDefaultList = false;
+    try { hideDefaultList = localStorage.getItem(hiddenDefaultListStorageKey) === 'true'; } catch { hideDefaultList = false; }
+    if (defaultList && hideDefaultList) defaultList.remove();
+    else if (defaultList) attachFavoriteCardActions(defaultList);
+
+    readFavoriteLists().forEach((list) => {
+      if (!favoriteListsGrid || !Array.isArray(list.leads)) return;
+      const card = document.createElement('article');
+      card.className = 'favorite-list-card';
+      const content = document.createElement('div');
+      const badge = document.createElement('span');
+      const title = document.createElement('h3');
+      const description = document.createElement('p');
+      const date = document.createElement('small');
+      const actions = document.createElement('div');
+      badge.className = 'favorite-list-badge';
+      badge.textContent = `${list.leads.length} leads`;
+      title.textContent = list.name || 'Lista sem nome';
+      description.textContent = list.leads.slice(0, 3).map((lead) => lead.name || lead.company).filter(Boolean).join(' · ') || 'Lista pronta para revisar';
+      date.dataset.favoriteCreatedAt = list.createdAt || '';
+      date.textContent = formatFavoriteSavedDate(list.createdAt);
+      actions.className = 'favorite-card-actions';
+      actions.innerHTML = '<button class="chip-btn favorite-list-open" type="button">Ver empresas</button><button class="chip-btn favorite-list-export" type="button">Exportar CSV</button><button class="chip-btn favorite-remove" type="button">Remover</button>';
+      content.append(badge, title, description, date);
+      card.append(content, actions);
+      favoriteListsGrid.appendChild(card);
+      attachFavoriteCardActions(card, list);
+    });
+    syncFavoriteEmptyStates();
+    applyLanguage(currentLanguage());
+    syncFavoriteDynamicLanguage();
+    document.addEventListener('hcp:languagechange', syncFavoriteDynamicLanguage);
+  };
+  initializeFavorites();
 
   /* ---------- Busca em tabelas (Favoritos / Histórico) ---------- */
   document.querySelectorAll('.table-filter-input').forEach((input) => {

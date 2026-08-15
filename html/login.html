@@ -63,6 +63,43 @@
             <input id="loginName" type="text" placeholder="Como devemos chamar você?" autocomplete="name">
           </div>
 
+          <div class="signup-fields" id="signupFields" hidden>
+            <div class="signup-field-grid">
+              <div class="field">
+                <label class="field-label" for="loginPhone">Telefone</label>
+                <input id="loginPhone" type="tel" placeholder="(11) 99999-9999" autocomplete="tel">
+              </div>
+              <div class="field">
+                <label class="field-label" for="loginUserCount">Usuários do HCP</label>
+                <input id="loginUserCount" type="number" min="1" max="10000" step="1" placeholder="Ex.: 3" inputmode="numeric">
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="loginCompanyNiche">Nicho da empresa</label>
+              <input id="loginCompanyNiche" type="text" list="signupNicheSuggestions"
+                placeholder="Selecione uma sugestão ou digite seu nicho" autocomplete="organization-title">
+              <datalist id="signupNicheSuggestions" data-translate-values>
+                <option value="Agência de Marketing"></option>
+                <option value="Consultoria Comercial / SDR / BDR"></option>
+                <option value="BPO Financeiro"></option>
+                <option value="Tecnologia / SaaS"></option>
+                <option value="Serviços profissionais"></option>
+              </datalist>
+            </div>
+
+            <fieldset class="signup-plan-choice">
+              <legend>Como deseja escolher seu plano?</legend>
+              <div class="signup-plan-options">
+                <label><input type="radio" name="signupPlan" value="starter"><span><strong>Starter</strong><small>Para começar</small></span></label>
+                <label><input type="radio" name="signupPlan" value="pro"><span><strong>Pro</strong><small>Para equipes</small></span></label>
+                <label><input type="radio" name="signupPlan" value="business"><span><strong>Business</strong><small>Alto volume</small></span></label>
+                <label><input type="radio" name="signupPlan" value="later" checked><span><strong>Selecionar depois</strong><small>Cadastre-se sem plano</small></span></label>
+              </div>
+              <button class="plan-builder-entry" id="loginPlanBuilderBtn" type="button">Monte seu Plano</button>
+              <p class="signup-plan-summary" id="signupPlanSummary">Você poderá escolher ou alterar seu plano depois.</p>
+            </fieldset>
+          </div>
+
           <div class="field" id="emailField">
             <label class="field-label" for="loginEmail">Endereço de e-mail</label>
             <input id="loginEmail" type="email" placeholder="nome@empresa.com" autocomplete="email" required>
@@ -105,6 +142,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/script.js"></script>
+  <script src="../js/plan-builder.js"></script>
   <script src="../js/auth.js"></script>
 </body>
 
