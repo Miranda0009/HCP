@@ -439,6 +439,33 @@ button {
   margin-left: auto;
 }
 
+/* No painel principal, a busca permanece visível e ocupa a faixa disponível. */
+.dashboard-page .topbar .search {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 180px;
+  justify-content: flex-start;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.dashboard-page .topbar .search input {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--white);
+  font: inherit;
+  pointer-events: none;
+}
+
+.dashboard-page .topbar .search input::placeholder {
+  color: var(--gray);
+  opacity: 1;
+}
+
 .kbd {
   font-size: 11px;
   color: var(--gray);
@@ -3047,32 +3074,62 @@ html.profile-pending .user-role::after {
   .sidebar-top {
     display: flex;
     position: relative;
-    justify-content: center;
-    min-height: 42px;
-    padding: 0 4px 18px;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 58px;
+    margin: 0 0 16px;
+    padding: 8px 9px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: linear-gradient(105deg, rgba(151, 71, 255, 0.1), rgba(85, 40, 182, 0.025));
   }
 
   .sidebar .logo {
-    justify-content: center;
-    margin: 0 auto;
+    flex: 1;
+    min-width: 0;
+    justify-content: flex-start;
+    gap: 8px;
+    margin: 0;
   }
 
   .sidebar-top .hamburger-btn {
-    position: absolute;
-    top: 1px;
-    right: 4px;
+    position: static;
+    margin-left: 10px;
   }
 
   .sidebar .logo-img {
-    width: 42px;
-    height: 42px;
+    width: 34px;
+    height: 34px;
     padding-top: 0;
   }
 
-  .sidebar .logo-text,
+  .sidebar .logo-text {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
   .sidebar .nav-label,
   .sidebar .nav-badge {
     display: initial;
+  }
+
+  .sidebar .logo-text.nav-label {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar .brand-title {
+    font-size: 18px;
+  }
+
+  .sidebar .brand-subtitle {
+    max-width: 124px;
+    overflow: hidden;
+    font-size: 7px;
+    letter-spacing: 0.1em;
+    text-overflow: clip;
+    white-space: nowrap;
   }
 
   .app.sidebar-collapsed .sidebar .logo {
@@ -3205,6 +3262,20 @@ html.profile-pending .user-role::after {
     width: 40px;
     min-width: 40px;
     height: 40px;
+  }
+
+  .dashboard-page .topbar {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .dashboard-page .topbar .search {
+    width: 100%;
+    min-width: 0;
+    padding-inline: 12px;
+  }
+
+  .dashboard-page .topbar .search input {
+    display: block;
   }
 
   .topbar .notif-wrap {

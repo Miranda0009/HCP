@@ -8,6 +8,8 @@ const script = fs.readFileSync(path.join(root, 'js', 'script.js'), 'utf8');
 const profileScript = fs.readFileSync(path.join(root, 'js', 'profile.js'), 'utf8');
 const profileHtml = fs.readFileSync(path.join(root, 'html', 'perfil.html'), 'utf8');
 const loginHtml = fs.readFileSync(path.join(root, 'html', 'login.html'), 'utf8');
+const panelHtml = fs.readFileSync(path.join(root, 'html', 'painel.html'), 'utf8');
+const styles = fs.readFileSync(path.join(root, 'css', 'styles.css'), 'utf8');
 
 test('perfil resolve a conta pelo vínculo e valida todas as gravações antes do sucesso', () => {
   assert.match(profileScript, /\.from\('account_memberships'\)/);
@@ -74,4 +76,13 @@ test('sugestões de nicho do cadastro traduzem e restauram o atributo value', ()
   assert.match(script, /"BPO Financeiro": "Financial BPO"/);
   assert.match(script, /document\.querySelectorAll\('datalist\[data-translate-values\] option\[value\]'\)/);
   assert.match(script, /translateAttribute\(option, 'value', supportedLanguage\)/);
+});
+
+test('painel usa busca longa e o drawer mantém a marca acima do fundo escurecido', () => {
+  assert.match(panelHtml, /<body class="dashboard-page">/);
+  assert.match(panelHtml, /placeholder="Pesquisar"/);
+  assert.match(styles, /\.dashboard-page \.topbar \.search\s*\{[\s\S]*flex:\s*1 1 auto/);
+  assert.match(styles, /\.sidebar \.logo-text\s*\{[\s\S]*display:\s*flex/);
+  assert.match(script, /app\.appendChild\(backdrop\)/);
+  assert.doesNotMatch(script, /document\.body\.appendChild\(backdrop\)/);
 });

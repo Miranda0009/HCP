@@ -91,6 +91,7 @@ const HCP_ENGLISH = Object.freeze({
   "Gerenciar": "Manage",
   "/mês": "/month",
   "Pesquisar leads": "Search leads",
+  "Pesquisar": "Search",
   "Pesquisar empresas, segmentos, cidades...": "Search companies, segments, cities...",
   "Recolher menu": "Collapse menu",
   "Abrir menu": "Open menu",
@@ -839,7 +840,7 @@ document.addEventListener('DOMContentLoaded', () => {
     backdrop.type = 'button';
     backdrop.tabIndex = -1;
     backdrop.setAttribute('aria-label', closeMenuLabel);
-    document.body.appendChild(backdrop);
+    app.appendChild(backdrop);
 
     const hamburgerIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>';
     const closeIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>';
