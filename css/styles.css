@@ -3562,6 +3562,77 @@ html[data-theme="light"] .command-result:hover { background: rgba(62,139,216,.1)
 .plan-highlight { border-color: #35536b; background: #14202a; }
 .plan-highlight .plan-price { color: #b9dcf6; }
 
+/* Product-shell update: the reference layouts inform density and hierarchy, not brand colours or content. */
+:root {
+  --surface-0: #080d12;
+  --surface-1: #0d151c;
+  --surface-2: #111c25;
+  --surface-3: #162431;
+  --line-soft: #243846;
+  --line-strong: #36566c;
+  --accent-blue: #3e8bd8;
+  --accent-blue-bright: #63aceb;
+  --accent-green: #42b991;
+  --accent-amber: #dba44f;
+}
+
+.app { background: var(--surface-0); }
+.sidebar { background: #0a1219; border-right-color: #20323f; }
+.sidebar-top { padding: 4px 7px 20px; border-bottom: 1px solid rgba(42,57,71,.58); }
+.sidebar-top::after { content: ''; display: block; }
+.logo { min-height: 38px; }
+.main { background: var(--surface-0); }
+.topbar { align-items: center; min-height: 56px; border-bottom-color: var(--line-soft); }
+.topbar .search { max-width: 820px; border-color: var(--line-strong); background: var(--surface-1); }
+.topbar .search:focus-within { border-color: var(--accent-blue-bright); box-shadow: 0 0 0 3px rgba(62,139,216,.12); }
+.topbar .user-chip { border-left: 1px solid var(--line-soft); border-radius: 0; padding-left: 16px; }
+
+.page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; padding-bottom: 2px; }
+.page-head h1 { font-size: clamp(28px, 2.4vw, 36px); font-weight: 730; }
+.page-head p { font-size: 14px; line-height: 1.55; }
+.panel { background: var(--surface-2); border-color: var(--line-soft); box-shadow: inset 0 1px 0 rgba(255,255,255,.025); }
+.panel:hover { border-color: var(--line-strong); }
+
+.dashboard-page .kpi-grid { gap: 12px; margin-bottom: 16px; }
+.dashboard-page .kpi-card { position: relative; min-height: 132px; padding: 17px; border-color: var(--line-soft); background: var(--surface-2); }
+.dashboard-page .kpi-card::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 3px; background: var(--accent-blue); opacity: .9; }
+.dashboard-page .kpi-card:nth-child(2)::before { background: #69a9dc; }
+.dashboard-page .kpi-card:nth-child(3)::before { background: var(--accent-green); }
+.dashboard-page .kpi-card:nth-child(4)::before { background: var(--accent-amber); }
+.dashboard-page .kpi-icon { width: 38px; height: 38px; border-radius: 10px; background: #173451; }
+.dashboard-page .kpi-number { font-size: 29px; }
+.dashboard-page .content-grid { gap: 16px; }
+.dashboard-page .chart-panel, .dashboard-page .activity-panel, .dashboard-page .composition-panel { background: var(--surface-2); }
+
+.lead-generator-page .page-head, .crm-page .page-head { margin-bottom: 20px; }
+.lead-generator-page .panel-head h2, .segment-page .panel-head h2 { font-size: 18px; }
+.lead-filter-fieldset, .client-focus-question, .filter-card { background: rgba(8,13,18,.34); border-color: var(--line-soft); }
+.lead-credit-panel, .lead-credit-note { background-image: none !important; }
+.lead-credit-panel { background: var(--surface-2) !important; border-color: var(--line-strong); }
+.lead-credit-note { background: #14222d !important; border-color: #31536c !important; }
+
+.client-focus-panel { background: var(--surface-2); border-color: var(--line-soft); }
+.client-focus-head, .segment-tabs, .segment-summary { position: relative; z-index: 1; }
+.segment-card, .favorite-card, .favorite-list-card { background: var(--surface-2); border-color: var(--line-soft); }
+.segment-card.selected, .favorite-card.selected { border-color: var(--accent-blue); box-shadow: inset 0 0 0 1px rgba(99,172,235,.2); }
+.segment-card .segment-btn, .favorite-card .segment-btn { border-color: #3d74a0; background: #15293a; color: #b9dcf6; }
+
+.history-table, .data-table { border: 1px solid var(--line-soft); border-radius: 12px; overflow: hidden; }
+.data-table thead, .history-table thead { background: #14212b; }
+.data-table tbody tr, .history-table tbody tr { background: rgba(13,21,28,.48); }
+.data-table tbody tr:hover, .history-table tbody tr:hover { background: #152531; }
+
+.price-card, .pricing-card, .billing-card, .account-card, .profile-card, .settings-card { background: var(--surface-2); border-color: var(--line-soft); }
+.price-card.featured, .pricing-card.featured { background: #132536; border-color: var(--accent-blue); }
+.plan-highlight, .annual-breakdown { background: #14222d; border-color: #31536c; }
+.settings-row, .profile-row, .account-row { border-color: var(--line-soft); }
+.switch input:checked + .slider, .toggle-switch input:checked + .toggle-slider { background: var(--accent-blue); }
+
+@media (max-width: 900px) {
+  .page-head { align-items: flex-start; flex-direction: column; }
+  .topbar .user-chip { border-left: 0; }
+}
+
 @media (max-width: 900px) {
   .app { grid-template-columns: 1fr; }
   .main { padding: 18px 18px 30px; }

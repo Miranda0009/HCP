@@ -21,9 +21,9 @@
         { id: 'fechado', name: 'Fechado' }
       ],
       cards: [
-        { id: 'atlas', stageId: 'novas', name: 'Atlas Alimentos', contact: 'Marina · Operações', value: 'R$ 8.500' },
-        { id: 'nova', stageId: 'qualificacao', name: 'Nova Contábil', contact: 'Pedro · Sócio', value: 'R$ 4.200' },
-        { id: 'faro', stageId: 'proposta', name: 'Faro Segurança', contact: 'Camila · Compras', value: 'R$ 16.000' }
+        { id: 'atlas', stageId: 'novas', name: 'Atlas Alimentos', contact: 'Marina · Operações', value: 'R$ 8.500', note: 'Mapeando a expansão da operação regional.' },
+        { id: 'nova', stageId: 'qualificacao', name: 'Nova Contábil', contact: 'Pedro · Sócio', value: 'R$ 4.200', note: 'Validar necessidades com a equipe comercial.' },
+        { id: 'faro', stageId: 'proposta', name: 'Faro Segurança', contact: 'Camila · Compras', value: 'R$ 16.000', note: 'Proposta enviada para a próxima rodada.' }
       ]
     }]
   };
@@ -80,7 +80,10 @@
   function renderCard(card) {
     const item = document.createElement('article');
     item.className = 'crm-card'; item.draggable = true; item.dataset.cardId = card.id;
-    item.innerHTML = `<div class="crm-card-top"><h3>${escapeHtml(card.name)}</h3><button type="button" aria-label="Excluir ${escapeHtml(card.name)}" title="Excluir cliente">×</button></div><p>${escapeHtml(card.contact || 'Sem contato definido')}</p><div class="crm-card-meta"><span>Cliente</span><span class="crm-card-value">${escapeHtml(card.value || 'Sem valor')}</span></div>`;
+    const initials = (card.name || '?').split(/\s+/).slice(0, 2).map((word) => word.charAt(0)).join('').toUpperCase();
+    const contact = card.contact || 'Contato ainda não definido';
+    const note = card.note || 'Acompanhar o próximo passo comercial.';
+    item.innerHTML = `<div class="crm-card-top"><div class="crm-card-identity"><span class="crm-card-avatar">${escapeHtml(initials)}</span><div class="crm-card-title"><h3>${escapeHtml(card.name)}</h3><span>${escapeHtml(contact)}</span></div></div><button type="button" aria-label="Excluir ${escapeHtml(card.name)}" title="Excluir cliente">×</button></div><p class="crm-card-note">${escapeHtml(note)}</p><div class="crm-card-meta"><span>Oportunidade</span><span class="crm-card-value">${escapeHtml(card.value || 'Sem valor')}</span></div>`;
     item.addEventListener('dragstart', (event) => { item.classList.add('dragging'); event.dataTransfer.setData('text/plain', card.id); event.dataTransfer.effectAllowed = 'move'; });
     item.addEventListener('dragend', () => item.classList.remove('dragging'));
     item.querySelector('button').addEventListener('click', () => { if (confirm(`Excluir ${card.name} do CRM?`)) { const current = area(); current.cards = current.cards.filter((entry) => entry.id !== card.id); save(); render(); } });
@@ -88,8 +91,9 @@
   }
   function renderBoard() {
     const current = area();
-    columns.replaceChildren(...current.stages.map((stage) => {
+    columns.replaceChildren(...current.stages.map((stage, stageIndex) => {
       const column = document.createElement('section'); column.className = 'crm-column';
+      column.dataset.stageIndex = String(stageIndex);
       const cards = current.cards.filter((card) => card.stageId === stage.id);
       const title = document.createElement('div'); title.className = 'crm-column-head';
       title.innerHTML = `<div class="crm-column-title"><h2>${escapeHtml(stage.name)}</h2><span class="crm-column-count">${cards.length}</span></div>`;

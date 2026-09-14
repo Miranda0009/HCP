@@ -6,7 +6,7 @@
   <title>CRM - HCP</title>
   <link rel="icon" type="image/png" href="../imgs/favicon.png">
   <script src="../js/theme-init.js"></script>
-  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/styles.css?v=visual-20260914">
   <style>
     .crm-page .main { min-width: 0; }
     .crm-page .page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
@@ -57,6 +57,33 @@
     .crm-modal label { display:grid; gap:6px; color:var(--gray); font-size:11.5px; font-weight:700; }
     .crm-modal select { min-height:42px; }
     .crm-modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:4px; }
+    .crm-breadcrumb { margin:0 0 10px; color:#8fa0af; font-size:12px; }
+    .crm-breadcrumb span { color:#c8d7e4; }
+    .crm-page .page-head { margin-bottom:16px; }
+    .crm-page .page-head h1 { font-size:34px; }
+    .crm-toolbar { display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:14px; }
+    .crm-view-tabs, .crm-toolset { display:flex; align-items:center; gap:7px; }
+    .crm-view-tab, .crm-tool-btn { min-height:36px; border:1px solid #2d4353; border-radius:8px; padding:0 12px; background:#101b24; color:#b9c7d4; font:inherit; font-size:12px; }
+    .crm-view-tab.active { border-color:#427eae; background:#173451; color:#e9f5ff; box-shadow:inset 0 0 0 1px rgba(99,172,235,.12); }
+    .crm-search { width:230px; min-height:36px; box-sizing:border-box; border:1px solid #2d4353; border-radius:8px; background:#0c141b; color:#eef6fc; padding:0 11px; font:inherit; font-size:12px; }
+    .crm-board { padding:12px; border-radius:13px; background:#0c141b; }
+    .crm-column { position:relative; min-height:560px; border-radius:11px; background:#111c25; }
+    .crm-column::before { content:''; position:absolute; top:0; right:0; left:0; height:3px; background:#4e9de0; }
+    .crm-column:nth-child(2)::before { background:#dba44f; }
+    .crm-column:nth-child(3)::before { background:#679ed6; }
+    .crm-column:nth-child(4)::before { background:#42b991; }
+    .crm-column-head { padding-top:16px; background:#131f29; }
+    .crm-card { padding:13px; background:#16232d; border-color:#2b4354; }
+    .crm-card-identity { display:flex; align-items:flex-start; gap:9px; }
+    .crm-card-avatar { display:grid; flex:0 0 31px; width:31px; height:31px; place-items:center; border-radius:7px; background:#254d70; color:#e8f4ff; font-size:11px; font-weight:800; }
+    .crm-card-title { min-width:0; flex:1; }
+    .crm-card-title h3 { margin:0; }
+    .crm-card-title span { display:block; overflow:hidden; color:#9eafbd; font-size:10.5px; text-overflow:ellipsis; white-space:nowrap; }
+    .crm-card-note { min-height:31px; margin:10px 0 11px !important; color:#c2d0db !important; }
+    .crm-card-meta { padding-top:9px; border-top:1px solid #29404f; }
+    .crm-config { border-radius:13px; }
+    .crm-stage-row { background:#101a22; border-color:#2a3f4f; }
+    @media (max-width:760px) { .crm-toolbar { align-items:stretch; flex-direction:column; } .crm-toolset { width:100%; } .crm-search { flex:1; width:auto; } }
     @media (max-width:1100px) { .crm-layout { grid-template-columns:1fr; } .crm-config { position:static; } }
     @media (max-width:680px) { .crm-page .page-head { flex-direction:column; } .crm-page .page-head .crm-action { width:100%; } }
   </style>
@@ -87,7 +114,9 @@
         <a class="user-chip" href="conta.html"><span class="user-avatar user-initials-avatar" data-user-avatar aria-hidden="true">HC</span><div><div class="user-name">Usuário HCP</div><div class="user-role">Conta HCP</div></div></a>
       </div>
       <div class="command-backdrop" id="commandBackdrop"><div class="command-modal"><div class="command-input-row"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input type="text" id="commandInput" placeholder="Pesquisar empresas, segmentos, cidades..." autocomplete="off"><span class="kbd">Esc</span></div><div class="command-hint"><div class="hint-row">Digite para pesquisar empresas, segmentos ou páginas</div><div class="hint-row">Ir para: Painel, CRM, Segmentos, Favoritos, Histórico</div></div></div></div>
-      <div class="page-head"><div><h1>CRM</h1><p>Organize seus clientes em funis feitos do jeito que sua operação trabalha.</p></div><button class="crm-action" id="openCardModal" type="button">+ Novo cliente</button></div>
+      <div class="crm-breadcrumb">Home <span>›</span> CRM</div>
+      <div class="page-head"><div><h1>CRM</h1><p>Acompanhe e gerencie seu funil comercial com foco em relacionamento e resultados.</p></div><button class="crm-action" id="openCardModal" type="button">+ Nova oportunidade</button></div>
+      <div class="crm-toolbar"><div class="crm-view-tabs" aria-label="Visualização do CRM"><button class="crm-view-tab active" type="button">▦ Kanban</button><button class="crm-view-tab" type="button">☷ Lista</button><button class="crm-view-tab" type="button">▥ Relatórios</button></div><div class="crm-toolset"><input class="crm-search" type="search" placeholder="Buscar no CRM..." aria-label="Buscar no CRM"><button class="crm-tool-btn" type="button">Filtros</button><button class="crm-tool-btn" type="button" aria-label="Mais opções">•••</button></div></div>
       <div class="crm-layout">
         <section class="crm-board" aria-label="Funil de clientes"><div class="crm-columns" id="crmColumns"></div></section>
         <aside class="panel crm-config" aria-labelledby="crmConfigTitle">
