@@ -1,3 +1,32 @@
+const hcpLocalPreview = ['127.0.0.1', 'localhost'].includes(window.location.hostname)
+  && new URLSearchParams(window.location.search).has('preview');
+
+if (hcpLocalPreview) {
+  window.hcpCurrentUser = {
+    id: 'hcp-local-preview',
+    email: 'alisson@hcp.teste',
+    user_metadata: { full_name: 'Alisson Doarte' }
+  };
+  window.hcpProfile = {
+    id: 'hcp-local-preview',
+    full_name: 'Alisson Doarte',
+    company_name: 'HCP TESTE',
+    email: 'alisson@hcp.teste'
+  };
+  window.hcpProfileReady = Promise.resolve(window.hcpProfile);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.user-name, [data-profile-name], [data-profile-greeting]').forEach((element) => {
+      element.textContent = 'Alisson Doarte';
+    });
+    document.querySelectorAll('.user-role').forEach((element) => {
+      element.textContent = 'HCP TESTE';
+    });
+    document.querySelectorAll('[data-user-avatar], [data-profile-avatar]').forEach((element) => {
+      element.textContent = 'AD';
+    });
+  });
+} else {
 window.hcpProfileReady = (async function protectAuthenticatedPage() {
   const client = window.hcpSupabase;
   const loginUrl = () => new URL('login.html', window.location.href).href;
@@ -150,3 +179,4 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
 
   return renderedProfile;
 })();
+}

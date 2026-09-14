@@ -1,14 +1,15 @@
 :root {
-  --login-bg: #030409;
-  --login-panel: #0d0e16;
-  --login-panel-soft: #121220;
-  --login-border: #252638;
+  --login-bg: #080B0F;
+  --login-panel: #10151B;
+  --login-panel-soft: #151C23;
+  --login-border: #28323D;
   --login-text: #ffffff;
-  --login-muted: #8d8da1;
-  --login-input: #121220;
-  --login-purple: #9747ff;
-  --login-purple-dark: #5528b6;
-  --login-purple-light: #b27df3;
+  --login-muted: #A4AFBD;
+  --login-input: #151C23;
+  /* Kept as legacy token names while the visual system uses steel blue. */
+  --login-purple: #4A79B4;
+  --login-purple-dark: #2B4663;
+  --login-purple-light: #D3DFEA;
   --login-green: #39a56b;
   --login-error: #f1205a;
   color-scheme: dark;
@@ -48,7 +49,6 @@ body {
   min-height: 100vh;
   padding: 28px;
   background:
-    radial-gradient(circle at 12% 12%, rgba(151, 71, 255, 0.12), transparent 28%),
     var(--login-bg);
   color: var(--login-text);
   font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -92,8 +92,7 @@ a {
   padding: 48px 54px 42px;
   color: #ffffff;
   background:
-    linear-gradient(145deg, rgba(178, 125, 243, 0.08), transparent 38%),
-    linear-gradient(145deg, #121220 0%, #090a13 52%, #030409 100%);
+    linear-gradient(145deg, #151C23 0%, #0E1217 52%, #080B0F 100%);
   display: flex;
   flex-direction: column;
   isolation: isolate;
@@ -104,10 +103,10 @@ a {
   position: absolute;
   inset: 0;
   z-index: -2;
-  opacity: 0.12;
+  opacity: 0.06;
   background-image:
-    linear-gradient(120deg, transparent 49.5%, rgba(178, 125, 243, 0.45) 50%, transparent 50.5%),
-    linear-gradient(30deg, transparent 49.5%, rgba(151, 71, 255, 0.25) 50%, transparent 50.5%);
+    linear-gradient(120deg, transparent 49.5%, rgba(160, 181, 200, 0.32) 50%, transparent 50.5%),
+    linear-gradient(30deg, transparent 49.5%, rgba(74, 121, 180, 0.18) 50%, transparent 50.5%);
   background-size: 112px 112px;
   transform: scale(1.35) rotate(-8deg);
 }
@@ -125,7 +124,7 @@ a {
   height: 420px;
   right: -210px;
   top: 80px;
-  background: rgba(151, 71, 255, 0.2);
+  background: rgba(74, 121, 180, 0.15);
 }
 
 .glow-two {
@@ -133,7 +132,7 @@ a {
   height: 300px;
   left: -180px;
   bottom: -110px;
-  background: rgba(85, 40, 182, 0.25);
+  background: rgba(43, 70, 99, 0.2);
 }
 
 .auth-brand {
@@ -151,6 +150,7 @@ a {
   width: 36px;
   height: 36px;
   object-fit: contain;
+  filter: grayscale(1) brightness(1.65) contrast(1.1);
 }
 
 .auth-brand-light {
@@ -172,7 +172,7 @@ a {
   position: absolute;
   top: -34px;
   left: -8px;
-  color: rgba(178, 125, 243, 0.22);
+  color: rgba(186, 204, 221, 0.2);
   font: 800 150px/1 Georgia, serif;
 }
 
@@ -214,7 +214,7 @@ a {
 
 .showcase-metrics div {
   padding: 16px 18px;
-  border: 1px solid rgba(178, 125, 243, 0.16);
+  border: 1px solid rgba(186, 204, 221, 0.16);
   border-radius: 14px;
   background: rgba(18, 18, 32, 0.7);
   backdrop-filter: blur(10px);
@@ -309,7 +309,7 @@ a {
 
 .field input:focus {
   border-color: var(--login-purple);
-  box-shadow: 0 0 0 3px rgba(151, 71, 255, 0.14);
+  box-shadow: 0 0 0 3px rgba(74, 121, 180, 0.14);
 }
 
 .signup-fields {
@@ -386,8 +386,8 @@ a {
 .signup-plan-options input:checked + span,
 .signup-plan-options input:focus-visible + span {
   border-color: var(--login-purple);
-  background: rgba(151, 71, 255, 0.1);
-  box-shadow: 0 0 0 2px rgba(151, 71, 255, 0.1);
+  background: rgba(74, 121, 180, 0.1);
+  box-shadow: 0 0 0 2px rgba(74, 121, 180, 0.1);
 }
 
 .plan-builder-entry {
@@ -404,7 +404,7 @@ a {
 }
 
 .plan-builder-entry:hover {
-  background: rgba(151, 71, 255, 0.09);
+  background: rgba(74, 121, 180, 0.09);
 }
 
 .signup-plan-summary {
@@ -485,9 +485,9 @@ a {
 .auth-feedback {
   margin: -4px 0 16px;
   padding: 10px 12px;
-  border: 1px solid rgba(151, 71, 255, 0.34);
+  border: 1px solid rgba(74, 121, 180, 0.34);
   border-radius: 9px;
-  background: rgba(151, 71, 255, 0.08);
+  background: rgba(74, 121, 180, 0.08);
   color: var(--login-purple-light);
   font-size: 12px;
   line-height: 1.45;
@@ -520,12 +520,12 @@ a {
   border: 0;
   background: linear-gradient(135deg, var(--login-purple), var(--login-purple-dark));
   color: #ffffff;
-  box-shadow: 0 12px 25px rgba(85, 40, 182, 0.28);
+  box-shadow: 0 12px 25px rgba(43, 70, 99, 0.28);
 }
 
 .login-btn:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 16px 30px rgba(85, 40, 182, 0.36);
+  box-shadow: 0 16px 30px rgba(43, 70, 99, 0.34);
 }
 
 .login-btn:disabled,

@@ -2,16 +2,16 @@
   --bg-main: #030409;
   --card-bg: #121220;
   --border-color: #15151f;
-  --purple-vivid: #9747ff;
-  --purple-button: #5528b6;
-  --purple-dark: #3b187c;
-  --purple-light: #b27df3;
+  --purple-vivid: #4a79b4;
+  --purple-button: #2b4663;
+  --purple-dark: #1a2a3a;
+  --purple-light: #d3dfea;
   --amber: #f4a113;
   --pink: #f1205a;
   --green: #39a56b;
   --white: #ffffff;
   --gray: #77778a;
-  --badge-bg: #221a46;
+  --badge-bg: #1b2531;
 }
 
 * {
@@ -381,9 +381,9 @@ a {
 
 .insights-card {
   background: linear-gradient(135deg,
-      rgba(151, 71, 255, 0.14),
+      rgba(74, 121, 180, 0.14),
       rgba(18, 18, 32, 0.4));
-  border: 1px solid rgba(151, 71, 255, 0.25);
+  border: 1px solid rgba(74, 121, 180, 0.25);
   border-radius: 16px;
   padding: 20px 24px;
   margin-bottom: 24px;
