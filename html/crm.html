@@ -10,20 +10,21 @@
   <style>
     .crm-page .main { min-width: 0; }
     .crm-page .page-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
-    .crm-layout { display:grid; grid-template-columns:minmax(0, 1fr) 290px; gap:18px; align-items:start; }
-    .crm-board { min-width:0; overflow:auto; padding-bottom:8px; }
-    .crm-columns { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(246px, 1fr); gap:14px; min-width:max-content; }
-    .crm-column { min-height:520px; border:1px solid var(--border-color); border-radius:14px; background:var(--card-bg); overflow:hidden; }
-    .crm-column-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:14px; border-bottom:1px solid var(--border-color); }
+    .crm-layout { display:grid; grid-template-columns:minmax(0, 1fr) 306px; gap:18px; align-items:start; }
+    .crm-board { min-width:0; overflow:auto; padding:11px; border:1px solid #293e4e; border-radius:17px; background:#0d151c; box-shadow:inset 0 1px 0 rgba(255,255,255,.025); }
+    .crm-columns { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(266px, 1fr); gap:12px; min-width:max-content; }
+    .crm-column { min-height:548px; border:1px solid #2a3d4d; border-radius:13px; background:#121d26; overflow:hidden; box-shadow:0 10px 22px rgba(0,0,0,.12); }
+    .crm-column-head { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:14px; border-bottom:1px solid #2a3d4d; background:#14212b; }
     .crm-column-title { display:flex; align-items:center; gap:8px; min-width:0; }
     .crm-column-title h2 { font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-    .crm-column-count { display:grid; min-width:21px; height:21px; place-items:center; border-radius:999px; background:var(--badge-bg); color:var(--purple-light); font-size:10px; font-weight:800; }
+    .crm-column-count { display:grid; min-width:21px; height:21px; place-items:center; border-radius:999px; background:#1a405e; color:#d8edff; font-size:10px; font-weight:800; }
     .crm-stage-actions { display:flex; gap:5px; }
     .crm-icon-btn { display:grid; width:29px; height:29px; place-items:center; border:1px solid var(--border-color); border-radius:7px; background:transparent; color:var(--gray); cursor:pointer; }
-    .crm-icon-btn:hover { color:var(--white); border-color:var(--purple-vivid); }
-    .crm-card-list { display:grid; align-content:start; gap:9px; min-height:435px; padding:10px; }
-    .crm-card-list.is-over { background:rgba(74,121,180,.07); outline:1px dashed var(--purple-vivid); outline-offset:-6px; }
-    .crm-card { border:1px solid var(--border-color); border-radius:10px; background:var(--card-elevated); padding:12px; cursor:grab; box-shadow:0 8px 18px rgba(0,0,0,.14); }
+    .crm-icon-btn:hover { color:var(--white); border-color:#5aa3df; background:#173148; }
+    .crm-card-list { display:grid; align-content:start; gap:10px; min-height:462px; padding:10px; background-image:linear-gradient(rgba(129,157,178,.035) 1px, transparent 1px); background-size:100% 28px; }
+    .crm-card-list.is-over { background-color:rgba(62,139,216,.08); outline:1px dashed #5aa3df; outline-offset:-6px; }
+    .crm-card { border:1px solid #2c4354; border-radius:10px; background:#17232d; padding:12px; cursor:grab; box-shadow:0 8px 18px rgba(0,0,0,.14); transition:border-color .18s ease, transform .18s ease; }
+    .crm-card:hover { border-color:#4d7898; transform:translateY(-1px); }
     .crm-card:active { cursor:grabbing; }
     .crm-card.dragging { opacity:.45; }
     .crm-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
@@ -33,14 +34,14 @@
     .crm-card-meta { display:flex; justify-content:space-between; gap:8px; color:var(--gray); font-size:10.5px; }
     .crm-card-value { color:var(--white); font-weight:700; }
     .crm-empty { padding:22px 8px; color:var(--gray); font-size:11.5px; text-align:center; }
-    .crm-config { position:sticky; top:18px; display:grid; gap:14px; }
+    .crm-config { position:sticky; top:18px; display:grid; gap:14px; border-color:#355166; background:#111b24; }
     .crm-config h2 { font-size:15px; margin-bottom:4px; }
     .crm-config p { color:var(--gray); font-size:11.5px; line-height:1.45; }
     .crm-config-section { display:grid; gap:8px; padding-top:14px; border-top:1px solid var(--border-color); }
     .crm-config-section label { color:var(--white); font-size:11.5px; font-weight:700; }
     .crm-inline-form { display:flex; gap:7px; }
     .crm-inline-form .text-input { min-width:0; padding:9px 10px; font-size:12px; }
-    .crm-action { min-height:38px; border:0; border-radius:8px; padding:0 12px; background:linear-gradient(135deg, var(--purple-button), var(--purple-vivid)); color:#fff; cursor:pointer; font:inherit; font-size:12px; font-weight:700; white-space:nowrap; }
+    .crm-action { min-height:38px; border:1px solid #5aa3df; border-radius:8px; padding:0 12px; background:#2e78b7; color:#fff; cursor:pointer; font:inherit; font-size:12px; font-weight:700; white-space:nowrap; box-shadow:0 8px 18px rgba(24,91,143,.2); }
     .crm-action.secondary { border:1px solid var(--border-color); background:var(--card-bg); color:var(--white); }
     .crm-area-select { width:100%; min-height:39px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--white); padding:0 10px; font:inherit; font-size:12px; }
     .crm-stage-list { display:grid; gap:6px; }
