@@ -2,11 +2,18 @@
   'use strict';
 
   const STORAGE_KEY = 'hcp-crm-v1';
+  const CRM_TEMPLATES = Object.freeze({
+    sales: { label: 'Vendas', description: 'Modelo de vendas para oportunidades comerciais.', stages: ['Lead novo', 'Contato feito', 'Diagnóstico', 'Proposta enviada', 'Negociação', 'Fechado'] },
+    success: { label: 'Sucesso do cliente', description: 'Modelo para acompanhar onboarding, saúde e renovação da carteira.', stages: ['Onboarding', 'Adoção', 'Acompanhamento', 'Expansão', 'Renovação'] },
+    recruitment: { label: 'Recrutamento', description: 'Modelo para acompanhar candidatos em cada fase de seleção.', stages: ['Triagem', 'Entrevista inicial', 'Entrevista técnica', 'Proposta', 'Contratado'] },
+    custom: { label: 'Personalizado', description: 'Monte todas as etapas do zero conforme a operação.', stages: [] }
+  });
   const initialState = {
     currentAreaId: 'vendas',
     areas: [{
       id: 'vendas',
       name: 'Vendas B2B',
+      template: 'sales',
       stages: [
         { id: 'novas', name: 'Novas oportunidades' },
         { id: 'qualificacao', name: 'Qualificação' },
@@ -32,13 +39,19 @@
   const stageList = el('crmStageList');
   const modal = el('crmModal');
   const cardStage = el('crmCardStage');
+  const templateSelect = el('crmTemplate');
+  const templateDescription = el('crmTemplateDescription');
 
   function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch {} }
   function area() { return state.areas.find((item) => item.id === state.currentAreaId) || state.areas[0]; }
+  function ensureAreaShape(current) { if (!current.template || !CRM_TEMPLATES[current.template]) current.template = current.id === 'vendas' ? 'sales' : 'custom'; return current; }
   function updateAreaOptions() {
-    const current = area();
+    const current = ensureAreaShape(area());
     state.currentAreaId = current.id;
     areaSelect.replaceChildren(...state.areas.map((item) => new Option(item.name, item.id, item.id === current.id, item.id === current.id)));
+    templateSelect.value = current.template;
+    templateDescription.textContent = CRM_TEMPLATES[current.template].description;
+    el('crmAreaRename').value = current.name;
   }
   function renderStages() {
     const current = area();
@@ -46,7 +59,11 @@
       const row = document.createElement('div');
       row.className = 'crm-stage-row';
       const count = current.cards.filter((card) => card.stageId === stage.id).length;
-      row.innerHTML = `<span>${stage.name} <small>(${count})</small></span>`;
+      const input = document.createElement('input');
+      input.value = stage.name; input.maxLength = 40; input.setAttribute('aria-label', `Nome da etapa ${stage.name}`);
+      input.addEventListener('change', () => { const name = input.value.trim(); if (name) { stage.name = name; save(); render(); } else input.value = stage.name; });
+      const countLabel = document.createElement('small'); countLabel.textContent = `(${count})`;
+      row.append(input, countLabel);
       const remove = document.createElement('button');
       remove.type = 'button'; remove.title = 'Excluir etapa'; remove.setAttribute('aria-label', `Excluir etapa ${stage.name}`); remove.textContent = '×';
       remove.disabled = current.stages.length === 1;
@@ -93,7 +110,18 @@
   function closeModal() { modal.hidden = true; }
 
   areaSelect.addEventListener('change', () => { state.currentAreaId = areaSelect.value; save(); render(); });
-  el('addArea').addEventListener('click', () => { const name = el('crmAreaName').value.trim(); if (!name) return el('crmAreaName').focus(); const id = makeId('area'); state.areas.push({ id, name, stages: [{ id: `${id}-entrada`, name: 'Entrada' }], cards: [] }); state.currentAreaId = id; el('crmAreaName').value = ''; save(); render(); });
+  templateSelect.addEventListener('change', () => { templateDescription.textContent = CRM_TEMPLATES[templateSelect.value].description; });
+  el('applyTemplate').addEventListener('click', () => {
+    const current = area(); const template = CRM_TEMPLATES[templateSelect.value];
+    if (templateSelect.value === 'custom') { current.template = 'custom'; save(); render(); return; }
+    if (current.cards.length && !confirm('Aplicar este modelo substituirá as etapas atuais. Os cards existentes serão movidos para a primeira etapa. Continuar?')) return;
+    current.template = templateSelect.value;
+    current.stages = template.stages.map((name) => ({ id: makeId('stage'), name }));
+    current.cards.forEach((card) => { card.stageId = current.stages[0].id; });
+    save(); render();
+  });
+  el('renameArea').addEventListener('click', () => { const name = el('crmAreaRename').value.trim(); if (!name) return el('crmAreaRename').focus(); area().name = name; save(); render(); });
+  el('addArea').addEventListener('click', () => { const name = el('crmAreaName').value.trim(); if (!name) return el('crmAreaName').focus(); const id = makeId('area'); const template = CRM_TEMPLATES[templateSelect.value]; const stages = template.stages.length ? template.stages.map((stageName) => ({ id: makeId('stage'), name: stageName })) : [{ id: `${id}-entrada`, name: 'Entrada' }]; state.areas.push({ id, name, template: templateSelect.value, stages, cards: [] }); state.currentAreaId = id; el('crmAreaName').value = ''; save(); render(); });
   el('addStage').addEventListener('click', () => { const name = el('crmStageName').value.trim(); if (!name) return el('crmStageName').focus(); area().stages.push({ id: makeId('stage'), name }); el('crmStageName').value = ''; save(); render(); });
   el('openCardModal').addEventListener('click', () => openModal(area().stages[0].id));
   el('closeCardModal').addEventListener('click', closeModal);

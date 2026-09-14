@@ -44,7 +44,8 @@
     .crm-action.secondary { border:1px solid var(--border-color); background:var(--card-bg); color:var(--white); }
     .crm-area-select { width:100%; min-height:39px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-main); color:var(--white); padding:0 10px; font:inherit; font-size:12px; }
     .crm-stage-list { display:grid; gap:6px; }
-    .crm-stage-row { display:flex; align-items:center; justify-content:space-between; gap:7px; padding:8px 9px; border:1px solid var(--border-color); border-radius:8px; color:var(--gray); font-size:11.5px; }
+    .crm-stage-row { display:flex; align-items:center; gap:7px; padding:6px; border:1px solid var(--border-color); border-radius:8px; color:var(--gray); font-size:11.5px; }
+    .crm-stage-row input { min-width:0; flex:1; border:0; outline:0; background:transparent; color:var(--white); font:inherit; }
     .crm-stage-row button { color:var(--gray); border:0; background:transparent; cursor:pointer; }
     .crm-modal-backdrop { position:fixed; inset:0; z-index:1000; display:grid; place-items:center; padding:18px; background:rgba(3,5,8,.7); backdrop-filter:blur(7px); }
     .crm-modal-backdrop[hidden] { display:none; }
@@ -89,8 +90,9 @@
       <div class="crm-layout">
         <section class="crm-board" aria-label="Funil de clientes"><div class="crm-columns" id="crmColumns"></div></section>
         <aside class="panel crm-config" aria-labelledby="crmConfigTitle">
-          <div><h2 id="crmConfigTitle">Configurar funil</h2><p>Crie áreas e etapas para refletir seu processo comercial.</p></div>
-          <div class="crm-config-section"><label for="crmAreaSelect">Área atual</label><select class="crm-area-select" id="crmAreaSelect"></select><div class="crm-inline-form"><input class="text-input" id="crmAreaName" maxlength="40" placeholder="Nova área"><button class="crm-action" id="addArea" type="button">Criar</button></div></div>
+          <div><h2 id="crmConfigTitle">Modelar CRM</h2><p>Defina o tipo do seu processo, o nome da área e cada etapa do funil.</p></div>
+          <div class="crm-config-section"><label for="crmTemplate">Tipo de CRM</label><select class="crm-area-select" id="crmTemplate"><option value="sales">Vendas</option><option value="success">Sucesso do cliente</option><option value="recruitment">Recrutamento</option><option value="custom">Personalizado</option></select><p id="crmTemplateDescription">Modelo de vendas para oportunidades comerciais.</p><button class="crm-action secondary" id="applyTemplate" type="button">Aplicar modelo às etapas</button></div>
+          <div class="crm-config-section"><label for="crmAreaSelect">Área atual</label><select class="crm-area-select" id="crmAreaSelect"></select><div class="crm-inline-form"><input class="text-input" id="crmAreaRename" maxlength="40" placeholder="Renomear área"><button class="crm-action secondary" id="renameArea" type="button">Salvar</button></div><div class="crm-inline-form"><input class="text-input" id="crmAreaName" maxlength="40" placeholder="Nova área"><button class="crm-action" id="addArea" type="button">Criar</button></div></div>
           <div class="crm-config-section"><label for="crmStageName">Etapas da área</label><div class="crm-inline-form"><input class="text-input" id="crmStageName" maxlength="40" placeholder="Ex.: Diagnóstico"><button class="crm-action" id="addStage" type="button">Adicionar</button></div><div class="crm-stage-list" id="crmStageList"></div></div>
         </aside>
       </div>
