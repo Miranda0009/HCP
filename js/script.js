@@ -54,6 +54,8 @@ const HCP_ENGLISH = Object.freeze({
   "CONTA": "ACCOUNT",
   "Painel": "Dashboard",
   "Gerar Lista de Leads": "Generate Lead List",
+  "CRM": "CRM",
+  "Organize seus clientes em funis feitos do jeito que sua operação trabalha.": "Organize customers in pipelines built around the way your operation works.",
   "Gerar Lista de Leads - HCP": "Generate Lead List - HCP",
   "Crie, selecione e exporte leads": "Create, select, and export leads",
   "Visão geral do HCP": "HCP overview",
@@ -501,6 +503,7 @@ function companySearchHref(name) {
 const HCP_COMMAND_ENTRIES = Object.freeze([
   { name: 'Painel', type: 'Página', meta: 'Visão geral do HCP', href: 'painel.html' },
   { name: 'Gerar Lista de Leads', type: 'Página', meta: 'Crie, selecione e exporte leads', href: 'gerar-leads.html' },
+  { name: 'CRM', type: 'Página', meta: 'Funis e clientes da sua operação', href: 'crm.html' },
   { name: 'Pesquisar empresas', type: 'Página', meta: 'Filtros e lista de leads', href: 'pesquisar.html' },
   { name: 'Segmentos inteligentes', type: 'Página', meta: 'Troca de dados por tokens', href: 'segmentos.html' },
   { name: 'Favoritos', type: 'Página', meta: 'Empresas salvas', href: 'favoritos.html' },
@@ -696,6 +699,18 @@ document.addEventListener('DOMContentLoaded', () => {
     leadLink.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16M4 12h10M4 19h7"></path><path d="M18 15v6M15 18h6"></path></svg><span class="nav-label">Gerar Lista de Leads</span>';
     if (isLeadPage) sidebarPanelLink.classList.remove('active');
     sidebarPanelLink.insertAdjacentElement('afterend', leadLink);
+  }
+
+  const crmAnchor = document.querySelector('.sidebar .nav-item[href="gerar-leads.html"]') || sidebarPanelLink;
+  const existingCrmLink = document.querySelector('.sidebar .nav-item[href="crm.html"]');
+  if (crmAnchor && !existingCrmLink) {
+    const crmLink = document.createElement('a');
+    const isCrmPage = /(?:^|\/)crm\.html$/i.test(window.location.pathname);
+    crmLink.className = `nav-item${isCrmPage ? ' active' : ''}`;
+    crmLink.href = 'crm.html';
+    crmLink.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M3 10h18M9 4v16M15 10v10"></path></svg><span class="nav-label">CRM</span>';
+    if (isCrmPage) document.querySelectorAll('.sidebar .nav-item.active').forEach((item) => item.classList.remove('active'));
+    crmAnchor.insertAdjacentElement('afterend', crmLink);
   }
 
   // A marca e a nova rota são inseridas depois da primeira tradução da página.
