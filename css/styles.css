@@ -3554,6 +3554,14 @@ textarea:focus {
 html[data-theme="light"] .command-result.active,
 html[data-theme="light"] .command-result:hover { background: rgba(62,139,216,.1); }
 
+/* No decorative colour bloom: keep account, segmentation and branding surfaces neutral. */
+.app::before,
+.sidebar-top::before,
+.client-focus-panel::before { content: none !important; background: none !important; }
+.client-focus-panel { border-color: #355166; background: #101820; }
+.plan-highlight { border-color: #35536b; background: #14202a; }
+.plan-highlight .plan-price { color: #b9dcf6; }
+
 @media (max-width: 900px) {
   .app { grid-template-columns: 1fr; }
   .main { padding: 18px 18px 30px; }
