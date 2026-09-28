@@ -4,6 +4,7 @@
 
   const client = window.hcpSupabase;
   const fullNameInput = document.getElementById('profileFullName');
+  const usernameInput = document.getElementById('profileUsername');
   const companyInput = document.getElementById('profileCompany');
   const phoneInput = document.getElementById('profilePhone');
   const companyNicheInput = document.getElementById('profileCompanyNiche');
@@ -45,6 +46,9 @@
 
   function friendlyError(error) {
     const message = error?.message || '';
+    if (error?.code === '23505' && message.includes('profiles_username_unique')) {
+      return copy('Este @usuário já está em uso. Escolha outro.', 'This @username is already taken. Choose another.');
+    }
     if (message === 'Invalid login credentials') {
       return copy(
         'A senha atual está incorreta. Se você entrou pelo Google, use a recuperação de senha na tela de login.',
@@ -88,6 +92,7 @@
   function fillForm(profile) {
     if (!profile) return;
     if (Object.hasOwn(profile, 'full_name')) fullNameInput.value = profile.full_name || '';
+    if (usernameInput && Object.hasOwn(profile, 'username')) usernameInput.value = profile.username || '';
     if (Object.hasOwn(profile, 'company_name')) {
       companyInput.value = profile.company_name === 'Conta HCP' ? '' : (profile.company_name || '');
     }
@@ -114,6 +119,13 @@
       showFeedback(profileFeedback, copy('Informe seu nome completo.', 'Enter your full name.'), 'error');
       return;
     }
+    const username = usernameInput?.value.trim().replace(/^@/, '').toLowerCase() || '';
+    const reserved = ['admin', 'hcp', 'root', 'suporte', 'support', 'system'];
+    if (username && (!/^[a-z][a-z0-9_]{2,29}$/.test(username) || reserved.includes(username))) {
+      showFeedback(profileFeedback, copy('Use um @usuário de 3 a 30 caracteres: letras minúsculas, números ou _.', 'Use an @username of 3–30 lowercase letters, numbers or _.'), 'error');
+      usernameInput?.focus();
+      return;
+    }
     const expectedUserCount = Number(userCountInput?.value || 0);
     if (!Number.isInteger(expectedUserCount) || expectedUserCount < 1 || expectedUserCount > 10000) {
       showFeedback(profileFeedback, copy('Informe uma quantidade válida de usuários.', 'Enter a valid number of users.'), 'error');
@@ -130,6 +142,7 @@
       const updates = {
         id: user.id,
         full_name: fullName,
+        username: username || null,
         company_name: companyInput.value.trim() || null,
         phone: phoneInput.value.trim() || null
       };
@@ -137,7 +150,7 @@
       const { data, error } = await client
         .from('profiles')
         .upsert(updates, { onConflict: 'id' })
-        .select('full_name, avatar_url, company_name, phone')
+        .select('full_name, username, avatar_url, company_name, phone')
         .single();
       if (error) throw error;
 
@@ -211,7 +224,7 @@
         .from('profiles')
         .update({ avatar_url: avatarUrl })
         .eq('id', user.id)
-        .select('full_name, avatar_url, company_name, phone')
+        .select('full_name, username, avatar_url, company_name, phone')
         .single();
       if (error) throw error;
 
@@ -240,7 +253,7 @@
         .from('profiles')
         .update({ avatar_url: null })
         .eq('id', user.id)
-        .select('full_name, avatar_url, company_name, phone')
+        .select('full_name, username, avatar_url, company_name, phone')
         .single();
       if (error) throw error;
 

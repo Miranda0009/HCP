@@ -97,12 +97,14 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
     const companyName = String(profileData.company_name || 'Conta HCP').trim();
     const displayCompanyName = companyName === 'Conta HCP' ? copy('Conta HCP', 'HCP Account') : companyName;
     const phone = String(profileData.phone || '').trim();
+    const username = String(profileData.username || '').trim();
     const avatarUrl = String(profileData.avatar_url || '').trim();
     const email = user.email || '';
 
     const normalizedProfile = {
       id: user.id,
       full_name: fullName,
+      username,
       company_name: companyName,
       phone,
       avatar_url: avatarUrl,
@@ -113,10 +115,12 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
     window.hcpProfileCache?.write(normalizedProfile);
 
     const profileFullNameField = document.getElementById('profileFullName');
+    const profileUsernameField = document.getElementById('profileUsername');
     const profileCompanyField = document.getElementById('profileCompany');
     const profilePhoneField = document.getElementById('profilePhone');
     const profileEmailField = document.getElementById('profileEmail');
     if (profileFullNameField) profileFullNameField.value = fullName;
+    if (profileUsernameField) profileUsernameField.value = username;
     if (profileCompanyField) profileCompanyField.value = companyName === 'Conta HCP' ? '' : companyName;
     if (profilePhoneField) profilePhoneField.value = phone;
     if (profileEmailField) profileEmailField.value = email;
@@ -139,6 +143,9 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
     document.querySelectorAll('[data-profile-email]').forEach((element) => {
       element.textContent = email;
     });
+    document.querySelectorAll('[data-profile-username]').forEach((element) => {
+      element.textContent = username ? `@${username}` : copy('Defina seu usuário HCP abaixo', 'Set your HCP username below');
+    });
     document.querySelectorAll('[data-profile-phone]').forEach((element) => {
       element.textContent = phone || copy('Telefone não informado', 'Phone not provided');
     });
@@ -159,7 +166,7 @@ window.hcpProfileReady = (async function protectAuthenticatedPage() {
 
   const profileResult = await client
     .from('profiles')
-    .select('full_name, avatar_url, company_name, phone')
+    .select('full_name, username, avatar_url, company_name, phone')
     .eq('id', user.id)
     .maybeSingle();
 

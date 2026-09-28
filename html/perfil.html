@@ -181,6 +181,7 @@
           </div>
           <div class="profile-name" data-profile-name>Usuário HCP</div>
           <div class="profile-sub" data-profile-sub>Proprietário do espaço de trabalho · Conta HCP</div>
+          <div class="profile-detail-row"><span aria-hidden="true">@</span><span data-profile-username>Defina seu usuário HCP abaixo</span></div>
 
           <div class="profile-detail-row"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
               stroke-width="1.8">
@@ -223,6 +224,11 @@
                 <label class="profile-field" for="profileFullName">
                   <span>Nome completo</span>
                   <input class="text-input" id="profileFullName" type="text" autocomplete="name" required>
+                </label>
+                <label class="profile-field" for="profileUsername">
+                  <span>Usuário HCP para convites (@)</span>
+                  <input class="text-input" id="profileUsername" type="text" maxlength="30" autocomplete="username" spellcheck="false" placeholder="ex.: joao_miranda">
+                  <small>Único no HCP; use 3 a 30 letras minúsculas, números ou _.</small>
                 </label>
                 <label class="profile-field" for="profileCompany">
                   <span>Empresa</span>
