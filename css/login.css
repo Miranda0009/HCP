@@ -150,7 +150,6 @@ a {
   width: 36px;
   height: 36px;
   object-fit: contain;
-  filter: grayscale(1) brightness(1.65) contrast(1.1);
 }
 
 .auth-brand-light {
