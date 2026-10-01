@@ -1,0 +1,19 @@
+.git/
+.vercel/
+.wrangler/
+wrangler.json
+public/
+node_modules/
+desktop/
+mobile/
+supabase/
+docs/
+tests/
+prints cores/
+prints video admin/
+*.docx
+*.pptx
+*.zip
+*.apk
+*.log
+.env*

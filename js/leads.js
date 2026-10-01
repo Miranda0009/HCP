@@ -67,10 +67,10 @@ const HCP_LEAD_MESSAGES = Object.freeze({
     resultsSummary: ({ total, selected }) => `${total} leads encontrados · ${selected} selecionados`,
     resultsEmpty: 'Nenhuma lista gerada até o momento.',
     generationIncomplete: ({ quantity }) => `Não foi possível completar ${quantity} leads com os filtros informados. Ajuste os filtros e tente novamente.`,
-    generationSuccess: ({ count }) => `${count} leads completos e sem duplicações foram gerados. Selecione os desejados para salvar ou exportar.`,
+    generationSuccess: ({ count }) => `${count} registros sintéticos de demonstração foram gerados. Não são empresas para prospecção real.`,
     generationFallback: 'Não foi possível gerar a lista. Revise os critérios e tente novamente.',
     generating: 'Gerando...',
-    generate: 'Gerar lista',
+    generate: 'Gerar demonstração',
     saveNameRequired: 'Informe um nome com pelo menos 2 caracteres antes de salvar a lista.',
     saveSelectionRequired: 'Selecione pelo menos um lead para salvar.',
     saveStorageError: 'Não foi possível salvar a lista neste dispositivo. Verifique o espaço disponível.',
@@ -107,10 +107,10 @@ const HCP_LEAD_MESSAGES = Object.freeze({
     resultsSummary: ({ total, selected }) => `${total} leads found · ${selected} selected`,
     resultsEmpty: 'No list has been generated yet.',
     generationIncomplete: ({ quantity }) => `We could not complete ${quantity} leads with the selected filters. Adjust the filters and try again.`,
-    generationSuccess: ({ count }) => `${count} complete, duplicate-free leads were generated. Select the leads you want to save or export.`,
+    generationSuccess: ({ count }) => `${count} synthetic demo records were generated. They are not companies for real prospecting.`,
     generationFallback: 'We could not generate the list. Review the criteria and try again.',
     generating: 'Generating...',
-    generate: 'Generate list',
+    generate: 'Generate demo',
     saveNameRequired: 'Enter a name with at least 2 characters before saving the list.',
     saveSelectionRequired: 'Select at least one lead to save.',
     saveStorageError: 'We could not save the list on this device. Check the available storage.',
@@ -165,50 +165,10 @@ function resolveLeadListUserId(runtime = {}, readyProfile = null) {
   ).trim();
 }
 
-function parseStoredLeadLists(rawValue) {
-  if (rawValue === null || rawValue === undefined) return null;
-  try {
-    const parsed = JSON.parse(rawValue);
-    return Array.isArray(parsed) ? parsed : null;
-  } catch {
-    return null;
-  }
-}
-
-function mergeStoredLeadLists(scopedLists = [], legacyLists = []) {
-  const seen = new Set();
-  return [...scopedLists, ...legacyLists].filter((list) => {
-    const identity = String(list?.id || '').trim() || JSON.stringify(list);
-    if (seen.has(identity)) return false;
-    seen.add(identity);
-    return true;
-  });
-}
-
 function migrateLegacyFavoriteLeadLists(storage, userId, baseKey = HCP_FAVORITE_LEAD_LISTS_BASE_KEY) {
-  const scopedKey = favoriteLeadListsStorageKey(userId, baseKey);
-  if (!storage || !String(userId || '').trim()) return scopedKey;
-
-  try {
-    const legacyRaw = storage.getItem(baseKey);
-    if (legacyRaw === null) return scopedKey;
-
-    const scopedRaw = storage.getItem(scopedKey);
-    const legacyLists = parseStoredLeadLists(legacyRaw);
-    const scopedLists = parseStoredLeadLists(scopedRaw);
-    let nextRaw = scopedRaw;
-
-    if (legacyLists && scopedLists) nextRaw = JSON.stringify(mergeStoredLeadLists(scopedLists, legacyLists));
-    else if (legacyLists) nextRaw = JSON.stringify(legacyLists);
-    else if (scopedRaw === null) nextRaw = legacyRaw;
-
-    if (nextRaw !== scopedRaw) storage.setItem(scopedKey, nextRaw);
-    storage.removeItem(baseKey);
-  } catch {
-    // Se a migração falhar, a chave legada é preservada para uma nova tentativa segura.
-  }
-
-  return scopedKey;
+  // Dados antigos sem vínculo de conta não podem ser atribuídos ao próximo login.
+  // A assinatura fica por compatibilidade com clientes anteriores; o legado é preservado.
+  return favoriteLeadListsStorageKey(userId, baseKey);
 }
 
 function normalizeLeadText(value) {
@@ -407,9 +367,10 @@ function generateLeads(criteria = {}) {
     const prefix = pickLeadValue(HCP_COMPANY_PREFIXES, seed, index, 29);
     const suffix = pickLeadValue(HCP_COMPANY_SUFFIXES, seed, index, 31);
     const name = `${prefix} ${nicheWords} ${suffix} ${String(index + 1).padStart(3, '0')}`;
-    const domain = `${leadSlug(prefix)}-${leadSlug(nicheWords)}-${index + 1}.com.br`;
-    const cnpj = createDeterministicCnpj(seed, index);
-    const area = String(11 + ((seed + index) % 79)).padStart(2, '0');
+    const domain = `${leadSlug(prefix)}-${leadSlug(nicheWords)}-${index + 1}.example`;
+    const generatedCnpj = createDeterministicCnpj(seed, index);
+    // Invalida o dígito verificador: a demonstração nunca deve parecer um CNPJ consultável.
+    const cnpj = generatedCnpj.slice(0, -1) + ((Number(generatedCnpj.at(-1)) + 1) % 10);
     const phoneBody = String(900000000 + ((seed + Math.imul(index + 1, 3571)) % 99999999)).slice(0, 9);
 
     candidates.push({
@@ -419,7 +380,7 @@ function generateLeads(criteria = {}) {
       niche: normalized.niche,
       city,
       state,
-      phone: `${area}${phoneBody}`,
+      phone: `00${phoneBody}`,
       email: `contato${index + 1}@${domain}`,
       site: hasWebsite ? `https://www.${domain}` : 'Sem site',
       sizeCode,
@@ -430,7 +391,7 @@ function generateLeads(criteria = {}) {
       type: HCP_TYPE_LABELS[typeCode],
       rating: Number((2.5 + ((seed + index * 7) % 26) / 10).toFixed(1)),
       reviews: 10 + ((seed + index * 41) % 490),
-      source: 'HCP — geração determinística de testes'
+      source: 'SIMULADO — HCP, sem fonte empresarial real'
     });
   }
 
@@ -607,6 +568,7 @@ async function initializeLeadGenerator() {
     readyProfile = null;
   }
   const currentUserId = resolveLeadListUserId(window, readyProfile);
+  if (!currentUserId) return;
   const SAVED_LISTS_KEY = migrateLegacyFavoriteLeadLists(localStorage, currentUserId);
   const CREDIT_KEY = `${CREDIT_BASE_KEY}:${currentUserId || 'unavailable'}`;
   const supabaseClient = window.hcpSupabase;
@@ -629,7 +591,7 @@ async function initializeLeadGenerator() {
   };
   const state = {
     balance: usesRemoteCredits ? 0 : readCredits(),
-    creditReady: !usesRemoteCredits,
+    creditReady: true,
     generationPending: false,
     results: [], selected: new Set(), criteria: null,
     pendingDebit: null
@@ -671,19 +633,12 @@ async function initializeLeadGenerator() {
   });
 
   function updateCreditSummary() {
-    const cost = Number(elements.quantity.value) || 0;
-    const remaining = Math.max(0, state.balance - cost);
-    elements.available.textContent = state.creditReady ? formatNumber(state.balance) : '—';
-    elements.cost.textContent = formatNumber(cost);
-    elements.after.textContent = !state.creditReady
-      ? '—'
-      : state.balance >= cost
-      ? formatNumber(remaining)
-      : getLeadMessage('balanceInsufficient', currentLeadLanguage());
-    elements.after.style.color = !state.creditReady || state.balance >= cost ? '' : 'var(--pink)';
-    const usedPercentage = Math.min(100, Math.max(0, ((INITIAL_CREDITS - state.balance) / INITIAL_CREDITS) * 100));
-    elements.sidebarUsage.textContent = `${Math.round(usedPercentage)}%`;
-    elements.sidebarProgress.style.width = `${usedPercentage}%`;
+    elements.available.textContent = '—';
+    elements.cost.textContent = '0';
+    elements.after.textContent = '—';
+    elements.after.style.color = '';
+    elements.sidebarUsage.textContent = 'Demo';
+    elements.sidebarProgress.style.width = '0%';
     elements.generate.disabled = shouldDisableLeadGeneration(state);
   }
 
@@ -905,7 +860,7 @@ async function initializeLeadGenerator() {
       setLocalizedStatus(elements.formMessage, { key: 'creditLoading' });
       return;
     }
-    const validation = validateLeadGeneration(formCriteria(), state.balance, currentLeadLanguage());
+    const validation = validateLeadGeneration(formCriteria(), Infinity, currentLeadLanguage());
     if (!validation.valid) {
       setLocalizedStatus(elements.formMessage, validation.errorDetails, 'error');
       return;
@@ -919,8 +874,6 @@ async function initializeLeadGenerator() {
       if (results.length !== validation.criteria.quantity) {
         throw localizedError('generationIncomplete', { quantity: validation.criteria.quantity });
       }
-      await debitGeneratedList(results.length, validation.criteria);
-
       state.results = results;
       state.selected = new Set();
       state.criteria = validation.criteria;
@@ -989,7 +942,7 @@ async function initializeLeadGenerator() {
     elements.csv.disabled = true;
     try {
       const language = currentLeadLanguage();
-      const filename = safeFilename(elements.listName.value, 'csv');
+      const filename = safeFilename(`demo-${elements.listName.value || 'lista-hcp'}`, 'csv');
       const content = leadsToCsv(leads);
       const nativeExport = await shareNativeLeadExport(window, {
         filename,
@@ -1027,7 +980,7 @@ async function initializeLeadGenerator() {
       worksheet['!cols'] = HCP_EXPORT_COLUMNS.map(([label]) => ({ wch: Math.max(12, label.length + 3) }));
       const workbook = window.XLSX.utils.book_new();
       window.XLSX.utils.book_append_sheet(workbook, worksheet, 'Leads');
-      const filename = safeFilename(elements.listName.value, 'xlsx');
+      const filename = safeFilename(`demo-${elements.listName.value || 'lista-hcp'}`, 'xlsx');
       let nativeExport = { handled: false };
       if (nativeLeadExportPlugins(window) && typeof window.XLSX.write === 'function') {
         const language = currentLeadLanguage();
@@ -1062,15 +1015,6 @@ async function initializeLeadGenerator() {
   updateCreditSummary();
   renderResults();
   renderSavedLists();
-  if (usesRemoteCredits) {
-    try {
-      await loadRemoteCreditBalance();
-    } catch (error) {
-      state.creditReady = false;
-      updateCreditSummary();
-      setLocalizedStatus(elements.formMessage, { key: leadCreditErrorMessage(error) }, 'error');
-    }
-  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {

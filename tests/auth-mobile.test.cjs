@@ -30,7 +30,7 @@ function createElement() {
   };
 }
 
-function loadAuth({ launchUrl, emailExists = false, desktop = false } = {}) {
+function loadAuth({ launchUrl, emailExists = false, desktop = false, passwordError = null } = {}) {
   const ids = [
     'authForm', 'nameField', 'emailField', 'loginName', 'loginEmail', 'loginPassword',
     'signupFields', 'loginPhone', 'loginCompanyNiche', 'loginUserCount', 'loginPlanBuilderBtn', 'signupPlanSummary',
@@ -40,7 +40,7 @@ function loadAuth({ launchUrl, emailExists = false, desktop = false } = {}) {
   ];
   const elements = Object.fromEntries(ids.map((id) => [id, createElement()]));
   const storage = new Map();
-  const calls = { redirects: [], sessions: [], signUps: [], oauth: [], planBuilder: [], externalUrls: [] };
+  const calls = { redirects: [], sessions: [], signUps: [], passwordLogins: [], oauth: [], planBuilder: [], externalUrls: [] };
   let appUrlListener;
   let desktopUrlListener;
   let currentSession = null;
@@ -55,6 +55,12 @@ function loadAuth({ launchUrl, emailExists = false, desktop = false } = {}) {
   const client = {
     auth: {
       getSession: async () => ({ data: { session: currentSession }, error: null }),
+      signInWithPassword: async (payload) => {
+        calls.passwordLogins.push(payload);
+        if (passwordError) return { data: { user: null, session: null }, error: { message: passwordError } };
+        currentSession = { user };
+        return { data: { session: currentSession, user }, error: null };
+      },
       signUp: async (payload) => {
         calls.signUps.push(payload);
         return { data: { session: null, user }, error: null };
@@ -156,6 +162,40 @@ function loadAuth({ launchUrl, emailExists = false, desktop = false } = {}) {
 }
 
 const flushPromises = () => new Promise((resolvePromise) => setImmediate(resolvePromise));
+
+test('login por senha envia o e-mail sem espaços e redireciona ao painel após sucesso', async () => {
+  const { calls, elements, storage } = loadAuth();
+  await flushPromises();
+  elements.loginEmail.value = '  mobile@hcp.test  ';
+  elements.loginPassword.value = 'senha-ficticia-de-teste';
+  elements.rememberSession.checked = false;
+  await elements.authForm.listener('submit')({ preventDefault() {} });
+  assert.equal(calls.passwordLogins.length, 1);
+  assert.equal(calls.passwordLogins[0].email, 'mobile@hcp.test');
+  assert.equal(calls.passwordLogins[0].password, 'senha-ficticia-de-teste');
+  assert.equal(storage.get('hcp-remember'), 'false');
+  assert.deepEqual(calls.redirects, ['https://localhost/html/painel.html']);
+  assert.equal(elements.authSubmitBtn.disabled, false);
+});
+
+for (const [backendError, expectedMessage] of [
+  ['Invalid login credentials', 'E-mail ou senha incorretos.'],
+  ['Email not confirmed', 'Confirme seu e-mail antes de entrar.']
+]) {
+  test(`login não redireciona e libera nova tentativa quando recebe: ${backendError}`, async () => {
+    const { calls, elements } = loadAuth({ passwordError: backendError });
+    await flushPromises();
+    elements.loginEmail.value = 'mobile@hcp.test';
+    elements.loginPassword.value = 'senha-ficticia-de-teste';
+    await elements.authForm.listener('submit')({ preventDefault() {} });
+    assert.equal(calls.passwordLogins.length, 1);
+    assert.equal(calls.redirects.length, 0);
+    assert.equal(elements.authFeedback.textContent, expectedMessage);
+    assert.match(elements.authFeedback.className, /is-error/);
+    assert.equal(elements.authSubmitBtn.disabled, false);
+    assert.equal(elements.googleAuthBtn.disabled, false);
+  });
+}
 
 test('cadastro no Android usa o deep link próprio do HCP', async () => {
   const { calls, elements } = loadAuth();

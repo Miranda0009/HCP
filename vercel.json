@@ -1,0 +1,19 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": null,
+  "buildCommand": "node scripts/build-static.cjs",
+  "outputDirectory": "public",
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/html/login.html",
+      "permanent": false
+    },
+    {
+      "source": "/login.html",
+      "destination": "/html/login.html",
+      "permanent": false
+    }
+  ]
+}

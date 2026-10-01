@@ -8,3 +8,11 @@ desktop/node_modules/
 desktop/out/
 desktop/www/
 desktop/assets/hcp.ico
+
+.vercel/
+public/
+
+.vercel
+.env*
+.wrangler/
+.dev.vars*

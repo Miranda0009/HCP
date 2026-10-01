@@ -1333,45 +1333,13 @@ document.addEventListener('DOMContentLoaded', () => {
     return `${favoriteCopy('Salva em', 'Saved on')} ${date.toLocaleDateString(currentLanguage())}`;
   };
 
-  const migrateFavoriteStorage = (userId) => {
+  const useScopedFavoriteStorage = (userId) => {
     if (!userId) return false;
     favoriteListStorageKey = `${favoriteListStorageBaseKey}:${userId}`;
     hiddenNichesStorageKey = `${hiddenNichesStorageBaseKey}:${userId}`;
     hiddenDefaultListStorageKey = `${hiddenDefaultListStorageBaseKey}:${userId}`;
-
-    try {
-      const legacyLists = JSON.parse(localStorage.getItem(favoriteListStorageBaseKey) || '[]');
-      const scopedLists = JSON.parse(localStorage.getItem(favoriteListStorageKey) || '[]');
-      if (Array.isArray(legacyLists) && legacyLists.length) {
-        const merged = new Map();
-        [...(Array.isArray(scopedLists) ? scopedLists : []), ...legacyLists].forEach((list) => {
-          const key = list?.id || JSON.stringify(list);
-          if (key) merged.set(key, list);
-        });
-        localStorage.setItem(favoriteListStorageKey, JSON.stringify(Array.from(merged.values())));
-      }
-      localStorage.removeItem(favoriteListStorageBaseKey);
-
-      const legacyNiches = JSON.parse(localStorage.getItem(hiddenNichesStorageBaseKey) || '[]');
-      const scopedNiches = JSON.parse(localStorage.getItem(hiddenNichesStorageKey) || '[]');
-      if (Array.isArray(legacyNiches) && legacyNiches.length) {
-        localStorage.setItem(hiddenNichesStorageKey, JSON.stringify(Array.from(new Set([
-          ...(Array.isArray(scopedNiches) ? scopedNiches : []),
-          ...legacyNiches
-        ]))));
-      }
-      localStorage.removeItem(hiddenNichesStorageBaseKey);
-
-      const legacyDefault = localStorage.getItem(hiddenDefaultListStorageBaseKey);
-      const scopedDefault = localStorage.getItem(hiddenDefaultListStorageKey);
-      if (legacyDefault !== null) {
-        localStorage.setItem(hiddenDefaultListStorageKey, String(legacyDefault === 'true' || scopedDefault === 'true'));
-      }
-      localStorage.removeItem(hiddenDefaultListStorageBaseKey);
-      return true;
-    } catch {
-      return false;
-    }
+    // Chaves antigas sem proprietário conhecido permanecem intactas para recuperação manual.
+    return true;
   };
 
   const csvEscape = (value) => {
@@ -1499,7 +1467,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const favoriteUserId = window.hcpCurrentUser?.id || window.hcpProfile?.id;
     if (!favoriteUserId) return;
-    migrateFavoriteStorage(favoriteUserId);
+    useScopedFavoriteStorage(favoriteUserId);
 
     favoriteTabs.forEach((tab) => {
       tab.addEventListener('click', () => {

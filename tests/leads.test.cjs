@@ -95,7 +95,7 @@ test('saldo inicial é 1.000 quando a chave ainda não existe, sem sobrescrever 
   assert.equal(resolveInitialLeadCredits('725'), 725);
 });
 
-test('listas locais usam chave por usuário e migram a chave legada uma única vez', () => {
+test('listas locais usam chave por usuário sem atribuir a chave legada sem dono', () => {
   const values = new Map([
     ['hcp-favorite-lead-lists', JSON.stringify([
       { id: 'legacy-1', name: 'Lista antiga', createdAt: '2026-08-15T10:00:00Z', leads: [] }
@@ -114,11 +114,11 @@ test('listas locais usam chave por usuário e migram a chave legada uma única v
   assert.equal(favoriteLeadListsStorageKey('user-123'), 'hcp-favorite-lead-lists:user-123');
   const scopedKey = migrateLegacyFavoriteLeadLists(storage, 'user-123');
   assert.equal(scopedKey, 'hcp-favorite-lead-lists:user-123');
-  assert.equal(storage.getItem('hcp-favorite-lead-lists'), null);
-  assert.deepEqual(JSON.parse(storage.getItem(scopedKey)).map((list) => list.id), ['scoped-1', 'legacy-1']);
+  assert.notEqual(storage.getItem('hcp-favorite-lead-lists'), null);
+  assert.deepEqual(JSON.parse(storage.getItem(scopedKey)).map((list) => list.id), ['scoped-1']);
 
   migrateLegacyFavoriteLeadLists(storage, 'user-123');
-  assert.deepEqual(JSON.parse(storage.getItem(scopedKey)).map((list) => list.id), ['scoped-1', 'legacy-1']);
+  assert.deepEqual(JSON.parse(storage.getItem(scopedKey)).map((list) => list.id), ['scoped-1']);
   const secondUserKey = migrateLegacyFavoriteLeadLists(storage, 'user-456');
   assert.equal(secondUserKey, 'hcp-favorite-lead-lists:user-456');
   assert.equal(storage.getItem(secondUserKey), null);

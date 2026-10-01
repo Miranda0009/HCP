@@ -416,7 +416,7 @@
       </div>
 
       <div class="page-head">
-        <div><h1>Gerar Lista de Leads</h1><p>Defina seu público, confira o consumo de créditos e gere uma lista pronta para seleção e exportação.</p></div>
+        <div><h1>Gerar Lista de Leads</h1><p>Protótipo de demonstração: a lista usa dados sintéticos, não consulta empresas reais e não serve para prospecção. Nenhum crédito será debitado.</p></div>
       </div>
 
       <div class="lead-builder-layout">
@@ -482,19 +482,19 @@
 
             <p class="lead-status" id="leadFormMessage" role="status" aria-live="polite" hidden></p>
             <div class="lead-form-actions"><button class="lead-secondary-btn" id="clearLeadForm" type="button">Limpar</button>
-              <button class="primary-btn" id="generateLeadsButton" type="submit">Gerar lista</button></div>
+              <button class="primary-btn" id="generateLeadsButton" type="submit">Gerar demonstração</button></div>
           </form>
         </section>
 
         <aside class="panel lead-credit-panel" aria-labelledby="creditSummaryTitle">
-          <h2 id="creditSummaryTitle">Resumo de créditos</h2>
-          <p>Cada lead gerado utiliza 1 crédito do saldo da sua conta.</p>
+          <h2 id="creditSummaryTitle">Modo demonstração</h2>
+          <p>Os registros são dados sintéticos de teste. A simulação não consulta fontes de leads nem consome créditos.</p>
           <div class="lead-credit-list">
-            <div class="lead-credit-row"><span>Saldo disponível</span><strong id="availableCredits">1.000</strong></div>
-            <div class="lead-credit-row"><span>Custo desta lista</span><strong id="estimatedCost">50</strong></div>
-            <div class="lead-credit-row"><span>Saldo após gerar</span><strong id="creditsAfterGeneration">950</strong></div>
+            <div class="lead-credit-row"><span>Saldo disponível</span><strong id="availableCredits">—</strong></div>
+            <div class="lead-credit-row"><span>Custo desta simulação</span><strong id="estimatedCost">0</strong></div>
+            <div class="lead-credit-row"><span>Saldo após gerar</span><strong id="creditsAfterGeneration">—</strong></div>
           </div>
-          <div class="lead-credit-note">O débito é registrado de forma segura e não é repetido ao tentar novamente a mesma solicitação.</div>
+          <div class="lead-credit-note">Nenhum crédito será debitado. Para um piloto com dados reais, a fonte e as condições de uso ainda precisam ser aprovadas.</div>
         </aside>
       </div>
 

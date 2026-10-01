@@ -26,14 +26,15 @@ test('perfil resolve a conta pelo vínculo e valida todas as gravações antes d
   assert.doesNotMatch(profileScript, /\.eq\('owner_user_id', user\.id\)/);
 });
 
-test('favoritos usam chaves por usuário e removem as chaves legadas após migrar', () => {
+test('favoritos usam chaves por usuário e não reivindicam dados legados sem dono', () => {
   assert.match(script, /favoriteListStorageBaseKey = 'hcp-favorite-lead-lists'/);
   assert.match(script, /hiddenNichesStorageBaseKey = 'hcp-hidden-favorite-niches'/);
   assert.match(script, /hiddenDefaultListStorageBaseKey = 'hcp-hide-default-favorite-list'/);
   assert.match(script, /favoriteListStorageKey = `\$\{favoriteListStorageBaseKey\}:\$\{userId\}`/);
   assert.match(script, /hiddenNichesStorageKey = `\$\{hiddenNichesStorageBaseKey\}:\$\{userId\}`/);
   assert.match(script, /hiddenDefaultListStorageKey = `\$\{hiddenDefaultListStorageBaseKey\}:\$\{userId\}`/);
-  assert.match(script, /localStorage\.removeItem\(favoriteListStorageBaseKey\)/);
+  assert.doesNotMatch(script, /localStorage\.removeItem\(favoriteListStorageBaseKey\)/);
+  assert.doesNotMatch(script, /localStorage\.getItem\(favoriteListStorageBaseKey\)/);
   assert.match(script, /await Promise\.resolve\(window\.hcpProfileReady\)/);
 });
 
