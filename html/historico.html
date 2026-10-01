@@ -164,7 +164,7 @@
       <div class="page-head">
         <div>
           <h1>Histórico de pesquisas</h1>
-          <p>Suas últimas 20 pesquisas realizadas.</p>
+          <p>Suas últimas 20 pesquisas neste dispositivo, separadas por conta. Reabrir recupera os critérios, sem gerar uma nova lista automaticamente.</p>
         </div>
       </div>
 
@@ -186,78 +186,7 @@
                 <th>Ações</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <path d="M21 21l-4.3-4.3"></path>
-                      </svg></div><strong>Agências de Marketing - Austin, TX</strong>
-                  </div>
-                </td>
-                <td>Há 2 horas</td>
-                <td>24 resultados</td>
-                <td><span class="remove-link" style="color:var(--purple-light)">Reabrir</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <path d="M21 21l-4.3-4.3"></path>
-                      </svg></div><strong>Restaurantes - Miami, FL</strong>
-                  </div>
-                </td>
-                <td>Ontem, 16:45</td>
-                <td>41 resultados</td>
-                <td><span class="remove-link" style="color:var(--purple-light)">Reabrir</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <path d="M21 21l-4.3-4.3"></path>
-                      </svg></div><strong>Farms - Denver, CO - Sem site</strong>
-                  </div>
-                </td>
-                <td>Há 2 dias</td>
-                <td>12 resultados</td>
-                <td><span class="remove-link" style="color:var(--purple-light)">Reabrir</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <path d="M21 21l-4.3-4.3"></path>
-                      </svg></div><strong>Law Firms - Boston, MA</strong>
-                  </div>
-                </td>
-                <td>Há 3 dias</td>
-                <td>18 resultados</td>
-                <td><span class="remove-link" style="color:var(--purple-light)">Reabrir</span></td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="company-cell">
-                    <div class="company-avatar"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.8">
-                        <circle cx="11" cy="11" r="7"></circle>
-                        <path d="M21 21l-4.3-4.3"></path>
-                      </svg></div><strong>Centros de Distribuição - Dallas, TX</strong>
-                  </div>
-                </td>
-                <td>Semana passada</td>
-                <td>9 resultados</td>
-                <td><span class="remove-link" style="color:var(--purple-light)">Reabrir</span></td>
-              </tr>
-            </tbody>
+            <tbody id="searchHistoryRows"><tr><td colspan="4">Carregando pesquisas desta conta…</td></tr></tbody>
           </table>
         </div>
       </section>
@@ -267,6 +196,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/auth-guard.js"></script>
+  <script src="../js/pilot-workflows.js"></script>
   <script src="../js/script.js"></script>
 </body>
 

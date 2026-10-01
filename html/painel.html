@@ -305,44 +305,9 @@
       </div>
 
       <div class="two-col">
-        <section class="panel">
-          <div class="panel-head">
-            <div>
-              <h2>Pesquisas recentes</h2>
-            </div><a class="link-accent" href="historico.html">Visualizar todos</a>
-          </div>
-          <div class="list-row">
-            <div class="row-ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="11" cy="11" r="7"></circle>
-                <path d="M21 21l-4.3-4.3"></path>
-              </svg></div>
-            <div class="row-info"><strong>Agências de Marketing - Austin, TX</strong><span>Há 2 horas · 24
-                resultados</span></div><button class="chip-btn">Reabrir</button>
-          </div>
-          <div class="list-row">
-            <div class="row-ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="11" cy="11" r="7"></circle>
-                <path d="M21 21l-4.3-4.3"></path>
-              </svg></div>
-            <div class="row-info"><strong>Restaurantes - Miami, FL</strong><span>Ontem mesmo · 41 resultados</span>
-            </div><button class="chip-btn">Reabrir</button>
-          </div>
-          <div class="list-row">
-            <div class="row-ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="11" cy="11" r="7"></circle>
-                <path d="M21 21l-4.3-4.3"></path>
-              </svg></div>
-            <div class="row-info"><strong>Farms - Denver, CO - Sem site</strong><span>Há 2 dias · 12 resultados</span>
-            </div><button class="chip-btn">Reabrir</button>
-          </div>
-          <div class="list-row">
-            <div class="row-ico"><svg class="" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="11" cy="11" r="7"></circle>
-                <path d="M21 21l-4.3-4.3"></path>
-              </svg></div>
-            <div class="row-info"><strong>Law Firms - Boston, MA</strong><span>Há 3 dias · 18 resultados</span></div>
-            <button class="chip-btn">Reabrir</button>
-          </div>
+        <section class="panel" id="recentSearches">
+          <div class="panel-head"><div><h2>Pesquisas recentes</h2></div><a class="link-accent" href="historico.html">Visualizar todos</a></div>
+          <p class="history-empty">Carregando pesquisas desta conta…</p>
         </section>
 
         <section class="panel">
@@ -387,6 +352,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.112.2"></script>
   <script src="../js/supabase-config.js"></script>
   <script src="../js/auth-guard.js"></script>
+  <script src="../js/pilot-workflows.js"></script>
   <script src="../js/script.js"></script>
   <script src="../js/plan-builder.js"></script>
 </body>

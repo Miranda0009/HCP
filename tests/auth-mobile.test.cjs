@@ -30,7 +30,7 @@ function createElement() {
   };
 }
 
-function loadAuth({ launchUrl, emailExists = false, desktop = false, passwordError = null } = {}) {
+function loadAuth({ launchUrl, emailExists = false, desktop = false, passwordError = null, recoveryError = null } = {}) {
   const ids = [
     'authForm', 'nameField', 'emailField', 'loginName', 'loginEmail', 'loginPassword',
     'signupFields', 'loginPhone', 'loginCompanyNiche', 'loginUserCount', 'loginPlanBuilderBtn', 'signupPlanSummary',
@@ -40,7 +40,7 @@ function loadAuth({ launchUrl, emailExists = false, desktop = false, passwordErr
   ];
   const elements = Object.fromEntries(ids.map((id) => [id, createElement()]));
   const storage = new Map();
-  const calls = { redirects: [], sessions: [], signUps: [], passwordLogins: [], oauth: [], planBuilder: [], externalUrls: [] };
+  const calls = { redirects: [], sessions: [], signUps: [], passwordLogins: [], oauth: [], planBuilder: [], externalUrls: [], recovery: [], passwordUpdates: [], signOuts: [] };
   let appUrlListener;
   let desktopUrlListener;
   let currentSession = null;
@@ -75,6 +75,15 @@ function loadAuth({ launchUrl, emailExists = false, desktop = false, passwordErr
         return { data: { session: currentSession }, error: null };
       },
       exchangeCodeForSession: async () => ({ data: { session: currentSession }, error: null }),
+      resetPasswordForEmail: async (email, options) => {
+        calls.recovery.push({ email, options });
+        return { error: recoveryError ? { message: recoveryError } : null };
+      },
+      updateUser: async (payload) => {
+        calls.passwordUpdates.push(payload);
+        return { data: { user }, error: null };
+      },
+      signOut: async () => { calls.signOuts.push(true); currentSession = null; return { error: null }; },
       onAuthStateChange() {}
     },
     from() {
@@ -162,6 +171,42 @@ function loadAuth({ launchUrl, emailExists = false, desktop = false, passwordErr
 }
 
 const flushPromises = () => new Promise((resolvePromise) => setImmediate(resolvePromise));
+
+test('recuperação solicita o e-mail correto com callback móvel sem mudar a senha', async () => {
+  const { calls, elements } = loadAuth();
+  await flushPromises();
+  elements.loginEmail.value = '  mobile@hcp.test  ';
+  await elements.forgotPasswordBtn.listener('click')();
+  assert.equal(calls.recovery.length, 1);
+  assert.equal(calls.recovery[0].email, 'mobile@hcp.test');
+  assert.equal(calls.recovery[0].options.redirectTo, 'com.hcp.oportunidades://auth/callback?recovery=1');
+  assert.equal(calls.passwordUpdates.length, 0);
+  assert.match(elements.authFeedback.textContent, /link de recuperação/);
+  assert.equal(elements.authSubmitBtn.disabled, false);
+});
+
+test('recuperação informa falha do provedor e permite tentar novamente', async () => {
+  const { calls, elements } = loadAuth({ recoveryError: 'Email rate limit exceeded' });
+  await flushPromises();
+  elements.loginEmail.value = 'mobile@hcp.test';
+  await elements.forgotPasswordBtn.listener('click')();
+  assert.equal(calls.recovery.length, 1);
+  assert.match(elements.authFeedback.className, /is-error/);
+  assert.equal(elements.forgotPasswordBtn.disabled, false);
+});
+
+test('callback de recuperação abre nova senha e encerra sessão depois da alteração', async () => {
+  const { calls, elements } = loadAuth({ launchUrl: 'com.hcp.oportunidades://auth/callback?recovery=1#access_token=fake-access&refresh_token=fake-refresh&type=recovery' });
+  await flushPromises();
+  await flushPromises();
+  assert.equal(elements.authTitle.textContent, 'Crie uma nova senha');
+  assert.equal(calls.redirects.length, 0);
+  elements.loginPassword.value = 'senha-ficticia-para-teste';
+  await elements.authForm.listener('submit')({ preventDefault() {} });
+  assert.equal(calls.passwordUpdates[0].password, 'senha-ficticia-para-teste');
+  assert.equal(calls.signOuts.length, 1);
+  assert.equal(elements.authFeedback.textContent, 'Senha atualizada. Entre novamente.');
+});
 
 test('login por senha envia o e-mail sem espaços e redireciona ao painel após sucesso', async () => {
   const { calls, elements, storage } = loadAuth();

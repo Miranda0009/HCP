@@ -1529,11 +1529,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.table-filter-input').forEach((input) => {
     const panel = input.closest('.panel');
     if (!panel) return;
-    const rows = panel.querySelectorAll('table.data-table tbody tr');
 
     input.addEventListener('input', () => {
       const query = input.value.trim().toLowerCase();
-      rows.forEach((row) => {
+      panel.querySelectorAll('table.data-table tbody tr').forEach((row) => {
         const text = row.textContent.toLowerCase();
         row.style.display = text.includes(query) ? '' : 'none';
       });
@@ -1631,13 +1630,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  /* ---------- Escolher plano (assinatura.html) ---------- */
-  document.querySelectorAll('.price-cta').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const plan = btn.getAttribute('data-plan') || 'plano';
-      showToast('Plano ' + plan + ' selecionado. Redirecionando para o checkout...');
-    });
-  });
+  // Ativação sem cobrança e persistência do piloto: pilot-workflows.js.
 
   /* ---------- Sair da conta (conta.html) ---------- */
   const logoutBtn = document.getElementById('logoutBtn');

@@ -569,6 +569,16 @@ async function initializeLeadGenerator() {
   }
   const currentUserId = resolveLeadListUserId(window, readyProfile);
   if (!currentUserId) return;
+  const searchId = new URLSearchParams(window.location.search).get('pesquisa');
+  const reopened = searchId ? window.HCPPilot?.findSearch(localStorage, currentUserId, searchId) : null;
+  if (reopened) {
+    const c = reopened.criteria;
+    elements.niche.value = c.niche;
+    elements.state.value = c.state;
+    elements.city.value = c.city;
+    elements.quantity.value = String(c.quantity);
+    ['size', 'status', 'type', 'website'].forEach(key => { elements[key].value = c.filters[key]; });
+  }
   const SAVED_LISTS_KEY = migrateLegacyFavoriteLeadLists(localStorage, currentUserId);
   const CREDIT_KEY = `${CREDIT_BASE_KEY}:${currentUserId || 'unavailable'}`;
   const supabaseClient = window.hcpSupabase;
@@ -877,6 +887,11 @@ async function initializeLeadGenerator() {
       state.results = results;
       state.selected = new Set();
       state.criteria = validation.criteria;
+      try {
+        window.HCPPilot?.recordSearch(localStorage, currentUserId, validation.criteria, results.length);
+      } catch {
+        setStatus(elements.formMessage, 'Lista gerada, mas o navegador não permitiu salvar o histórico.', 'error');
+      }
       renderResults();
       updateCreditSummary();
       setLocalizedStatus(elements.resultsMessage, {
@@ -1015,6 +1030,14 @@ async function initializeLeadGenerator() {
   updateCreditSummary();
   renderResults();
   renderSavedLists();
+  if (searchId) {
+    const english = currentLeadLanguage().startsWith('en');
+    setStatus(elements.formMessage, reopened
+      ? (english ? 'Search reopened. Review the criteria and generate the demo when ready. No credits consumed.'
+        : 'Pesquisa reaberta. Confira os critérios e gere a demonstração quando desejar. Nenhum crédito consumido.')
+      : (english ? 'Search not found in this account or device. No new list was generated.'
+        : 'Pesquisa não encontrada nesta conta ou dispositivo. Nenhuma nova lista foi gerada.'), reopened ? 'success' : 'error');
+  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
