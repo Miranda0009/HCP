@@ -8,7 +8,7 @@ const root = path.resolve(__dirname, '..');
 const sql = fs.readFileSync(path.join(root, 'supabase/migrations/20260928225232_create_private_and_shared_crm_boards.sql'), 'utf8');
 const html = fs.readFileSync(path.join(root, 'html/crm.html'), 'utf8');
 const script = fs.readFileSync(path.join(root, 'js/crm.js'), 'utf8');
-const usernameSql = fs.readFileSync(path.join(root, 'supabase/migrations/20260928232105_add_hcp_usernames_and_invitations.sql'), 'utf8');
+const usernameSql = fs.readFileSync(path.join(root, 'supabase/migrations/20260928234314_add_hcp_usernames_and_invitations.sql'), 'utf8');
 const profileHtml = fs.readFileSync(path.join(root, 'html/perfil.html'), 'utf8');
 
 test('um CRM novo é válido e não tem oportunidades fictícias', () => {

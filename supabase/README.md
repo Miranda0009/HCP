@@ -2,6 +2,37 @@
 
 Este diretório mantém a estrutura do banco versionada junto do repositório.
 
+## Histórico de migrações e publicação
+
+Os nomes em `migrations/` devem manter exatamente a versão registrada em
+`supabase_migrations.schema_migrations`. Um arquivo já aplicado não deve ser
+renumerado nem substituído por uma migração vazia.
+
+Em 2026-10-01, o histórico foi reconciliado por consultas somente de leitura:
+
+- `20260905031826_create_adi_flights.sql` foi recuperado dos comandos originais
+  registrados no banco. Essa tabela de voos já existia no projeto Supabase; a
+  recuperação preserva o histórico, não adiciona uma funcionalidade ao HCP.
+- A migração de usuários e convites foi renomeada de `20260928232105` para a
+  versão realmente aplicada, `20260928234314`, sem mudar seu SQL.
+- Nenhum dado, esquema ou registro de histórico remoto foi apagado ou reparado.
+
+O teste `node --test tests/migration-history.test.cjs` verifica as 12 migrações
+do histórico consultado e compara o conteúdo dos dois arquivos recuperados com
+os comandos do banco, normalizando apenas quebras de linha. É uma regressão
+offline; a confirmação da publicação é o novo check **Supabase Preview** no
+GitHub. Antes de mudanças futuras, compare também o histórico remoto atualizado.
+
+O `schema.sql` é uma referência consolidada; esta correção de histórico não
+comprova que a sequência de migrações possa inicializar um banco vazio. Não use
+`db reset --linked` no projeto de produção para testar isso.
+
+Referências oficiais:
+[migrações e desenvolvimento local](https://supabase.com/docs/guides/local-development/cli-workflows)
+e [diagnóstico de publicação](https://supabase.com/docs/guides/deployment/branching/troubleshooting).
+
+## Estrutura do projeto
+
 - Projeto: `euxpmahouesimyyffcio`
 - Schema inicial: `schema.sql`
 - Cliente web: `../js/supabase-config.js`
